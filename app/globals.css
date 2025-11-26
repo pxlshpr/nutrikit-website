@@ -1,65 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  /* Background & Foreground */
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted: #6b7280;
-  --muted-foreground: #9ca3af;
+  /* Background & Foreground - Dark theme (default) */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --muted: #9ca3af;
+  --muted-foreground: #6b7280;
 
   /* Primary Accent - Purple */
-  --accent: #5D00FF;
-  --accent-light: #A063FF;
-  --accent-soft: #EDE5FF;
+  --accent: #A063FF;
+  --accent-light: #5D00FF;
+  --accent-soft: #2D1B4E;
 
   /* Macro Colors */
   --protein: #47ACB1;
   --protein-light: #9AFBFF;
-  --protein-soft: #A6E1E5;
+  --protein-soft: #025C61;
 
-  --carbs: #FFB02A;
-  --carbs-light: #FFCD34;
-  --carbs-soft: #FFE798;
+  --carbs: #FFCD34;
+  --carbs-light: #FFB02A;
+  --carbs-soft: #987A20;
 
-  --fat: #B900FF;
-  --fat-light: #DF00FF;
-  --fat-soft: #DE87FF;
+  --fat: #DF00FF;
+  --fat-light: #B900FF;
+  --fat-soft: #740773;
 
   /* Status Colors */
-  --success: #52A002;
-  --success-light: #5FBA00;
+  --success: #5FBA00;
+  --success-light: #52A002;
 
   /* Section backgrounds */
-  --section-alt: #FAFAFA;
+  --section-alt: #111111;
+
+  /* Border colors */
+  --border: #1f2937;
+  --border-light: #374151;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --muted: #9ca3af;
-    --muted-foreground: #6b7280;
+    /* Background & Foreground - Light theme */
+    --background: #ffffff;
+    --foreground: #171717;
+    --muted: #6b7280;
+    --muted-foreground: #9ca3af;
 
-    --accent: #A063FF;
-    --accent-light: #5D00FF;
-    --accent-soft: #2D1B4E;
+    --accent: #5D00FF;
+    --accent-light: #A063FF;
+    --accent-soft: #EDE5FF;
 
     --protein: #47ACB1;
     --protein-light: #9AFBFF;
-    --protein-soft: #025C61;
+    --protein-soft: #A6E1E5;
 
-    --carbs: #FFCD34;
-    --carbs-light: #FFB02A;
-    --carbs-soft: #987A20;
+    --carbs: #FFB02A;
+    --carbs-light: #FFCD34;
+    --carbs-soft: #FFE798;
 
-    --fat: #DF00FF;
-    --fat-light: #B900FF;
-    --fat-soft: #740773;
+    --fat: #B900FF;
+    --fat-light: #DF00FF;
+    --fat-soft: #DE87FF;
 
-    --success: #5FBA00;
-    --success-light: #52A002;
+    --success: #52A002;
+    --success-light: #5FBA00;
 
-    --section-alt: #111111;
+    --section-alt: #FAFAFA;
+
+    --border: #e5e7eb;
+    --border-light: #d1d5db;
   }
 }
 

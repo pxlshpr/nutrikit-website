@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <Link href="/" className="text-2xl font-bold text-accent">
@@ -65,7 +65,7 @@ export default function Home() {
                   </Link>
                   <Link
                     href="#features"
-                    className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-foreground border-2 border-gray-200 dark:border-gray-700 rounded-full hover:bg-section-alt transition-colors"
+                    className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-foreground border-2 border-border-light rounded-full hover:bg-section-alt transition-colors"
                   >
                     Learn More
                   </Link>
@@ -92,7 +92,7 @@ export default function Home() {
         </section>
 
         {/* Press Logos Section */}
-        <section className="border-y border-gray-200 dark:border-gray-800 bg-section-alt">
+        <section className="border-y border-border bg-section-alt">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <p className="text-center text-sm text-muted mb-6">As featured in</p>
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-60">
@@ -145,7 +145,7 @@ export default function Home() {
                 </ul>
               </div>
               <div className="order-1 lg:order-2 flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
                   <div className="space-y-4">
                     <div className="flex justify-between items-end">
                       <div>
@@ -187,7 +187,7 @@ export default function Home() {
             {/* Feature 2 - Barcode Scanning */}
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
               <div className="flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
                   <div className="aspect-square bg-gradient-to-br from-carbs/10 to-carbs/5 rounded-xl flex flex-col items-center justify-center">
                     <svg className="w-20 h-20 text-carbs mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
@@ -253,7 +253,7 @@ export default function Home() {
                 </ul>
               </div>
               <div className="order-1 lg:order-2 flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
                   <p className="text-sm font-medium mb-4">Weekly Protein Intake</p>
                   <div className="flex items-end justify-between h-32 gap-2">
                     {[65, 80, 72, 90, 85, 78, 88].map((height, i) => (
@@ -319,7 +319,7 @@ export default function Home() {
                   role: "App Store Review"
                 }
               ].map((review, i) => (
-                <div key={i} className="bg-background p-6 rounded-2xl border border-gray-200 dark:border-gray-800">
+                <div key={i} className="bg-background p-6 rounded-2xl border border-border">
                   <div className="flex gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} className="w-5 h-5 text-carbs" fill="currentColor" viewBox="0 0 20 20">
@@ -352,7 +352,7 @@ export default function Home() {
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Free Tier */}
-              <div className="bg-section-alt p-8 rounded-2xl border border-gray-200 dark:border-gray-800">
+              <div className="bg-section-alt p-8 rounded-2xl border border-border">
                 <h3 className="text-2xl font-bold mb-2">Free</h3>
                 <p className="text-muted mb-6">Everything you need to get started</p>
                 <div className="mb-8">
@@ -378,7 +378,7 @@ export default function Home() {
                 </ul>
                 <Link
                   href="#"
-                  className="block w-full py-3 text-center font-semibold border-2 border-gray-200 dark:border-gray-700 rounded-full hover:bg-background transition-colors"
+                  className="block w-full py-3 text-center font-semibold border-2 border-border-light rounded-full hover:bg-background transition-colors"
                 >
                   Download Free
                 </Link>
@@ -450,7 +450,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 py-12">
+      <footer className="border-t border-border py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2 md:col-span-1">
@@ -485,7 +485,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted">
               &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
             </p>

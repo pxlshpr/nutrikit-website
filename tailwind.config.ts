@@ -38,6 +38,10 @@ const config: Config = {
           light: "var(--success-light)",
         },
         "section-alt": "var(--section-alt)",
+        border: {
+          DEFAULT: "var(--border)",
+          light: "var(--border-light)",
+        },
       },
       fontFamily: {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
