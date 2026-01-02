@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Octokit } from '@octokit/rest'
 import { NextResponse } from 'next/server'
+import { gzipSync } from 'zlib'
 
 const TABLES = ['users', 'foods', 'preferences', 'days', 'meals', 'meal_items', 'user_foods', 'meal_presets']
 
@@ -68,14 +69,15 @@ export async function GET(request: Request) {
       backup[table] = allRows
     }
 
-    // Create backup content
-    const content = JSON.stringify(backup, null, 2)
-    const encodedContent = Buffer.from(content).toString('base64')
+    // Create backup content (compressed)
+    const content = JSON.stringify(backup)
+    const compressed = gzipSync(Buffer.from(content))
+    const encodedContent = compressed.toString('base64')
 
     // Commit to GitHub backup repo
     const owner = process.env.GITHUB_OWNER!
     const repo = process.env.GITHUB_BACKUP_REPO!
-    const path = `backups/${timestamp}.json`
+    const path = `backups/${timestamp}.json.gz`
 
     // Check if file exists (for updates)
     let sha: string | undefined
@@ -105,7 +107,7 @@ export async function GET(request: Request) {
     // Also commit to CloudKit public repo if configured
     if (process.env.GITHUB_CLOUDKIT_REPO) {
       const cloudkitRepo = process.env.GITHUB_CLOUDKIT_REPO
-      const cloudkitPath = `supabase-backups/${timestamp}.json`
+      const cloudkitPath = `supabase-backups/${timestamp}.json.gz`
 
       let cloudkitSha: string | undefined
       try {
@@ -166,10 +168,10 @@ async function cleanupOldBackups(octokit: Octokit, owner: string, repo: string) 
     if (!Array.isArray(contents)) return
 
     const files = contents
-      .filter(f => f.name.endsWith('.json'))
+      .filter(f => f.name.endsWith('.json.gz') || f.name.endsWith('.json'))
       .map(f => ({
         name: f.name,
-        date: f.name.replace('.json', ''),
+        date: f.name.replace('.json.gz', '').replace('.json', ''),
         sha: f.sha
       }))
       .sort((a, b) => b.date.localeCompare(a.date))
