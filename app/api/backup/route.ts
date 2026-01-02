@@ -28,14 +28,18 @@ export async function GET(request: Request) {
     })
 
     const timestamp = new Date().toISOString().split('T')[0]
-    const backup: Record<string, unknown[]> = {}
+    const owner = process.env.GITHUB_OWNER!
+    const repo = process.env.GITHUB_BACKUP_REPO!
 
-    // Fetch all tables with pagination (Supabase limits to 1000 per request)
+    const results: { table: string; rows: number; size: number }[] = []
+
+    // Backup each table as a separate file
     for (const table of TABLES) {
       const allRows: unknown[] = []
       let offset = 0
       const limit = 1000
 
+      // Fetch with pagination
       while (true) {
         const { data, error } = await supabase
           .from(table)
@@ -66,80 +70,48 @@ export async function GET(request: Request) {
         offset += limit
       }
 
-      backup[table] = allRows
-    }
+      // Compress and upload this table
+      const content = JSON.stringify(allRows)
+      const compressed = gzipSync(Buffer.from(content))
+      const encodedContent = compressed.toString('base64')
 
-    // Create backup content (compressed)
-    const content = JSON.stringify(backup)
-    const compressed = gzipSync(Buffer.from(content))
-    const encodedContent = compressed.toString('base64')
+      const path = `backups/${timestamp}/${table}.json.gz`
 
-    // Commit to GitHub backup repo
-    const owner = process.env.GITHUB_OWNER!
-    const repo = process.env.GITHUB_BACKUP_REPO!
-    const path = `backups/${timestamp}.json.gz`
-
-    // Check if file exists (for updates)
-    let sha: string | undefined
-    try {
-      const { data: existingFile } = await octokit.repos.getContent({
-        owner,
-        repo,
-        path
-      })
-      if ('sha' in existingFile) {
-        sha = existingFile.sha
-      }
-    } catch {
-      // File doesn't exist, that's fine
-    }
-
-    // Create or update the backup file
-    await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path,
-      message: `Backup ${timestamp}`,
-      content: encodedContent,
-      sha
-    })
-
-    // Also commit to CloudKit public repo if configured
-    if (process.env.GITHUB_CLOUDKIT_REPO) {
-      const cloudkitRepo = process.env.GITHUB_CLOUDKIT_REPO
-      const cloudkitPath = `supabase-backups/${timestamp}.json.gz`
-
-      let cloudkitSha: string | undefined
+      // Check if file exists
+      let sha: string | undefined
       try {
         const { data: existingFile } = await octokit.repos.getContent({
           owner,
-          repo: cloudkitRepo,
-          path: cloudkitPath
+          repo,
+          path
         })
         if ('sha' in existingFile) {
-          cloudkitSha = existingFile.sha
+          sha = existingFile.sha
         }
       } catch {
         // File doesn't exist
       }
 
+      // Upload
       await octokit.repos.createOrUpdateFileContents({
         owner,
-        repo: cloudkitRepo,
-        path: cloudkitPath,
-        message: `Supabase backup ${timestamp}`,
+        repo,
+        path,
+        message: `Backup ${table} ${timestamp}`,
         content: encodedContent,
-        sha: cloudkitSha
+        sha
       })
+
+      results.push({ table, rows: allRows.length, size: compressed.length })
     }
 
-    // Cleanup old backups (keep last 30 daily, then weekly, then monthly)
+    // Cleanup old backups
     await cleanupOldBackups(octokit, owner, repo)
 
     return NextResponse.json({
       success: true,
       timestamp,
-      tables: Object.keys(backup).map(t => ({ table: t, rows: backup[t].length }))
+      tables: results
     })
 
   } catch (error) {
@@ -167,14 +139,11 @@ async function cleanupOldBackups(octokit: Octokit, owner: string, repo: string) 
 
     if (!Array.isArray(contents)) return
 
-    const files = contents
-      .filter(f => f.name.endsWith('.json.gz') || f.name.endsWith('.json'))
-      .map(f => ({
-        name: f.name,
-        date: f.name.replace('.json.gz', '').replace('.json', ''),
-        sha: f.sha
-      }))
-      .sort((a, b) => b.date.localeCompare(a.date))
+    // Get all date folders
+    const folders = contents
+      .filter(f => f.type === 'dir' && /^\d{4}-\d{2}-\d{2}$/.test(f.name))
+      .map(f => f.name)
+      .sort((a, b) => b.localeCompare(a))
 
     const now = new Date()
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
@@ -184,47 +153,74 @@ async function cleanupOldBackups(octokit: Octokit, owner: string, repo: string) 
     const weeklyKept = new Set<string>()
     const monthlyKept = new Set<string>()
 
-    for (const file of files) {
-      const fileDate = new Date(file.date)
+    for (const folder of folders) {
+      const folderDate = new Date(folder)
 
       // Keep all from last 30 days
-      if (fileDate >= thirtyDaysAgo) {
-        toKeep.add(file.name)
+      if (folderDate >= thirtyDaysAgo) {
+        toKeep.add(folder)
         continue
       }
 
       // Keep one per week for 30-90 days
-      if (fileDate >= ninetyDaysAgo) {
-        const weekKey = getWeekKey(fileDate)
+      if (folderDate >= ninetyDaysAgo) {
+        const weekKey = getWeekKey(folderDate)
         if (!weeklyKept.has(weekKey)) {
           weeklyKept.add(weekKey)
-          toKeep.add(file.name)
+          toKeep.add(folder)
         }
         continue
       }
 
       // Keep one per month for older
-      const monthKey = `${fileDate.getFullYear()}-${fileDate.getMonth()}`
+      const monthKey = `${folderDate.getFullYear()}-${folderDate.getMonth()}`
       if (!monthlyKept.has(monthKey)) {
         monthlyKept.add(monthKey)
-        toKeep.add(file.name)
+        toKeep.add(folder)
       }
     }
 
-    // Delete files not in toKeep
-    for (const file of files) {
-      if (!toKeep.has(file.name)) {
+    // Delete folders not in toKeep
+    for (const folder of folders) {
+      if (!toKeep.has(folder)) {
+        await deleteFolder(octokit, owner, repo, `backups/${folder}`)
+      }
+    }
+
+    // Also clean up old single-file backups if any exist
+    const oldFiles = contents.filter(f => f.name.endsWith('.json') || f.name.endsWith('.json.gz'))
+    for (const file of oldFiles) {
+      await octokit.repos.deleteFile({
+        owner,
+        repo,
+        path: `backups/${file.name}`,
+        message: `Cleanup old backup ${file.name}`,
+        sha: file.sha
+      })
+    }
+  } catch (error) {
+    console.error('Cleanup error:', error)
+  }
+}
+
+async function deleteFolder(octokit: Octokit, owner: string, repo: string, path: string) {
+  try {
+    const { data: contents } = await octokit.repos.getContent({ owner, repo, path })
+    if (!Array.isArray(contents)) return
+
+    for (const file of contents) {
+      if (file.type === 'file') {
         await octokit.repos.deleteFile({
           owner,
           repo,
-          path: `backups/${file.name}`,
-          message: `Cleanup old backup ${file.name}`,
+          path: file.path,
+          message: `Cleanup ${file.path}`,
           sha: file.sha
         })
       }
     }
   } catch (error) {
-    console.error('Cleanup error:', error)
+    console.error(`Error deleting folder ${path}:`, error)
   }
 }
 
