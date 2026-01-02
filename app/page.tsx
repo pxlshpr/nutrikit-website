@@ -3,31 +3,32 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="mesh-gradient" />
+      <div className="noise-overlay" />
+
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+      <header className="sticky top-0 z-50 glass-subtle">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-accent">
+            <Link href="/" className="text-2xl font-bold gradient-text-accent">
               NutriKit
             </Link>
             <div className="hidden md:flex items-center gap-8">
               <Link href="#features" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
                 Features
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Reviews
+              <Link href="#how-it-works" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
+                How It Works
               </Link>
               <Link href="#pricing" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                NutriKit+
-              </Link>
-              <Link href="#" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Help
+                Pricing
               </Link>
             </div>
             <Link
-              href="#"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-colors shadow-lg shadow-accent/25"
+              href="https://apps.apple.com/app/nutrikit"
+              className="glass-button inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white rounded-full"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -40,23 +41,31 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                  A Simpler Way to
+        <section className="relative pt-12 pb-24 md:pt-20 md:pb-32">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              {/* Left: Text Content */}
+              <div className="text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 glass-subtle px-4 py-2 rounded-full text-sm font-medium text-accent mb-6">
+                  <span className="w-2 h-2 bg-accent rounded-full animate-pulse-glow" />
+                  Coming Soon to the App Store
+                </div>
+
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight">
+                  The Fastest Way to
                   <br />
-                  <span className="text-accent">Track Nutrition</span>
+                  <span className="gradient-text">Track Nutrition</span>
                 </h1>
-                <p className="text-lg md:text-xl text-muted mb-8 max-w-xl">
-                  NutriKit helps you build healthy habits without the complexity.
-                  Track your macros, monitor your progress, and achieve your goals with ease.
+
+                <p className="text-lg md:text-xl text-muted mb-8 max-w-xl mx-auto lg:mx-0">
+                  Voice logging, lightning-fast search, and a beautiful timeline view.
+                  NutriKit makes tracking your macros effortless.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    href="#"
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-all shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30"
+                    href="https://apps.apple.com/app/nutrikit"
+                    className="glass-button inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white rounded-full hover:glow-accent"
                   >
                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -65,275 +74,349 @@ export default function Home() {
                   </Link>
                   <Link
                     href="#features"
-                    className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-foreground border-2 border-border-light rounded-full hover:bg-section-alt transition-colors"
+                    className="glass inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-full hover:bg-white/10 transition-colors"
                   >
-                    Learn More
+                    Explore Features
                   </Link>
                 </div>
               </div>
-              <div className="relative flex justify-center">
-                {/* App Screenshot */}
-                <div className="relative w-[280px] md:w-[320px]">
-                  <Image
-                    src="/app-screenshot.png"
-                    alt="NutriKit app showing daily nutrition tracking"
-                    width={320}
-                    height={693}
-                    className="rounded-[2.5rem] shadow-2xl shadow-black/40"
-                    priority
-                  />
+
+              {/* Right: App Screenshot */}
+              <div className="relative flex justify-center lg:justify-end">
+                <div className="relative animate-float-slow">
+                  {/* Glow behind phone */}
+                  <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-accent/30 via-protein/20 to-fat/30 rounded-full scale-110" />
+
+                  {/* Phone mockup */}
+                  <div className="relative w-[280px] md:w-[320px] glass-strong rounded-[3rem] p-2">
+                    <Image
+                      src="/app-screenshot.png"
+                      alt="NutriKit app showing daily nutrition tracking"
+                      width={320}
+                      height={693}
+                      className="rounded-[2.5rem]"
+                      priority
+                    />
+                  </div>
                 </div>
-                {/* Decorative elements */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-protein/20 rounded-full blur-3xl"></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-carbs/20 rounded-full blur-3xl"></div>
+
+                {/* Floating feature badges */}
+                <div className="absolute -left-4 top-1/4 glass px-4 py-2 rounded-xl animate-float hidden lg:block">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🎤</span>
+                    <span className="text-sm font-medium">Voice Logging</span>
+                  </div>
+                </div>
+
+                <div className="absolute -right-4 top-1/3 glass px-4 py-2 rounded-xl animate-float-delayed hidden lg:block">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🍎</span>
+                    <span className="text-sm font-medium">4.2M Foods</span>
+                  </div>
+                </div>
+
+                <div className="absolute -left-8 bottom-1/4 glass px-4 py-2 rounded-xl animate-float hidden lg:block" style={{animationDelay: '1s'}}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">📅</span>
+                    <span className="text-sm font-medium">Meal Timeline</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Press Logos Section */}
-        <section className="border-y border-border bg-section-alt">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p className="text-center text-sm text-muted mb-6">As featured in</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-60">
-              {/* Placeholder logos */}
-              {['MacStories', '9to5Mac', 'iMore', 'TechCrunch'].map((name) => (
-                <div key={name} className="text-lg font-semibold text-muted">{name}</div>
-              ))}
+        {/* Stats Banner */}
+        <section className="py-12 relative">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="glass rounded-3xl p-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-accent mb-2">4.2M+</div>
+                  <div className="text-sm text-muted">Foods in Database</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-protein mb-2">4</div>
+                  <div className="text-sm text-muted">Ways to Log</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-carbs mb-2">30+</div>
+                  <div className="text-sm text-muted">Languages</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-fat mb-2">100%</div>
+                  <div className="text-sm text-muted">Privacy First</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Features Section */}
+        {/* Key Features Section */}
         <section id="features" className="py-20 md:py-32">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Everything you need to
-                <span className="text-accent"> succeed</span>
+                Powerful Features,
+                <span className="gradient-text-accent"> Effortless Tracking</span>
               </h2>
               <p className="text-lg text-muted max-w-2xl mx-auto">
-                Simple, powerful tools designed to help you understand and improve your nutrition.
+                Built for speed and simplicity. Log your meals in seconds, not minutes.
               </p>
             </div>
 
-            {/* Feature 1 - Macro Tracking */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-              <div className="order-2 lg:order-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-protein-soft text-protein text-sm font-medium mb-4">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Macro Tracking
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                  Track with confidence
+            {/* Feature Cards Grid */}
+            <div className="grid md:grid-cols-2 gap-6 mb-16">
+              {/* Voice & Text Logging */}
+              <div className="glass-protein feature-card rounded-3xl p-8 hover:glow-protein">
+                <div className="text-5xl mb-6">🎤</div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight">
+                  V O I C E & T E X T
                 </h3>
-                <p className="text-lg text-muted mb-6">
-                  Log your meals and get instant breakdowns of protein, carbs, and fat.
-                  Our comprehensive food database makes tracking effortless and accurate.
+                <p className="text-muted mb-6">
+                  Log meals naturally by speaking or typing. Our AI understands what you ate and logs it instantly.
                 </p>
-                <ul className="space-y-3">
-                  {['Detailed nutritional information', 'Custom food entries', 'Quick meal logging'].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-muted">
-                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="order-1 lg:order-2 flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <p className="text-sm text-muted">Daily Progress</p>
-                        <p className="text-2xl font-bold">1,847 <span className="text-sm font-normal text-muted">/ 2,000 kcal</span></p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-sm font-medium text-success">92%</span>
-                      </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: "🎤", label: "Speak" },
+                    { icon: "⌨️", label: "Type" },
+                    { icon: "📷", label: "Scan" },
+                    { icon: "🔍", label: "Search" },
+                  ].map((item) => (
+                    <div key={item.label} className="glass-subtle rounded-xl px-4 py-3 flex items-center gap-3">
+                      <span className="text-xl">{item.icon}</span>
+                      <span className="text-sm font-medium">{item.label}</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-protein-soft/50 rounded-xl">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full border-4 border-protein flex items-center justify-center">
-                          <span className="text-xs font-bold text-protein">75%</span>
-                        </div>
-                        <p className="text-xs font-medium text-protein">Protein</p>
-                        <p className="text-xs text-muted">112g / 150g</p>
-                      </div>
-                      <div className="text-center p-3 bg-carbs-soft/50 rounded-xl">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full border-4 border-carbs flex items-center justify-center">
-                          <span className="text-xs font-bold text-carbs">85%</span>
-                        </div>
-                        <p className="text-xs font-medium text-carbs">Carbs</p>
-                        <p className="text-xs text-muted">213g / 250g</p>
-                      </div>
-                      <div className="text-center p-3 bg-fat-soft/50 rounded-xl">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full border-4 border-fat flex items-center justify-center">
-                          <span className="text-xs font-bold text-fat">90%</span>
-                        </div>
-                        <p className="text-xs font-medium text-fat">Fat</p>
-                        <p className="text-xs text-muted">63g / 70g</p>
-                      </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Lightning Fast Search */}
+              <div className="glass-carbs feature-card rounded-3xl p-8 hover:glow-carbs">
+                <div className="text-5xl mb-6">⚡</div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight">
+                  L I G H T N I N G  F A S T
+                </h3>
+                <p className="text-muted mb-6">
+                  Search 4.2 million products instantly. Scan multiple barcodes at once. See images in results.
+                </p>
+                <div className="space-y-3">
+                  {[
+                    "Instant search results",
+                    "Multi-barcode scanning",
+                    "Product images & details",
+                    "Works offline",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-carbs flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-sm">{feature}</span>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </div>
 
-            {/* Feature 2 - Barcode Scanning */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-              <div className="flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
-                  <div className="aspect-square bg-gradient-to-br from-carbs/10 to-carbs/5 rounded-xl flex flex-col items-center justify-center">
-                    <svg className="w-20 h-20 text-carbs mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                    </svg>
-                    <p className="text-sm font-medium text-carbs">Scan Any Barcode</p>
-                    <p className="text-xs text-muted mt-1">Instant nutrition data</p>
+              {/* Meal Timeline */}
+              <div className="glass-fat feature-card rounded-3xl p-8 hover:glow-fat">
+                <div className="text-5xl mb-6">📅</div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight">
+                  M E A L  T I M E L I N E
+                </h3>
+                <p className="text-muted mb-6">
+                  See your day at a glance. Drag to reorder meals, copy to other days, visualize patterns.
+                </p>
+                <div className="glass-subtle rounded-xl p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-3 h-3 rounded-full bg-carbs" />
+                    <div className="flex-1 h-1 bg-white/10 rounded-full">
+                      <div className="w-1/3 h-full bg-carbs/60 rounded-full" />
+                    </div>
+                    <span className="text-xs text-muted">8am</span>
+                  </div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-3 h-3 rounded-full bg-protein" />
+                    <div className="flex-1 h-1 bg-white/10 rounded-full">
+                      <div className="w-1/2 h-full bg-protein/60 rounded-full" />
+                    </div>
+                    <span className="text-xs text-muted">12pm</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-fat" />
+                    <div className="flex-1 h-1 bg-white/10 rounded-full">
+                      <div className="w-2/3 h-full bg-fat/60 rounded-full" />
+                    </div>
+                    <span className="text-xs text-muted">7pm</span>
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-carbs-soft text-carbs text-sm font-medium mb-4">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Scanning
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                  Scan barcodes & nutrition labels
+
+              {/* More Features */}
+              <div className="glass-accent feature-card rounded-3xl p-8 hover:glow-accent">
+                <div className="text-5xl mb-6">✨</div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight">
+                  A N D  M U C H  M O R E
                 </h3>
-                <p className="text-lg text-muted mb-6">
-                  Point your camera at any barcode or nutrition label and get instant nutritional
-                  information. No manual entry required.
+                <p className="text-muted mb-6">
+                  A complete toolkit for reaching your nutrition goals.
                 </p>
-                <ul className="space-y-3">
-                  {['Barcode scanning', 'Nutrition label recognition', 'Massive food database'].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-muted">
-                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="space-y-3">
+                  {[
+                    "Guided onboarding wizard",
+                    "Multilingual support",
+                    "Apple Health sync",
+                    "iCloud backup",
+                    "Dark & light themes",
+                    "Widget support",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      {item}
-                    </li>
+                      <span className="text-sm">{feature}</span>
+                    </div>
                   ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Feature 3 - Goals & Insights */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-fat-soft text-fat text-sm font-medium mb-4">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  Insights
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                  Goals & progress tracking
-                </h3>
-                <p className="text-lg text-muted mb-6">
-                  Set personalized nutrition goals and watch your progress over time with
-                  beautiful charts and actionable insights.
-                </p>
-                <ul className="space-y-3">
-                  {['Customizable macro goals', 'Weekly & monthly trends', 'Progress insights'].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-muted">
-                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="order-1 lg:order-2 flex justify-center">
-                <div className="w-full max-w-sm bg-section-alt rounded-2xl p-6 border border-border">
-                  <p className="text-sm font-medium mb-4">Weekly Protein Intake</p>
-                  <div className="flex items-end justify-between h-32 gap-2">
-                    {[65, 80, 72, 90, 85, 78, 88].map((height, i) => (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                        <div
-                          className="w-full bg-accent rounded-t-md transition-all"
-                          style={{ height: `${height}%` }}
-                        ></div>
-                        <span className="text-xs text-muted">
-                          {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Reviews Section */}
-        <section id="reviews" className="py-20 md:py-32 bg-section-alt">
+        {/* How It Works */}
+        <section id="how-it-works" className="py-20 md:py-32">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                People <span className="text-accent">love</span> NutriKit
+                Track in <span className="gradient-text-accent">Three Steps</span>
               </h2>
-              <p className="text-lg text-muted">
-                See what our users are saying
+              <p className="text-lg text-muted max-w-2xl mx-auto">
+                Getting started takes less than a minute.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  text: "Finally, a nutrition tracker that doesn't feel like homework. NutriKit makes it so easy to stay on top of my macros.",
-                  author: "Sarah M.",
-                  role: "Fitness Enthusiast"
+                  step: "01",
+                  title: "Set Your Goals",
+                  description: "Tell us your targets and we'll calculate your daily macros automatically.",
+                  icon: "🎯",
                 },
                 {
-                  text: "The barcode scanner is incredibly fast and accurate. I've tried other apps but NutriKit's database is by far the most comprehensive.",
-                  author: "Mike R.",
-                  role: "Health Coach"
+                  step: "02",
+                  title: "Log Your Meals",
+                  description: "Speak, type, scan, or search. Whatever works best for you.",
+                  icon: "🍽️",
                 },
                 {
-                  text: "I love the clean design and how it focuses on what matters. No ads, no clutter, just simple nutrition tracking.",
-                  author: "Emily K.",
-                  role: "Nutritionist"
+                  step: "03",
+                  title: "Track Progress",
+                  description: "Watch your patterns emerge and stay motivated with insights.",
+                  icon: "📈",
                 },
-                {
-                  text: "The macro tracking visualization is beautiful. I can see my protein, carbs, and fat at a glance. Game changer!",
-                  author: "David L.",
-                  role: "Personal Trainer"
-                },
-                {
-                  text: "Been using NutriKit for 6 months now. It's helped me understand my eating habits and make better choices.",
-                  author: "Jessica T.",
-                  role: "App Store Review"
-                },
-                {
-                  text: "Simple, elegant, and powerful. This is what a nutrition app should be. Worth every penny for the plus version.",
-                  author: "Chris P.",
-                  role: "App Store Review"
-                }
-              ].map((review, i) => (
-                <div key={i} className="bg-background p-6 rounded-2xl border border-border">
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-carbs" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-foreground mb-4">&ldquo;{review.text}&rdquo;</p>
-                  <div>
-                    <p className="font-medium">{review.author}</p>
-                    <p className="text-sm text-muted">{review.role}</p>
-                  </div>
+              ].map((item, index) => (
+                <div key={item.step} className="glass feature-card rounded-3xl p-8 text-center">
+                  <div className="text-5xl mb-4">{item.icon}</div>
+                  <div className="text-accent text-sm font-bold mb-2">STEP {item.step}</div>
+                  <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                  <p className="text-muted text-sm">{item.description}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Macro Tracking Visual */}
+        <section className="py-20 md:py-32">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                  Beautiful <span className="gradient-text">Macro Tracking</span>
+                </h2>
+                <p className="text-lg text-muted mb-8">
+                  See exactly where you stand at a glance. Track protein, carbs, fat, and calories with beautiful visualizations.
+                </p>
+
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="font-medium text-protein">Protein</span>
+                      <span className="text-muted">112g / 150g</span>
+                    </div>
+                    <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full w-3/4 bg-gradient-to-r from-protein to-protein-light rounded-full" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="font-medium text-carbs">Carbs</span>
+                      <span className="text-muted">213g / 250g</span>
+                    </div>
+                    <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full w-[85%] bg-gradient-to-r from-carbs to-carbs-light rounded-full" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="font-medium text-fat">Fat</span>
+                      <span className="text-muted">63g / 70g</span>
+                    </div>
+                    <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full w-[90%] bg-gradient-to-r from-fat to-fat-light rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <div className="glass-strong rounded-3xl p-8 w-full max-w-sm">
+                  <div className="text-center mb-6">
+                    <div className="text-sm text-muted mb-1">Today&apos;s Calories</div>
+                    <div className="text-4xl font-bold">1,847</div>
+                    <div className="text-muted">of 2,000 kcal</div>
+                  </div>
+
+                  {/* Circular progress */}
+                  <div className="relative w-48 h-48 mx-auto">
+                    <svg className="w-full h-full -rotate-90">
+                      <circle
+                        cx="96"
+                        cy="96"
+                        r="88"
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeWidth="12"
+                        fill="none"
+                      />
+                      <circle
+                        cx="96"
+                        cy="96"
+                        r="88"
+                        stroke="url(#gradient)"
+                        strokeWidth="12"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeDasharray={`${0.92 * 2 * Math.PI * 88} ${2 * Math.PI * 88}`}
+                      />
+                      <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="var(--accent)" />
+                          <stop offset="50%" stopColor="var(--protein)" />
+                          <stop offset="100%" stopColor="var(--fat)" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold">92%</div>
+                        <div className="text-xs text-muted">Complete</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -343,27 +426,27 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Simple, transparent pricing
+                Simple, <span className="gradient-text-accent">Fair Pricing</span>
               </h2>
               <p className="text-lg text-muted max-w-2xl mx-auto">
-                Start for free, upgrade when you&apos;re ready for more.
+                Start for free, upgrade when you need more.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Free Tier */}
-              <div className="bg-section-alt p-8 rounded-2xl border border-border">
+              <div className="glass feature-card rounded-3xl p-8">
                 <h3 className="text-2xl font-bold mb-2">Free</h3>
-                <p className="text-muted mb-6">Everything you need to get started</p>
+                <p className="text-muted mb-6">Everything you need to start</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold">$0</span>
+                  <span className="text-5xl font-bold">$0</span>
                   <span className="text-muted">/forever</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   {[
-                    'Macro & calorie tracking',
+                    'Unlimited food logging',
                     'Barcode scanning',
-                    'Food database access',
+                    'Voice & text input',
                     'Basic progress charts',
                     'iCloud sync',
                     'Apple Health integration'
@@ -372,51 +455,51 @@ export default function Home() {
                       <svg className="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span>{feature}</span>
+                      <span className="text-sm">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <Link
-                  href="#"
-                  className="block w-full py-3 text-center font-semibold border-2 border-border-light rounded-full hover:bg-background transition-colors"
+                  href="https://apps.apple.com/app/nutrikit"
+                  className="block w-full glass py-4 text-center font-semibold rounded-full hover:bg-white/10 transition-colors"
                 >
                   Download Free
                 </Link>
               </div>
 
               {/* Plus Tier */}
-              <div className="bg-gradient-to-br from-accent/10 to-accent/5 p-8 rounded-2xl border-2 border-accent relative overflow-hidden">
-                <div className="absolute top-4 right-4 px-3 py-1 bg-accent text-white text-xs font-semibold rounded-full">
-                  POPULAR
+              <div className="glass-accent feature-card rounded-3xl p-8 relative overflow-hidden">
+                <div className="absolute top-4 right-4 bg-accent px-3 py-1 text-xs font-bold rounded-full">
+                  RECOMMENDED
                 </div>
                 <h3 className="text-2xl font-bold mb-2">NutriKit+</h3>
-                <p className="text-muted mb-6">For serious nutrition tracking</p>
+                <p className="text-muted mb-6">For serious tracking</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold">$4.99</span>
+                  <span className="text-5xl font-bold">$4.99</span>
                   <span className="text-muted">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   {[
                     'Everything in Free',
                     'AI-powered food recognition',
-                    'Advanced analytics & trends',
-                    'Custom nutrition goals',
+                    'Advanced analytics',
                     'Micronutrient tracking',
+                    'Custom nutrition goals',
                     'Export data (CSV, JSON)',
                     'Priority support',
-                    'Early access to new features'
+                    'Early access to features'
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-3">
                       <svg className="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span>{feature}</span>
+                      <span className="text-sm">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <Link
-                  href="#"
-                  className="block w-full py-3 text-center font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-colors shadow-lg shadow-accent/25"
+                  href="https://apps.apple.com/app/nutrikit"
+                  className="glass-button block w-full py-4 text-center font-semibold rounded-full hover:glow-accent"
                 >
                   Start Free Trial
                 </Link>
@@ -425,40 +508,41 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final CTA Section */}
-        <section className="py-20 md:py-32 bg-section-alt">
+        {/* Final CTA */}
+        <section className="py-20 md:py-32">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to take control of your nutrition?
-            </h2>
-            <p className="text-lg text-muted mb-8 max-w-2xl mx-auto">
-              Join thousands of users who have transformed their health with NutriKit.
-              Download now and start your journey today.
-            </p>
-            <Link
-              href="#"
-              className="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white bg-accent rounded-full hover:bg-accent-light transition-all shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30"
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-              </svg>
-              Download on the App Store
-            </Link>
-            <p className="mt-4 text-sm text-muted">Free to download. No credit card required.</p>
+            <div className="glass-strong rounded-3xl p-12 md:p-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                Ready to <span className="gradient-text">Transform</span> Your Nutrition?
+              </h2>
+              <p className="text-lg text-muted mb-8 max-w-2xl mx-auto">
+                Join thousands who track smarter, not harder. Download NutriKit today and take control of your health.
+              </p>
+              <Link
+                href="https://apps.apple.com/app/nutrikit"
+                className="glass-button inline-flex items-center gap-3 px-10 py-5 text-lg font-semibold text-white rounded-full hover:glow-accent"
+              >
+                <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                Download on the App Store
+              </Link>
+              <p className="mt-4 text-sm text-muted">Free to download. No credit card required.</p>
+            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12">
+      <footer className="glass-subtle py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="text-xl font-bold text-accent">
+              <Link href="/" className="text-xl font-bold gradient-text-accent">
                 NutriKit
               </Link>
               <p className="mt-2 text-sm text-muted">
-                A simpler way to track your nutrition.
+                The fastest way to track your nutrition.
               </p>
             </div>
             <div>
@@ -466,7 +550,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-muted">
                 <li><Link href="#features" className="hover:text-foreground transition-colors">Features</Link></li>
                 <li><Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
-                <li><Link href="#reviews" className="hover:text-foreground transition-colors">Reviews</Link></li>
+                <li><Link href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</Link></li>
               </ul>
             </div>
             <div>
@@ -485,7 +569,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted">
               &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
             </p>

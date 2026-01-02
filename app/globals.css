@@ -2,14 +2,14 @@
 
 :root {
   /* Background & Foreground - Dark theme (default) */
-  --background: #0a0a0a;
+  --background: #050508;
   --foreground: #ededed;
   --muted: #9ca3af;
   --muted-foreground: #6b7280;
 
   /* Primary Accent - Purple */
   --accent: #A063FF;
-  --accent-light: #5D00FF;
+  --accent-light: #B87FFF;
   --accent-soft: #2D1B4E;
 
   /* Macro Colors */
@@ -30,36 +30,40 @@
   --success-light: #52A002;
 
   /* Section backgrounds */
-  --section-alt: #111111;
+  --section-alt: #0a0a0f;
 
   /* Border colors */
   --border: #1f2937;
   --border-light: #374151;
+
+  /* Glass effect variables */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.1);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    /* Background & Foreground - Light theme */
     --background: #ffffff;
     --foreground: #171717;
     --muted: #6b7280;
     --muted-foreground: #9ca3af;
 
-    --accent: #5D00FF;
+    --accent: #7C3AED;
     --accent-light: #A063FF;
     --accent-soft: #EDE5FF;
 
-    --protein: #47ACB1;
-    --protein-light: #9AFBFF;
-    --protein-soft: #A6E1E5;
+    --protein: #0D9488;
+    --protein-light: #47ACB1;
+    --protein-soft: #CCFBF1;
 
-    --carbs: #FFB02A;
+    --carbs: #D97706;
     --carbs-light: #FFCD34;
-    --carbs-soft: #FFE798;
+    --carbs-soft: #FEF3C7;
 
-    --fat: #B900FF;
+    --fat: #A855F7;
     --fat-light: #DF00FF;
-    --fat-soft: #DE87FF;
+    --fat-soft: #F3E8FF;
 
     --success: #52A002;
     --success-light: #5FBA00;
@@ -68,20 +72,24 @@
 
     --border: #e5e7eb;
     --border-light: #d1d5db;
+
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.5);
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: transparent;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto',
     'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrolling */
 html {
+  background: var(--background);
   scroll-behavior: smooth;
 }
 
@@ -101,4 +109,321 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
+}
+
+/* ========================================
+   LIQUID GLASS DESIGN SYSTEM
+   ======================================== */
+
+/* Glass Card Base */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Colored Glass Variants */
+.glass-accent {
+  background: rgba(160, 99, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(160, 99, 255, 0.25);
+}
+
+.glass-protein {
+  background: rgba(71, 172, 177, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(71, 172, 177, 0.2);
+}
+
+.glass-carbs {
+  background: rgba(255, 205, 52, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 205, 52, 0.2);
+}
+
+.glass-fat {
+  background: rgba(223, 0, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(223, 0, 255, 0.2);
+}
+
+/* Glow Effects */
+.glow-accent {
+  box-shadow: 0 0 50px rgba(160, 99, 255, 0.4), 0 0 100px rgba(160, 99, 255, 0.2);
+}
+
+.glow-protein {
+  box-shadow: 0 0 40px rgba(71, 172, 177, 0.4), 0 0 80px rgba(71, 172, 177, 0.2);
+}
+
+.glow-carbs {
+  box-shadow: 0 0 40px rgba(255, 205, 52, 0.4), 0 0 80px rgba(255, 205, 52, 0.2);
+}
+
+.glow-fat {
+  box-shadow: 0 0 40px rgba(223, 0, 255, 0.4), 0 0 80px rgba(223, 0, 255, 0.2);
+}
+
+/* Text Glow */
+.text-glow {
+  text-shadow: 0 0 40px rgba(160, 99, 255, 0.6), 0 0 80px rgba(160, 99, 255, 0.3);
+}
+
+/* Animated Mesh Gradient Background */
+.mesh-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(160, 99, 255, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(71, 172, 177, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 10% 60%, rgba(223, 0, 255, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 90% 50%, rgba(255, 205, 52, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 30% 90%, rgba(160, 99, 255, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 70% 100%, rgba(71, 172, 177, 0.25) 0%, transparent 50%);
+  animation: meshMove 25s ease-in-out infinite alternate;
+}
+
+@keyframes meshMove {
+  0% {
+    transform: scale(1) translateX(0) translateY(0);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) translateX(-5%) translateY(-3%);
+    filter: hue-rotate(10deg);
+  }
+  100% {
+    transform: scale(1) translateX(5%) translateY(3%);
+    filter: hue-rotate(-10deg);
+  }
+}
+
+/* Noise Overlay for texture */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animation Classes */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--protein) 50%, var(--fat) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 60px rgba(160, 99, 255, 0.5), 0 0 120px rgba(160, 99, 255, 0.25);
+}
+
+/* Glass Button */
+.glass-button {
+  background: rgba(160, 99, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160, 99, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(160, 99, 255, 0.25);
+  border-color: rgba(160, 99, 255, 0.5);
+  box-shadow: 0 0 40px rgba(160, 99, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Feature Card Hover States */
+.feature-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+/* Responsive glass adjustments */
+@media (max-width: 768px) {
+  .glass,
+  .glass-subtle,
+  .glass-strong,
+  .glass-accent {
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+  }
+
+  .mesh-gradient {
+    animation-duration: 40s;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mesh-gradient,
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-delayed,
+  .animate-pulse-glow,
+  .animate-shimmer {
+    animation: none;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
 }

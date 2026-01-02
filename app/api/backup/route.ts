@@ -125,7 +125,16 @@ export async function GET(request: Request) {
 
   } catch (error) {
     console.error('Backup error:', error)
-    return NextResponse.json({ error: 'Backup failed' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({
+      error: 'Backup failed',
+      details: errorMessage,
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      hasGithubToken: !!process.env.GITHUB_TOKEN,
+      hasGithubOwner: !!process.env.GITHUB_OWNER,
+      hasGithubRepo: !!process.env.GITHUB_BACKUP_REPO
+    }, { status: 500 })
   }
 }
 
