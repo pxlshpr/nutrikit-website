@@ -29,26 +29,43 @@ export async function GET(request: Request) {
     const timestamp = new Date().toISOString().split('T')[0]
     const backup: Record<string, unknown[]> = {}
 
-    // Fetch all tables
+    // Fetch all tables with pagination (Supabase limits to 1000 per request)
     for (const table of TABLES) {
-      const { data, error } = await supabase.from(table).select('*')
-      if (error) {
-        console.error(`Error fetching ${table}:`, error)
-        backup[table] = []
-      } else {
+      const allRows: unknown[] = []
+      let offset = 0
+      const limit = 1000
+
+      while (true) {
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          .range(offset, offset + limit - 1)
+
+        if (error) {
+          console.error(`Error fetching ${table}:`, error)
+          break
+        }
+
+        if (!data || data.length === 0) break
+
         // Filter out excluded fields
         if (EXCLUDED_FIELDS[table]) {
-          backup[table] = data.map(row => {
+          for (const row of data) {
             const filtered = { ...row }
             for (const field of EXCLUDED_FIELDS[table]) {
               delete filtered[field]
             }
-            return filtered
-          })
+            allRows.push(filtered)
+          }
         } else {
-          backup[table] = data || []
+          allRows.push(...data)
         }
+
+        if (data.length < limit) break
+        offset += limit
       }
+
+      backup[table] = allRows
     }
 
     // Create backup content
