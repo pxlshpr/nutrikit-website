@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { SprintTask, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
 
 interface TaskBoardProps {
@@ -63,9 +64,11 @@ function TaskCard({ task }: { task: SprintTask }) {
   const isRunning = task.status === 'Running';
 
   return (
-    <div
+    <Link
+      href={`/sprint/task/${task.id}`}
       className={`
-        glass feature-card rounded-2xl p-5 relative overflow-hidden
+        block glass feature-card rounded-2xl p-5 relative overflow-hidden
+        hover:ring-2 hover:ring-accent/30 transition-all cursor-pointer
         ${isRunning ? 'ring-2 ring-protein/50' : ''}
         ${isDone ? 'opacity-75' : ''}
       `}
@@ -80,14 +83,9 @@ function TaskCard({ task }: { task: SprintTask }) {
         <div className="flex-1 min-w-0">
           {/* Task ID */}
           <div className="flex items-center gap-2 mb-2">
-            <a
-              href={`https://linear.app/pxlshpr/issue/${task.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-mono text-accent hover:text-accent-light transition-colors"
-            >
+            <span className="text-xs font-mono text-accent">
               {task.id}
-            </a>
+            </span>
             <PriorityIndicator priority={task.priority} />
           </div>
 
@@ -103,7 +101,14 @@ function TaskCard({ task }: { task: SprintTask }) {
           <span className="hidden sm:inline">{task.status}</span>
         </div>
       </div>
-    </div>
+
+      {/* Tap indicator */}
+      <div className="absolute bottom-2 right-2 text-muted-foreground/30">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    </Link>
   );
 }
 

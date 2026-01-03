@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NutriKit - Your Nutrition Companion",
-  description: "Track your nutrition, achieve your health goals",
+  title: "NutriKit",
+  description: "Nutrition, thoughtfully.",
 };
 
 export default function RootLayout({
