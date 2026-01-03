@@ -350,32 +350,24 @@ export function getPriorityColor(priority: SprintTask['priority']): string {
   return colors[priority] || colors['Medium'];
 }
 
-// Generate Heroku-style sprint name from sprint number
-// Using a deterministic algorithm based on sprint number for consistency
+// Generate sprint name from Greek gods/titans
+// Using sprint number to cycle through the list
 export function getSprintName(sprintNumber: number): string {
-  const adjectives = [
-    'silent', 'crystal', 'golden', 'swift', 'bright',
-    'calm', 'bold', 'keen', 'light', 'pure',
-    'rapid', 'steady', 'noble', 'clear', 'vivid',
-    'sharp', 'smooth', 'prime', 'solid', 'wise',
-    'fresh', 'deep', 'warm', 'cool', 'true',
-    'fleet', 'grand', 'proud', 'still', 'free',
+  const greekGods = [
+    'zeus', 'hera', 'poseidon', 'demeter', 'athena',
+    'apollo', 'artemis', 'ares', 'aphrodite', 'hephaestus',
+    'hermes', 'hestia', 'dionysus', 'hades', 'persephone',
+    'eros', 'pan', 'nike', 'iris', 'morpheus',
+    'helios', 'selene', 'eos', 'atlas', 'prometheus',
+    'cronus', 'rhea', 'hyperion', 'theia', 'oceanus',
+    'tethys', 'mnemosyne', 'themis', 'phoebe', 'coeus',
+    'crius', 'iapetus', 'dione', 'metis', 'styx',
+    'triton', 'proteus', 'nereus', 'amphitrite', 'galatea',
+    'calypso', 'circe', 'hecate', 'nemesis', 'tyche',
   ];
 
-  const nouns = [
-    'water', 'meadow', 'summit', 'river', 'harbor',
-    'forest', 'valley', 'stream', 'ridge', 'canyon',
-    'plains', 'sunset', 'aurora', 'breeze', 'dawn',
-    'dusk', 'frost', 'grove', 'marsh', 'peak',
-    'shore', 'trail', 'wave', 'cloud', 'field',
-    'glade', 'heath', 'lake', 'mist', 'path',
-  ];
-
-  // Use sprint number to deterministically select adjective and noun
-  const adjIndex = (sprintNumber - 1) % adjectives.length;
-  const nounIndex = Math.floor((sprintNumber - 1) / adjectives.length) % nouns.length;
-
-  return `${adjectives[adjIndex]}-${nouns[nounIndex]}`;
+  const index = (sprintNumber - 1) % greekGods.length;
+  return greekGods[index];
 }
 
 // Format date for display
