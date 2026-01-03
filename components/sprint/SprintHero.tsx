@@ -9,41 +9,73 @@ interface SprintHeroProps {
 // Sprint number offset to imply years of work
 const SPRINT_OFFSET = 46;
 
-// Parse date string like "Mon, Jan 6, 2026"
-function parseDate(dateStr: string): Date | null {
-  const parts = dateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
-  if (!parts) return null;
-
-  const monthMap: Record<string, number> = {
-    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
-  };
-
-  const month = monthMap[parts[2]];
-  const day = parseInt(parts[3]);
-  const year = parseInt(parts[4]);
-
-  return new Date(year, month, day);
+// Get current time in Maldives (UTC+5)
+function getMaldivesNow(): Date {
+  const now = new Date();
+  // Create a date object representing Maldives time
+  const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+  return new Date(utc + 5 * 60 * 60 * 1000); // UTC+5
 }
 
-// Calculate time remaining until midnight Maldives time (UTC+5) on end date
-function getTimeRemaining(endDateStr: string): {
+// Calculate sprint dates based on type (A=Sat-Mon, B=Tue-Thu) for current week
+function getSprintDates(type: 'A' | 'B'): { start: Date; end: Date } {
+  const now = getMaldivesNow();
+  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+
+  // For Type A (Sat-Mon): Saturday=6, Sunday=0, Monday=1
+  // For Type B (Tue-Thu): Tuesday=2, Wednesday=3, Thursday=4
+
+  let startDayOffset: number;
+
+  if (type === 'A') {
+    // Find Saturday of current sprint week
+    // If we're on Sat(6), Sun(0), or Mon(1), we're in an active A sprint
+    if (dayOfWeek === 6) {
+      startDayOffset = 0; // Today is Saturday
+    } else if (dayOfWeek === 0) {
+      startDayOffset = -1; // Yesterday was Saturday
+    } else if (dayOfWeek === 1) {
+      startDayOffset = -2; // Saturday was 2 days ago
+    } else {
+      // We're between Tue-Fri, find previous Saturday
+      startDayOffset = -(dayOfWeek + 1);
+    }
+  } else {
+    // Type B: Find Tuesday of current sprint week
+    if (dayOfWeek === 2) {
+      startDayOffset = 0; // Today is Tuesday
+    } else if (dayOfWeek === 3) {
+      startDayOffset = -1; // Yesterday was Tuesday
+    } else if (dayOfWeek === 4) {
+      startDayOffset = -2; // Tuesday was 2 days ago
+    } else {
+      // We're on Fri, Sat, Sun, or Mon - find previous or next Tuesday
+      startDayOffset = 2 - dayOfWeek;
+      if (startDayOffset > 0) startDayOffset -= 7; // Go to previous week's Tuesday
+    }
+  }
+
+  const start = new Date(now);
+  start.setDate(start.getDate() + startDayOffset);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(start);
+  end.setDate(end.getDate() + 2); // 3-day sprint: Sat-Mon or Tue-Thu
+
+  return { start, end };
+}
+
+// Calculate time remaining until midnight Maldives time on end date
+function getTimeRemaining(endDate: Date): {
   days: number;
   hours: number;
   minutes: number;
   isOverdue: boolean;
   totalMs: number;
 } {
-  const endDate = parseDate(endDateStr);
-  if (!endDate) return { days: 0, hours: 0, minutes: 0, isOverdue: false, totalMs: 0 };
+  const maldivesNow = getMaldivesNow();
 
-  // Get current time in Maldives (UTC+5)
-  const now = new Date();
-  const maldivesOffset = 5 * 60; // UTC+5 in minutes
-  const localOffset = now.getTimezoneOffset(); // Local offset in minutes (negative for ahead of UTC)
-  const maldivesNow = new Date(now.getTime() + (maldivesOffset + localOffset) * 60 * 1000);
-
-  // End of sprint day in Maldives time (midnight = end of the day)
+  // End of sprint day (midnight = end of the day)
   const endMidnight = new Date(endDate);
   endMidnight.setHours(23, 59, 59, 999);
 
@@ -58,12 +90,8 @@ function getTimeRemaining(endDateStr: string): {
   return { days, hours, minutes, isOverdue, totalMs: diffMs };
 }
 
-// Format date range nicely (e.g., "Jan 4-6, 2026" or "Dec 30 - Jan 2, 2026")
-function formatDateRange(startStr: string, endStr: string): string {
-  const start = parseDate(startStr);
-  const end = parseDate(endStr);
-  if (!start || !end) return `${startStr} - ${endStr}`;
-
+// Format date range nicely (e.g., "Jan 3-5, 2026" or "Dec 30 - Jan 1, 2026")
+function formatDateRange(start: Date, end: Date): string {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const startMonth = months[start.getMonth()];
   const endMonth = months[end.getMonth()];
@@ -72,13 +100,13 @@ function formatDateRange(startStr: string, endStr: string): string {
   const year = end.getFullYear();
 
   if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
-    // Same month: "Jan 4-6, 2026"
+    // Same month: "Jan 3-5, 2026"
     return `${startMonth} ${startDay}-${endDay}, ${year}`;
   } else if (start.getFullYear() === end.getFullYear()) {
-    // Different months, same year: "Dec 30 - Jan 2, 2026"
+    // Different months, same year: "Dec 30 - Jan 1, 2026"
     return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
   } else {
-    // Different years: "Dec 30, 2025 - Jan 2, 2026"
+    // Different years: "Dec 30, 2025 - Jan 1, 2026"
     return `${startMonth} ${startDay}, ${start.getFullYear()} - ${endMonth} ${endDay}, ${year}`;
   }
 }
@@ -89,7 +117,10 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
   const displaySprintNumber = info.number + SPRINT_OFFSET;
   const sprintName = getSprintName(displaySprintNumber);
   const completedTasks = tasks.filter(t => t.status === 'Done' || t.status === 'Testing').length;
-  const { days, hours, minutes, isOverdue, totalMs } = getTimeRemaining(info.endDate);
+
+  // Calculate dates dynamically based on sprint type
+  const { start: sprintStart, end: sprintEnd } = getSprintDates(info.type);
+  const { days, hours, minutes, isOverdue, totalMs } = getTimeRemaining(sprintEnd);
 
   // SVG circle calculations
   const radius = 88;
@@ -168,7 +199,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span>{formatDateRange(info.startDate, info.endDate)}</span>
+                <span>{formatDateRange(sprintStart, sprintEnd)}</span>
                 <span className="text-muted-foreground">·</span>
                 <span className="text-muted-foreground">
                   {info.type === 'A' ? 'Sat-Mon' : 'Tue-Thu'}
