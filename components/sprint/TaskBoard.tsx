@@ -7,6 +7,12 @@ interface TaskBoardProps {
   tasks: SprintTask[];
 }
 
+// Display names for statuses (rename "Prompt Ready" to indicate Claude readiness)
+function getStatusDisplayName(status: SprintTask['status']): string {
+  if (status === 'Prompt Ready') return 'Claude Ready';
+  return status;
+}
+
 function StatusIcon({ status }: { status: SprintTask['status'] }) {
   switch (status) {
     case 'Done':
@@ -98,7 +104,7 @@ function TaskCard({ task }: { task: SprintTask }) {
         {/* Right: Status badge */}
         <div className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${statusColorClass}`}>
           <StatusIcon status={task.status} />
-          <span className="hidden sm:inline">{task.status}</span>
+          <span className="hidden sm:inline">{getStatusDisplayName(task.status)}</span>
         </div>
       </div>
 
@@ -155,14 +161,19 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
                 {statusGroups['Running']} Running
               </span>
             )}
-            {statusGroups['Done'] && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success/20 text-success-light border border-success/30">
-                {statusGroups['Done']} Done
+            {statusGroups['Prompt Ready'] && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent-light border border-accent/30">
+                {statusGroups['Prompt Ready']} Claude Ready
               </span>
             )}
             {statusGroups['Testing'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-carbs/20 text-carbs-light border border-carbs/30">
                 {statusGroups['Testing']} Testing
+              </span>
+            )}
+            {statusGroups['Done'] && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success/20 text-success-light border border-success/30">
+                {statusGroups['Done']} Done
               </span>
             )}
           </div>
