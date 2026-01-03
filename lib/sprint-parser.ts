@@ -412,8 +412,8 @@ export async function fetchSprintData(): Promise<{
 function groupTasksByDay(tasks: CompletedTask[], sprintStartDate: string): Record<number, CompletedTask[]> {
   const grouped: Record<number, CompletedTask[]> = {};
 
-  // Parse sprint start date (format: "Sat, Jan 4, 2026")
-  const startDate = new Date(sprintStartDate + ', 2026');
+  // Parse sprint start date (format: "Sat, Jan 3, 2026")
+  const startDate = new Date(sprintStartDate);
   startDate.setHours(0, 0, 0, 0);
 
   for (const task of tasks) {
