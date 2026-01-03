@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchTaskDetails, getStatusColorClass, getPriorityColorClass } from '@/lib/linear-client';
+import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
+import CopyButton from '@/components/sprint/CopyButton';
 
 // Revalidate every 2 minutes for task details
 export const revalidate = 120;
@@ -201,10 +203,15 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
 
         {/* Description */}
         {task.description && (
-          <div className="glass rounded-2xl p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">Description</h2>
-            <div className="prose prose-invert prose-sm max-w-none">
-              <MarkdownContent content={task.description} />
+          <div className="glass rounded-2xl p-6 md:p-8 mb-6 overflow-hidden">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Description
+            </h2>
+            <div className="max-w-none">
+              <MarkdownRenderer content={task.description} />
             </div>
           </div>
         )}
@@ -212,35 +219,52 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
         {/* Git branch */}
         {task.branchName && (
           <div className="glass rounded-2xl p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-3">Git Branch</h2>
-            <code className="block bg-white/5 px-4 py-3 rounded-xl text-sm font-mono text-protein overflow-x-auto">
-              {task.branchName}
-            </code>
+            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              Git Branch
+            </h2>
+            <div className="flex items-center gap-3 bg-black/30 px-4 py-3 rounded-xl border border-white/10">
+              <code className="flex-1 text-sm font-mono text-protein overflow-x-auto">
+                {task.branchName}
+              </code>
+              <CopyButton text={task.branchName} />
+            </div>
           </div>
         )}
 
         {/* Comments */}
         {task.comments.length > 0 && (
-          <div className="glass rounded-2xl p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">
+          <div className="glass rounded-2xl p-6 md:p-8 mb-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
               Comments ({task.comments.length})
             </h2>
             <div className="space-y-4">
               {task.comments.map((comment) => (
-                <div key={comment.id} className="bg-white/5 rounded-xl p-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    {comment.user.avatarUrl && (
+                <div key={comment.id} className="bg-white/5 rounded-xl p-4 md:p-5">
+                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
+                    {comment.user.avatarUrl ? (
                       <img
                         src={comment.user.avatarUrl}
                         alt={comment.user.name}
-                        className="w-6 h-6 rounded-full"
+                        className="w-8 h-8 rounded-full ring-2 ring-white/10"
                       />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-medium">
+                        {comment.user.name.charAt(0)}
+                      </div>
                     )}
-                    <span className="font-medium text-sm">{comment.user.name}</span>
-                    <span className="text-xs text-muted">{formatDateTime(comment.createdAt)}</span>
+                    <div className="flex-1">
+                      <span className="font-medium text-sm block">{comment.user.name}</span>
+                      <span className="text-xs text-muted">{formatDateTime(comment.createdAt)}</span>
+                    </div>
                   </div>
-                  <div className="prose prose-invert prose-sm max-w-none">
-                    <MarkdownContent content={comment.body} />
+                  <div className="max-w-none">
+                    <MarkdownRenderer content={comment.body} />
                   </div>
                 </div>
               ))}
@@ -250,23 +274,34 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
 
         {/* Attachments */}
         {task.attachments.length > 0 && (
-          <div className="glass rounded-2xl p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">
+          <div className="glass rounded-2xl p-6 md:p-8 mb-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
               Attachments ({task.attachments.length})
             </h2>
-            <div className="space-y-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {task.attachments.map((attachment) => (
                 <a
                   key={attachment.id}
                   href={attachment.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors border border-white/5 hover:border-accent/30 group"
                 >
-                  <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                    <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium block truncate">{attachment.title}</span>
+                    <span className="text-xs text-muted">Click to view</span>
+                  </div>
+                  <svg className="w-4 h-4 text-muted group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                  <span className="text-sm">{attachment.title}</span>
                 </a>
               ))}
             </div>
@@ -278,68 +313,6 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
           Created {formatDateTime(task.createdAt)} &middot; Updated {formatDateTime(task.updatedAt)}
         </div>
       </div>
-    </div>
-  );
-}
-
-function MarkdownContent({ content }: { content: string }) {
-  // Simple markdown rendering - convert basic formatting
-  // For full markdown support, consider adding react-markdown
-  const lines = content.split('\n');
-
-  return (
-    <div className="whitespace-pre-wrap text-foreground/90">
-      {lines.map((line, i) => {
-        // Headers
-        if (line.startsWith('### ')) {
-          return <h3 key={i} className="text-base font-semibold mt-4 mb-2">{line.slice(4)}</h3>;
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={i} className="text-lg font-semibold mt-4 mb-2">{line.slice(3)}</h2>;
-        }
-        if (line.startsWith('# ')) {
-          return <h1 key={i} className="text-xl font-bold mt-4 mb-2">{line.slice(2)}</h1>;
-        }
-
-        // List items
-        if (line.startsWith('- [ ] ')) {
-          return (
-            <div key={i} className="flex items-start gap-2 my-1">
-              <input type="checkbox" disabled className="mt-1" />
-              <span>{line.slice(6)}</span>
-            </div>
-          );
-        }
-        if (line.startsWith('- [x] ')) {
-          return (
-            <div key={i} className="flex items-start gap-2 my-1">
-              <input type="checkbox" checked disabled className="mt-1" />
-              <span className="line-through text-muted">{line.slice(6)}</span>
-            </div>
-          );
-        }
-        if (line.startsWith('- ') || line.startsWith('* ')) {
-          return (
-            <div key={i} className="flex items-start gap-2 my-1">
-              <span className="text-muted">&bull;</span>
-              <span>{line.slice(2)}</span>
-            </div>
-          );
-        }
-
-        // Code blocks (simple)
-        if (line.startsWith('```')) {
-          return null; // Skip code fence markers
-        }
-
-        // Regular paragraph
-        if (line.trim()) {
-          return <p key={i} className="my-2">{line}</p>;
-        }
-
-        // Empty line
-        return <br key={i} />;
-      })}
     </div>
   );
 }
