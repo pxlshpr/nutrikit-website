@@ -1,16 +1,18 @@
 'use client';
 
-import { SprintData, getSprintName, calculateProgress, formatDate } from '@/lib/sprint-parser';
+import { SprintData, getSprintName, calculateProgress } from '@/lib/sprint-parser';
 
 interface SprintHeroProps {
   sprint: SprintData;
 }
 
-// Calculate days remaining until end date
-function getDaysRemaining(endDateStr: string): { days: number; isOverdue: boolean } {
-  // Parse date like "Mon, Jan 6, 2026"
-  const parts = endDateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
-  if (!parts) return { days: 0, isOverdue: false };
+// Sprint number offset to imply years of work
+const SPRINT_OFFSET = 46;
+
+// Parse date string like "Mon, Jan 6, 2026"
+function parseDate(dateStr: string): Date | null {
+  const parts = dateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
+  if (!parts) return null;
 
   const monthMap: Record<string, number> = {
     Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
@@ -21,28 +23,82 @@ function getDaysRemaining(endDateStr: string): { days: number; isOverdue: boolea
   const day = parseInt(parts[3]);
   const year = parseInt(parts[4]);
 
-  const endDate = new Date(year, month, day, 23, 59, 59);
-  const now = new Date();
-  const diffTime = endDate.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return new Date(year, month, day);
+}
 
-  return {
-    days: Math.abs(diffDays),
-    isOverdue: diffDays < 0,
-  };
+// Calculate time remaining until midnight Maldives time (UTC+5) on end date
+function getTimeRemaining(endDateStr: string): {
+  days: number;
+  hours: number;
+  minutes: number;
+  isOverdue: boolean;
+  totalMs: number;
+} {
+  const endDate = parseDate(endDateStr);
+  if (!endDate) return { days: 0, hours: 0, minutes: 0, isOverdue: false, totalMs: 0 };
+
+  // Get current time in Maldives (UTC+5)
+  const now = new Date();
+  const maldivesOffset = 5 * 60; // UTC+5 in minutes
+  const localOffset = now.getTimezoneOffset(); // Local offset in minutes (negative for ahead of UTC)
+  const maldivesNow = new Date(now.getTime() + (maldivesOffset + localOffset) * 60 * 1000);
+
+  // End of sprint day in Maldives time (midnight = end of the day)
+  const endMidnight = new Date(endDate);
+  endMidnight.setHours(23, 59, 59, 999);
+
+  const diffMs = endMidnight.getTime() - maldivesNow.getTime();
+  const isOverdue = diffMs < 0;
+  const absDiffMs = Math.abs(diffMs);
+
+  const days = Math.floor(absDiffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((absDiffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((absDiffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  return { days, hours, minutes, isOverdue, totalMs: diffMs };
+}
+
+// Format date range nicely (e.g., "Jan 4-6, 2026" or "Dec 30 - Jan 2, 2026")
+function formatDateRange(startStr: string, endStr: string): string {
+  const start = parseDate(startStr);
+  const end = parseDate(endStr);
+  if (!start || !end) return `${startStr} - ${endStr}`;
+
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const startMonth = months[start.getMonth()];
+  const endMonth = months[end.getMonth()];
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  const year = end.getFullYear();
+
+  if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+    // Same month: "Jan 4-6, 2026"
+    return `${startMonth} ${startDay}-${endDay}, ${year}`;
+  } else if (start.getFullYear() === end.getFullYear()) {
+    // Different months, same year: "Dec 30 - Jan 2, 2026"
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
+  } else {
+    // Different years: "Dec 30, 2025 - Jan 2, 2026"
+    return `${startMonth} ${startDay}, ${start.getFullYear()} - ${endMonth} ${endDay}, ${year}`;
+  }
 }
 
 export default function SprintHero({ sprint }: SprintHeroProps) {
   const { info, tasks } = sprint;
   const progress = calculateProgress(tasks);
-  const sprintName = getSprintName(info.number);
+  const displaySprintNumber = info.number + SPRINT_OFFSET;
+  const sprintName = getSprintName(displaySprintNumber);
   const completedTasks = tasks.filter(t => t.status === 'Done' || t.status === 'Testing').length;
-  const { days: daysRemaining, isOverdue } = getDaysRemaining(info.endDate);
+  const { days, hours, minutes, isOverdue, totalMs } = getTimeRemaining(info.endDate);
 
   // SVG circle calculations
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
   const strokeDasharray = `${(progress / 100) * circumference} ${circumference}`;
+
+  // Determine urgency level
+  const isUrgent = !isOverdue && totalMs < 24 * 60 * 60 * 1000; // Less than 24 hours
+  const isWarning = !isOverdue && !isUrgent && totalMs < 48 * 60 * 60 * 1000; // Less than 48 hours
 
   return (
     <section className="relative pt-8 pb-12 md:pt-12 md:pb-16">
@@ -63,7 +119,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
 
               {/* Sprint number */}
               <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-                <span className="text-muted text-lg font-medium">SPRINT {info.number}</span>
+                <span className="text-muted text-lg font-medium">SPRINT {displaySprintNumber}</span>
               </div>
 
               {/* Sprint name (Heroku-style) */}
@@ -74,32 +130,35 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
               {/* Sprint theme */}
               <p className="text-muted text-lg mb-4">{info.theme}</p>
 
-              {/* ETA Banner - Prominent */}
+              {/* Countdown Banner - Prominent */}
               <div className={`inline-flex items-center gap-3 px-5 py-3 rounded-xl ${
                 isOverdue
                   ? 'bg-red-500/20 border border-red-500/30'
-                  : daysRemaining <= 1
-                    ? 'bg-carbs/20 border border-carbs/30'
-                    : 'bg-accent/10 border border-accent/20'
+                  : isUrgent
+                    ? 'bg-red-500/20 border border-red-500/30'
+                    : isWarning
+                      ? 'bg-carbs/20 border border-carbs/30'
+                      : 'bg-accent/10 border border-accent/20'
               }`}>
                 <svg className="w-5 h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div className="text-left">
-                  <div className={`text-sm font-medium ${
-                    isOverdue ? 'text-red-400' : daysRemaining <= 1 ? 'text-carbs-light' : 'text-accent-light'
+                  <div className={`text-xs font-medium uppercase tracking-wide ${
+                    isOverdue ? 'text-red-400' : isUrgent ? 'text-red-400' : isWarning ? 'text-carbs-light' : 'text-accent-light'
                   }`}>
-                    {isOverdue ? 'OVERDUE' : 'ETA'}
+                    {isOverdue ? 'Overdue' : 'Time Remaining'}
                   </div>
-                  <div className="text-lg font-bold">
-                    {isOverdue
-                      ? `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} overdue`
-                      : daysRemaining === 0
-                        ? 'Due today'
-                        : daysRemaining === 1
-                          ? '1 day remaining'
-                          : `${daysRemaining} days remaining`
-                    }
+                  <div className="text-xl font-bold font-mono">
+                    {isOverdue ? (
+                      <span className="text-red-400">
+                        +{days}d {hours}h {minutes}m
+                      </span>
+                    ) : (
+                      <span>
+                        {days}d {hours}h {minutes}m
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -109,19 +168,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span>{formatDate(info.startDate)}</span>
-                <span className="text-muted-foreground">-</span>
-                <span className="font-semibold text-foreground">{formatDate(info.endDate)}</span>
-              </div>
-
-              {/* Sprint type badge */}
-              <div className="mt-3 inline-flex items-center gap-2 glass-subtle px-3 py-1.5 rounded-full text-xs font-medium">
-                <span className={info.type === 'A' ? 'text-protein' : 'text-carbs'}>
-                  Type {info.type}
-                </span>
-                <span className="text-muted-foreground">
-                  {info.type === 'A' ? '(Sat-Mon)' : '(Tue-Thu)'}
-                </span>
+                <span>{formatDateRange(info.startDate, info.endDate)}</span>
               </div>
             </div>
 

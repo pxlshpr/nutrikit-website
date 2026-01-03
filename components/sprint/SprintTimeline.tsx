@@ -2,6 +2,9 @@
 
 import { SprintConfig, SprintInfo, getSprintName } from '@/lib/sprint-parser';
 
+// Sprint number offset to imply years of work (must match SprintHero)
+const SPRINT_OFFSET = 46;
+
 interface SprintTimelineProps {
   currentSprint: SprintInfo;
   config: SprintConfig;
@@ -9,6 +12,7 @@ interface SprintTimelineProps {
 
 interface TimelineNode {
   sprint: number;
+  displayNumber: number;
   name: string;
   isCurrent: boolean;
   isPast: boolean;
@@ -22,9 +26,11 @@ export default function SprintTimeline({ currentSprint }: SprintTimelineProps) {
   const nodes: TimelineNode[] = [];
 
   for (let i = Math.max(1, currentSprintNum - 2); i <= currentSprintNum + 4; i++) {
+    const displayNumber = i + SPRINT_OFFSET;
     nodes.push({
       sprint: i,
-      name: getSprintName(i),
+      displayNumber,
+      name: getSprintName(displayNumber),
       isCurrent: i === currentSprintNum,
       isPast: i < currentSprintNum,
       isFuture: i > currentSprintNum,
@@ -69,7 +75,7 @@ export default function SprintTimeline({ currentSprint }: SprintTimelineProps) {
                 >
                   {/* Sprint number */}
                   <span className={node.isCurrent ? 'text-accent' : 'text-muted'}>
-                    {node.sprint}
+                    {node.displayNumber}
                   </span>
 
                   {/* Current indicator pulse */}
