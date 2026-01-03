@@ -1,16 +1,43 @@
 'use client';
 
-import { SprintData, getCharacterEmoji, calculateProgress, formatDate } from '@/lib/sprint-parser';
+import { SprintData, getSprintName, calculateProgress, formatDate } from '@/lib/sprint-parser';
 
 interface SprintHeroProps {
   sprint: SprintData;
 }
 
+// Calculate days remaining until end date
+function getDaysRemaining(endDateStr: string): { days: number; isOverdue: boolean } {
+  // Parse date like "Mon, Jan 6, 2026"
+  const parts = endDateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
+  if (!parts) return { days: 0, isOverdue: false };
+
+  const monthMap: Record<string, number> = {
+    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+  };
+
+  const month = monthMap[parts[2]];
+  const day = parseInt(parts[3]);
+  const year = parseInt(parts[4]);
+
+  const endDate = new Date(year, month, day, 23, 59, 59);
+  const now = new Date();
+  const diffTime = endDate.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return {
+    days: Math.abs(diffDays),
+    isOverdue: diffDays < 0,
+  };
+}
+
 export default function SprintHero({ sprint }: SprintHeroProps) {
   const { info, tasks } = sprint;
   const progress = calculateProgress(tasks);
-  const emoji = getCharacterEmoji(info.character);
+  const sprintName = getSprintName(info.number);
   const completedTasks = tasks.filter(t => t.status === 'Done' || t.status === 'Testing').length;
+  const { days: daysRemaining, isOverdue } = getDaysRemaining(info.endDate);
 
   // SVG circle calculations
   const radius = 88;
@@ -34,36 +61,61 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
               </div>
 
-              {/* Sprint number and emoji */}
+              {/* Sprint number */}
               <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-                <span className="text-4xl md:text-5xl">{emoji}</span>
                 <span className="text-muted text-lg font-medium">SPRINT {info.number}</span>
               </div>
 
-              {/* Character name */}
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight gradient-text mb-4">
-                {info.character}
+              {/* Sprint name (Heroku-style) */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight gradient-text mb-4 font-mono">
+                {sprintName}
               </h1>
 
-              {/* Sprint details */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-muted">
-                <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  {formatDate(info.startDate)} - {formatDate(info.endDate)}
-                </span>
-                <span className="hidden sm:inline text-muted-foreground">|</span>
-                <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  {info.theme}
-                </span>
+              {/* Sprint theme */}
+              <p className="text-muted text-lg mb-4">{info.theme}</p>
+
+              {/* ETA Banner - Prominent */}
+              <div className={`inline-flex items-center gap-3 px-5 py-3 rounded-xl ${
+                isOverdue
+                  ? 'bg-red-500/20 border border-red-500/30'
+                  : daysRemaining <= 1
+                    ? 'bg-carbs/20 border border-carbs/30'
+                    : 'bg-accent/10 border border-accent/20'
+              }`}>
+                <svg className="w-5 h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="text-left">
+                  <div className={`text-sm font-medium ${
+                    isOverdue ? 'text-red-400' : daysRemaining <= 1 ? 'text-carbs-light' : 'text-accent-light'
+                  }`}>
+                    {isOverdue ? 'OVERDUE' : 'ETA'}
+                  </div>
+                  <div className="text-lg font-bold">
+                    {isOverdue
+                      ? `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} overdue`
+                      : daysRemaining === 0
+                        ? 'Due today'
+                        : daysRemaining === 1
+                          ? '1 day remaining'
+                          : `${daysRemaining} days remaining`
+                    }
+                  </div>
+                </div>
+              </div>
+
+              {/* Date range */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-muted mt-4 text-sm">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{formatDate(info.startDate)}</span>
+                <span className="text-muted-foreground">-</span>
+                <span className="font-semibold text-foreground">{formatDate(info.endDate)}</span>
               </div>
 
               {/* Sprint type badge */}
-              <div className="mt-4 inline-flex items-center gap-2 glass-subtle px-3 py-1.5 rounded-full text-xs font-medium">
+              <div className="mt-3 inline-flex items-center gap-2 glass-subtle px-3 py-1.5 rounded-full text-xs font-medium">
                 <span className={info.type === 'A' ? 'text-protein' : 'text-carbs'}>
                   Type {info.type}
                 </span>

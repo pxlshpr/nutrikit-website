@@ -43,7 +43,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {/* Primary CTA - TestFlight */}
             <Link
-              href="https://testflight.apple.com/join/YOUR_TESTFLIGHT_ID"
+              href="https://testflight.apple.com/join/tWZZUg57"
               className="glass-button inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white rounded-full hover:glow-accent transition-all"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">

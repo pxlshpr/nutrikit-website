@@ -350,35 +350,32 @@ export function getPriorityColor(priority: SprintTask['priority']): string {
   return colors[priority] || colors['Medium'];
 }
 
-// Get character emoji
-export function getCharacterEmoji(character: string): string {
-  const emojis: Record<string, string> = {
-    'link': '\u{1F5E1}\u{FE0F}', // Sword
-    'mario': '\u{1F344}', // Mushroom
-    'zelda': '\u{1F451}', // Crown
-    'luigi': '\u{1F49A}', // Green heart
-    'midna': '\u{1F319}', // Crescent moon
-    'peach': '\u{1F351}', // Peach
-    'ganondorf': '\u{1F525}', // Fire
-    'bowser': '\u{1F422}', // Turtle
-    'impa': '\u{1F441}\u{FE0F}', // Eye
-    'yoshi': '\u{1F95A}', // Egg
-    'revali': '\u{1F985}', // Eagle
-    'rosalina': '\u{2B50}', // Star
-    'urbosa': '\u{26A1}', // Lightning
-    'toad': '\u{1F344}', // Mushroom
-    'mipha': '\u{1F41F}', // Fish
-    'daisy': '\u{1F33C}', // Daisy
-    'daruk': '\u{1FAA8}', // Rock
-    'wario': '\u{1F4B0}', // Money bag
-    'sidon': '\u{1F988}', // Shark
-    'waluigi': '\u{1F7E3}', // Purple circle
-    'purah': '\u{1F52C}', // Microscope
-    'donkey-kong': '\u{1F34C}', // Banana
-    'skull-kid': '\u{1F3AD}', // Mask
-    'king-boo': '\u{1F47B}', // Ghost
-  };
-  return emojis[character.toLowerCase()] || '\u{1F3AE}'; // Game controller default
+// Generate Heroku-style sprint name from sprint number
+// Using a deterministic algorithm based on sprint number for consistency
+export function getSprintName(sprintNumber: number): string {
+  const adjectives = [
+    'silent', 'crystal', 'golden', 'swift', 'bright',
+    'calm', 'bold', 'keen', 'light', 'pure',
+    'rapid', 'steady', 'noble', 'clear', 'vivid',
+    'sharp', 'smooth', 'prime', 'solid', 'wise',
+    'fresh', 'deep', 'warm', 'cool', 'true',
+    'fleet', 'grand', 'proud', 'still', 'free',
+  ];
+
+  const nouns = [
+    'water', 'meadow', 'summit', 'river', 'harbor',
+    'forest', 'valley', 'stream', 'ridge', 'canyon',
+    'plains', 'sunset', 'aurora', 'breeze', 'dawn',
+    'dusk', 'frost', 'grove', 'marsh', 'peak',
+    'shore', 'trail', 'wave', 'cloud', 'field',
+    'glade', 'heath', 'lake', 'mist', 'path',
+  ];
+
+  // Use sprint number to deterministically select adjective and noun
+  const adjIndex = (sprintNumber - 1) % adjectives.length;
+  const nounIndex = Math.floor((sprintNumber - 1) / adjectives.length) % nouns.length;
+
+  return `${adjectives[adjIndex]}-${nouns[nounIndex]}`;
 }
 
 // Format date for display

@@ -1,6 +1,6 @@
 'use client';
 
-import { SprintConfig, SprintInfo, getCharacterEmoji } from '@/lib/sprint-parser';
+import { SprintConfig, SprintInfo, getSprintName } from '@/lib/sprint-parser';
 
 interface SprintTimelineProps {
   currentSprint: SprintInfo;
@@ -9,30 +9,22 @@ interface SprintTimelineProps {
 
 interface TimelineNode {
   sprint: number;
-  character: string;
-  universe: 'Zelda' | 'Mario';
+  name: string;
   isCurrent: boolean;
   isPast: boolean;
   isFuture: boolean;
 }
 
-export default function SprintTimeline({ currentSprint, config }: SprintTimelineProps) {
+export default function SprintTimeline({ currentSprint }: SprintTimelineProps) {
   const currentSprintNum = currentSprint.number;
 
   // Generate timeline nodes: 2 past + current + 4 future
   const nodes: TimelineNode[] = [];
 
   for (let i = Math.max(1, currentSprintNum - 2); i <= currentSprintNum + 4; i++) {
-    const charInfo = config.characters.find(c => c.sprint === i) || {
-      sprint: i,
-      character: `sprint-${i}`,
-      universe: i % 2 === 1 ? 'Zelda' as const : 'Mario' as const,
-    };
-
     nodes.push({
       sprint: i,
-      character: charInfo.character.charAt(0).toUpperCase() + charInfo.character.slice(1),
-      universe: charInfo.universe,
+      name: getSprintName(i),
       isCurrent: i === currentSprintNum,
       isPast: i < currentSprintNum,
       isFuture: i > currentSprintNum,
@@ -45,7 +37,7 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
         {/* Section header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold mb-2">Sprint Timeline</h2>
-          <p className="text-muted text-sm">3-day sprints alternating between Zelda and Mario themes</p>
+          <p className="text-muted text-sm">3-day development sprints</p>
         </div>
 
         {/* Timeline */}
@@ -55,7 +47,7 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
 
           {/* Timeline nodes */}
           <div className="relative flex justify-between items-center py-8">
-            {nodes.map((node, index) => (
+            {nodes.map((node) => (
               <div
                 key={node.sprint}
                 className={`flex flex-col items-center transition-all duration-300 ${
@@ -65,8 +57,8 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
                 {/* Node circle */}
                 <div
                   className={`
-                    relative w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center
-                    transition-all duration-300
+                    relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center
+                    transition-all duration-300 font-mono text-sm font-bold
                     ${node.isCurrent
                       ? 'glass-accent scale-110 ring-2 ring-accent/50 ring-offset-2 ring-offset-background'
                       : node.isPast
@@ -75,9 +67,9 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
                     }
                   `}
                 >
-                  {/* Character emoji */}
-                  <span className="text-xl md:text-2xl">
-                    {getCharacterEmoji(node.character.toLowerCase())}
+                  {/* Sprint number */}
+                  <span className={node.isCurrent ? 'text-accent' : 'text-muted'}>
+                    {node.sprint}
                   </span>
 
                   {/* Current indicator pulse */}
@@ -88,15 +80,10 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
 
                 {/* Sprint info */}
                 <div className={`mt-3 text-center ${node.isCurrent ? '' : 'hidden sm:block'}`}>
-                  <div className={`text-xs font-medium ${
+                  <div className={`text-xs font-mono ${
                     node.isCurrent ? 'text-accent' : 'text-muted-foreground'
                   }`}>
-                    Sprint {node.sprint}
-                  </div>
-                  <div className={`text-sm font-semibold ${
-                    node.isCurrent ? 'text-foreground' : 'text-muted'
-                  }`}>
-                    {node.character}
+                    {node.name}
                   </div>
                   {node.isCurrent && (
                     <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-accent/20 text-accent text-xs">
@@ -104,13 +91,6 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
                       NOW
                     </div>
                   )}
-                </div>
-
-                {/* Universe indicator */}
-                <div className={`mt-1 text-xs ${
-                  node.universe === 'Zelda' ? 'text-protein' : 'text-carbs'
-                } ${node.isCurrent ? '' : 'hidden md:block'}`}>
-                  {node.universe}
                 </div>
               </div>
             ))}
@@ -127,12 +107,16 @@ export default function SprintTimeline({ currentSprint, config }: SprintTimeline
         {/* Legend */}
         <div className="mt-8 flex justify-center gap-6 text-xs text-muted">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-protein/40" />
-            <span>Zelda Universe</span>
+            <div className="w-3 h-3 rounded-full glass-subtle" />
+            <span>Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-carbs/40" />
-            <span>Mario Universe</span>
+            <div className="w-3 h-3 rounded-full bg-accent/40 ring-1 ring-accent/50" />
+            <span>Current</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full glass border border-dashed border-white/20" />
+            <span>Upcoming</span>
           </div>
         </div>
       </div>
