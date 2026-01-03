@@ -169,6 +169,10 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span>{formatDateRange(info.startDate, info.endDate)}</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground">
+                  {info.type === 'A' ? 'Sat-Mon' : 'Tue-Thu'}
+                </span>
               </div>
             </div>
 
