@@ -13,7 +13,8 @@ function DayCard({ entry, isExpanded, onToggle }: {
   isExpanded: boolean;
   onToggle: () => void;
 }) {
-  const hasContent = entry.morningStandup || entry.eodSummary || entry.midDayCheckIn || entry.buildSubmitted || (entry.completedTasks && entry.completedTasks.length > 0);
+  // Don't count eodSummary as content since completed tasks from Linear replaces it
+  const hasContent = entry.morningStandup || entry.midDayCheckIn || entry.buildSubmitted || (entry.completedTasks && entry.completedTasks.length > 0);
 
   // Determine day status
   const today = new Date();
@@ -73,8 +74,10 @@ function DayCard({ entry, isExpanded, onToggle }: {
               {entry.morningStandup && (
                 <span className="px-2 py-0.5 rounded-full bg-white/10">AM</span>
               )}
-              {entry.eodSummary && (
-                <span className="px-2 py-0.5 rounded-full bg-white/10">EOD</span>
+              {entry.completedTasks && entry.completedTasks.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-success/20 text-success">
+                  {entry.completedTasks.length} done
+                </span>
               )}
               {entry.buildSubmitted && (
                 <span className="px-2 py-0.5 rounded-full bg-success/20 text-success">Build</span>
@@ -142,17 +145,7 @@ function DayCard({ entry, isExpanded, onToggle }: {
             />
           )}
 
-          {entry.eodSummary && (
-            <LogEntry
-              label="End of Day Summary"
-              content={entry.eodSummary}
-              icon={
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              }
-            />
-          )}
+          {/* EOD Summary removed - Completed Tasks from Linear replaces it */}
 
           {entry.buildSubmitted && (
             <LogEntry
