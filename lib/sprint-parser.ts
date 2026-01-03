@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { fetchCompletedTasksForSprint, fetchLiveTaskStatuses, type CompletedTask } from './linear-client';
+import { fetchCompletedTasksForIds, fetchLiveTaskStatuses, type CompletedTask } from './linear-client';
 
 // Types for sprint data
 export interface SprintTask {
@@ -383,10 +383,11 @@ export async function fetchSprintData(): Promise<{
     console.error('Failed to fetch live task statuses from Linear:', error);
   }
 
-  // Fetch completed tasks from Linear for this sprint
+  // Fetch completed tasks from Linear using the task IDs we know are in the sprint
   let completedTasks: CompletedTask[] = [];
   try {
-    completedTasks = await fetchCompletedTasksForSprint(currentSprint.info.label);
+    const taskIds = currentSprint.tasks.map(t => t.id);
+    completedTasks = await fetchCompletedTasksForIds(taskIds);
   } catch (error) {
     console.error('Failed to fetch completed tasks from Linear:', error);
   }

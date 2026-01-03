@@ -248,7 +248,65 @@ export async function fetchLiveTaskStatuses(taskIds: string[]): Promise<Map<stri
   }
 }
 
-// Fetch completed tasks for a sprint label
+// Fetch completed tasks for specific task IDs
+export async function fetchCompletedTasksForIds(taskIds: string[]): Promise<CompletedTask[]> {
+  if (taskIds.length === 0) return [];
+
+  try {
+    const client = getLinearClient();
+    const completedTasks: CompletedTask[] = [];
+
+    // Fetch each task and check if it's done
+    const promises = taskIds.map(async (id) => {
+      const parts = id.split('-');
+      if (parts.length !== 2) return null;
+
+      const issues = await client.issues({
+        filter: {
+          number: { eq: parseInt(parts[1]) },
+          team: { key: { eq: parts[0] } },
+        },
+        first: 1,
+      });
+
+      const issue = issues.nodes[0];
+      if (!issue) return null;
+
+      const state = await issue.state;
+      if (state?.name === 'Done' && issue.completedAt) {
+        return {
+          id: issue.id,
+          identifier: issue.identifier,
+          title: issue.title,
+          completedAt: issue.completedAt.toISOString(),
+          priority: issue.priority,
+          url: issue.url,
+        };
+      }
+      return null;
+    });
+
+    const results = await Promise.all(promises);
+
+    for (const result of results) {
+      if (result) {
+        completedTasks.push(result);
+      }
+    }
+
+    // Sort by completion time (earliest to latest)
+    completedTasks.sort((a, b) =>
+      new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+    );
+
+    return completedTasks;
+  } catch (error) {
+    console.error('Failed to fetch completed tasks:', error);
+    return [];
+  }
+}
+
+// Legacy function - kept for backwards compatibility
 export async function fetchCompletedTasksForSprint(sprintLabel: string): Promise<CompletedTask[]> {
   try {
     const client = getLinearClient();
