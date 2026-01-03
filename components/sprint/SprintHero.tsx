@@ -6,8 +6,8 @@ interface SprintHeroProps {
   sprint: SprintData;
 }
 
-// Sprint number offset to imply years of work
-const SPRINT_OFFSET = 46;
+// Sprint number offset (0 = use actual number from file, which is the source of truth)
+const SPRINT_OFFSET = 0;
 
 // Get current time in Maldives (UTC+5)
 function getMaldivesNow(): Date {

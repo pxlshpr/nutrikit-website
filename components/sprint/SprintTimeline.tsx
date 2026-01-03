@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { SprintConfig, SprintInfo, SprintTask, getSprintName, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
 
-// Sprint number offset to imply years of work (must match SprintHero)
-const SPRINT_OFFSET = 46;
+// Sprint number offset (0 = use actual number from file, which is the source of truth)
+const SPRINT_OFFSET = 0;
 
 // Tasks per sprint for planning
 const TASKS_PER_SPRINT = 4;
@@ -73,12 +73,15 @@ function distributeTasks(
 
 export default function SprintTimeline({ currentSprint, currentTasks, allTasks = [] }: SprintTimelineProps) {
   const [selectedSprint, setSelectedSprint] = useState<number | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const currentSprintNum = currentSprint.number;
 
   // Distribute tasks across sprints
   const sprintTaskMap = distributeTasks(currentSprintNum, currentTasks, allTasks);
 
-  // Generate timeline nodes: 2 past + current + enough future to show all planned tasks
+  // Generate timeline nodes: start from sprint 1, show all past + current + future
   const maxFutureSprint = Math.max(
     currentSprintNum + 4,
     ...Array.from(sprintTaskMap.keys())
@@ -86,7 +89,8 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
 
   const nodes: TimelineNode[] = [];
 
-  for (let i = Math.max(1, currentSprintNum - 2); i <= maxFutureSprint; i++) {
+  // Start from sprint 1 to include all history
+  for (let i = 1; i <= maxFutureSprint; i++) {
     const displayNumber = i + SPRINT_OFFSET;
     nodes.push({
       sprint: i,
@@ -101,8 +105,52 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
 
   const selectedNode = nodes.find(n => n.sprint === selectedSprint);
 
+  // Check scroll state
+  const updateScrollState = () => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+      );
+    }
+  };
+
+  useEffect(() => {
+    updateScrollState();
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', updateScrollState);
+      window.addEventListener('resize', updateScrollState);
+
+      // Scroll to current sprint on mount
+      const currentIndex = nodes.findIndex(n => n.isCurrent);
+      if (currentIndex > 0) {
+        const nodeWidth = 80; // Approximate width of each node
+        const scrollPosition = Math.max(0, (currentIndex - 1) * nodeWidth);
+        container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+      }
+
+      return () => {
+        container.removeEventListener('scroll', updateScrollState);
+        window.removeEventListener('resize', updateScrollState);
+      };
+    }
+  }, [nodes.length]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = 200;
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <section className="py-12 overflow-hidden">
+    <section className="py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-8">
@@ -112,44 +160,105 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
 
         {/* Timeline */}
         <div className="relative">
-          {/* Horizontal line */}
-          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+          {/* Left Arrow Button */}
+          <button
+            onClick={() => scroll('left')}
+            disabled={!canScrollLeft}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+              canScrollLeft
+                ? 'glass-strong hover:bg-white/10 cursor-pointer opacity-100'
+                : 'opacity-0 pointer-events-none'
+            }`}
+            aria-label="Scroll left"
+          >
+            <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-          {/* Timeline nodes - scrollable on mobile */}
-          <div className="relative flex justify-start sm:justify-between items-center py-8 overflow-x-auto gap-4 sm:gap-0 px-4 sm:px-0">
+          {/* Right Arrow Button */}
+          <button
+            onClick={() => scroll('right')}
+            disabled={!canScrollRight}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+              canScrollRight
+                ? 'glass-strong hover:bg-white/10 cursor-pointer opacity-100'
+                : 'opacity-0 pointer-events-none'
+            }`}
+            aria-label="Scroll right"
+          >
+            <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Horizontal line */}
+          <div className="absolute top-1/2 left-12 right-12 h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+
+          {/* Fade edges for scroll indication */}
+          <div className={`absolute left-10 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none transition-opacity ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
+          <div className={`absolute right-10 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none transition-opacity ${canScrollRight ? 'opacity-100' : 'opacity-0'}`} />
+
+          {/* Timeline nodes - scrollable */}
+          <div
+            ref={scrollContainerRef}
+            className="relative flex items-center py-8 overflow-x-auto gap-4 px-14 scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
             {nodes.map((node) => (
               <button
                 key={node.sprint}
                 onClick={() => setSelectedSprint(selectedSprint === node.sprint ? null : node.sprint)}
                 className={`flex-shrink-0 flex flex-col items-center transition-all duration-300 ${
-                  node.isCurrent ? 'scale-110 z-10' : node.isFuture ? 'opacity-60 hover:opacity-100' : 'opacity-70 hover:opacity-100'
+                  node.isCurrent ? 'scale-110 z-10' : ''
                 } ${selectedSprint === node.sprint ? 'scale-110' : ''}`}
               >
-                {/* Node circle */}
+                {/* Node circle with distinct states */}
                 <div
                   className={`
                     relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center
                     transition-all duration-300 font-mono text-sm font-bold cursor-pointer
-                    hover:ring-2 hover:ring-accent/30
                     ${selectedSprint === node.sprint
                       ? 'ring-2 ring-accent ring-offset-2 ring-offset-background'
                       : ''
                     }
                     ${node.isCurrent
-                      ? 'glass-accent scale-110 ring-2 ring-accent/50 ring-offset-2 ring-offset-background'
+                      ? 'bg-accent/30 border-2 border-accent shadow-[0_0_20px_rgba(160,99,255,0.5)] scale-110'
                       : node.isPast
-                        ? 'glass-subtle'
-                        : 'glass border-dashed'
+                        ? 'bg-success/20 border-2 border-success/50'
+                        : 'bg-transparent border-2 border-dashed border-white/30 hover:border-white/50'
                     }
                   `}
                 >
+                  {/* Completed checkmark for past sprints */}
+                  {node.isPast && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-success flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
+
                   {/* Sprint number */}
-                  <span className={node.isCurrent || selectedSprint === node.sprint ? 'text-accent' : 'text-muted'}>
+                  <span className={
+                    node.isCurrent
+                      ? 'text-accent font-bold'
+                      : node.isPast
+                        ? 'text-success'
+                        : 'text-muted-foreground'
+                  }>
                     {node.displayNumber}
                   </span>
 
-                  {/* Task count badge */}
-                  {node.tasks.length > 0 && (
+                  {/* Task count badge for future sprints */}
+                  {node.isFuture && node.tasks.length > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white/20 text-foreground text-xs font-bold flex items-center justify-center border border-white/30">
+                      {node.tasks.length}
+                    </div>
+                  )}
+
+                  {/* Current sprint task count */}
+                  {node.isCurrent && node.tasks.length > 0 && (
                     <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-accent text-background text-xs font-bold flex items-center justify-center">
                       {node.tasks.length}
                     </div>
@@ -164,7 +273,13 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
                 {/* Sprint info */}
                 <div className={`mt-3 text-center ${node.isCurrent || selectedSprint === node.sprint ? '' : 'hidden sm:block'}`}>
                   <div className={`text-xs font-mono ${
-                    node.isCurrent || selectedSprint === node.sprint ? 'text-accent' : 'text-muted-foreground'
+                    node.isCurrent
+                      ? 'text-accent'
+                      : node.isPast
+                        ? 'text-success/80'
+                        : selectedSprint === node.sprint
+                          ? 'text-foreground'
+                          : 'text-muted-foreground'
                   }`}>
                     {node.name}
                   </div>
@@ -172,6 +287,11 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
                     <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-accent/20 text-accent text-xs">
                       <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                       NOW
+                    </div>
+                  )}
+                  {node.isPast && (
+                    <div className="text-xs text-success/60 mt-1">
+                      done
                     </div>
                   )}
                   {node.isFuture && node.tasks.length > 0 && (
@@ -182,13 +302,6 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
                 </div>
               </button>
             ))}
-          </div>
-
-          {/* Decorative arrows */}
-          <div className="absolute top-1/2 right-0 transform -translate-y-1/2 text-muted-foreground/30 hidden sm:block">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
           </div>
         </div>
 
@@ -254,22 +367,6 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
             )}
           </div>
         )}
-
-        {/* Legend */}
-        <div className="mt-8 flex justify-center gap-6 text-xs text-muted">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full glass-subtle" />
-            <span>Completed</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-accent/40 ring-1 ring-accent/50" />
-            <span>Current</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full glass border border-dashed border-white/20" />
-            <span>Planned</span>
-          </div>
-        </div>
       </div>
     </section>
   );
