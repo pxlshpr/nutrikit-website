@@ -5,8 +5,8 @@ import TaskBoard from '@/components/sprint/TaskBoard';
 import SprintTimeline from '@/components/sprint/SprintTimeline';
 import DailyLog from '@/components/sprint/DailyLog';
 
-// Revalidate every 5 minutes for near real-time updates
-export const revalidate = 300;
+// Revalidate every 30 seconds for near real-time Linear status updates
+export const revalidate = 30;
 
 export const metadata = {
   title: 'Sprint Dashboard - NutriKit',
@@ -91,7 +91,7 @@ export default async function SprintPage() {
             {/* Last updated */}
             <div className="py-8 text-center">
               <p className="text-xs text-muted-foreground">
-                Data refreshes every 5 minutes from the NutriKit repository
+                Task statuses sync live from Linear every 30 seconds
               </p>
             </div>
           </>

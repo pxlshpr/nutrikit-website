@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DailyLogEntry } from '@/lib/sprint-parser';
+import Link from 'next/link';
 
 interface DailyLogProps {
   entries: DailyLogEntry[];
@@ -12,7 +13,7 @@ function DayCard({ entry, isExpanded, onToggle }: {
   isExpanded: boolean;
   onToggle: () => void;
 }) {
-  const hasContent = entry.morningStandup || entry.eodSummary || entry.midDayCheckIn || entry.buildSubmitted;
+  const hasContent = entry.morningStandup || entry.eodSummary || entry.midDayCheckIn || entry.buildSubmitted || (entry.completedTasks && entry.completedTasks.length > 0);
 
   // Determine day status
   const today = new Date();
@@ -96,10 +97,27 @@ function DayCard({ entry, isExpanded, onToggle }: {
       <div
         className={`
           overflow-hidden transition-all duration-300
-          ${isExpanded ? 'max-h-96' : 'max-h-0'}
+          ${isExpanded ? 'max-h-[600px]' : 'max-h-0'}
         `}
       >
         <div className="px-4 pb-4 space-y-3">
+          {/* Completed Tasks Checklist */}
+          {entry.completedTasks && entry.completedTasks.length > 0 && (
+            <div className="bg-white/5 p-3 rounded-xl">
+              <div className="flex items-center gap-2 text-xs font-medium mb-2 text-success">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Completed Tasks ({entry.completedTasks.length})
+              </div>
+              <div className="space-y-2">
+                {entry.completedTasks.map((task) => (
+                  <TaskChecklistItem key={task.id} task={task} />
+                ))}
+              </div>
+            </div>
+          )}
+
           {entry.morningStandup && (
             <LogEntry
               label="Morning Standup"
@@ -157,6 +175,46 @@ function DayCard({ entry, isExpanded, onToggle }: {
         </div>
       </div>
     </div>
+  );
+}
+
+function TaskChecklistItem({ task }: { task: { id: string; identifier: string; title: string; completedAt: string; url: string; priority: number } }) {
+  const completedTime = new Date(task.completedAt).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  return (
+    <Link
+      href={`/sprint/task/${task.identifier}`}
+      className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group"
+    >
+      {/* Checkmark icon */}
+      <div className="flex-shrink-0 mt-0.5">
+        <svg className="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        </svg>
+      </div>
+
+      {/* Task info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <span className="text-xs font-mono text-accent">{task.identifier}</span>
+          <span className="text-xs text-muted">{completedTime}</span>
+        </div>
+        <p className="text-sm text-foreground/90 group-hover:text-foreground transition-colors">
+          {task.title}
+        </p>
+      </div>
+
+      {/* External link indicator */}
+      <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </div>
+    </Link>
   );
 }
 

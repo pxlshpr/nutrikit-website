@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { fetchCompletedTasksForSprint, fetchLiveTaskStatuses, type CompletedTask } from './linear-client';
 
 // Types for sprint data
 export interface SprintTask {
@@ -16,6 +17,7 @@ export interface DailyLogEntry {
   midDayCheckIn?: string;
   eodSummary?: string;
   buildSubmitted?: string;
+  completedTasks?: CompletedTask[];
 }
 
 export interface SprintInfo {
@@ -359,11 +361,85 @@ export async function fetchSprintData(): Promise<{
     fetchFile('.claude/sprints/planned-sprints.md').catch(() => ''), // Optional file
   ]);
 
+  const currentSprint = parseCurrentSprint(currentContent);
+
+  // Fetch LIVE task statuses from Linear (overrides markdown statuses)
+  try {
+    const taskIds = currentSprint.tasks.map(t => t.id);
+    const liveStatuses = await fetchLiveTaskStatuses(taskIds);
+
+    // Update tasks with live statuses from Linear
+    currentSprint.tasks = currentSprint.tasks.map(task => {
+      const liveStatus = liveStatuses.get(task.id);
+      if (liveStatus) {
+        return {
+          ...task,
+          status: parseStatus(liveStatus.status),
+        };
+      }
+      return task;
+    });
+  } catch (error) {
+    console.error('Failed to fetch live task statuses from Linear:', error);
+  }
+
+  // Fetch completed tasks from Linear for this sprint
+  let completedTasks: CompletedTask[] = [];
+  try {
+    completedTasks = await fetchCompletedTasksForSprint(currentSprint.info.label);
+  } catch (error) {
+    console.error('Failed to fetch completed tasks from Linear:', error);
+  }
+
+  // Group completed tasks by day
+  const tasksByDay = groupTasksByDay(completedTasks, currentSprint.info.startDate);
+
+  // Add completed tasks to each day in the daily log
+  currentSprint.dailyLog = currentSprint.dailyLog.map(entry => ({
+    ...entry,
+    completedTasks: tasksByDay[entry.day] || [],
+  }));
+
   return {
-    current: parseCurrentSprint(currentContent),
+    current: currentSprint,
     config: parseSprintConfig(configContent),
     plannedSprints: plannedContent ? parsePlannedSprints(plannedContent) : [],
   };
+}
+
+// Group tasks by the day they were completed (relative to sprint start)
+function groupTasksByDay(tasks: CompletedTask[], sprintStartDate: string): Record<number, CompletedTask[]> {
+  const grouped: Record<number, CompletedTask[]> = {};
+
+  // Parse sprint start date (format: "Sat, Jan 4, 2026")
+  const startDate = new Date(sprintStartDate + ', 2026');
+  startDate.setHours(0, 0, 0, 0);
+
+  for (const task of tasks) {
+    const completedDate = new Date(task.completedAt);
+    completedDate.setHours(0, 0, 0, 0);
+
+    // Calculate day number (1-based)
+    const daysDiff = Math.floor((completedDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const dayNumber = daysDiff + 1;
+
+    // Only include tasks completed during the sprint (days 1-3)
+    if (dayNumber >= 1 && dayNumber <= 3) {
+      if (!grouped[dayNumber]) {
+        grouped[dayNumber] = [];
+      }
+      grouped[dayNumber].push(task);
+    }
+  }
+
+  // Sort tasks within each day by completion time
+  for (const day in grouped) {
+    grouped[day].sort((a, b) =>
+      new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+    );
+  }
+
+  return grouped;
 }
 
 // Calculate sprint progress

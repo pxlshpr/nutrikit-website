@@ -180,3 +180,114 @@ export function getPriorityColorClass(priority: number): string {
   };
   return colors[priority] || colors[3];
 }
+
+// Interface for completed task with timestamp
+export interface CompletedTask {
+  id: string;
+  identifier: string;
+  title: string;
+  completedAt: string;
+  priority: number;
+  url: string;
+}
+
+// Interface for live task status
+export interface LiveTaskStatus {
+  identifier: string;
+  status: string;
+  priority: number;
+  updatedAt: string;
+}
+
+// Fetch live statuses for multiple task IDs
+export async function fetchLiveTaskStatuses(taskIds: string[]): Promise<Map<string, LiveTaskStatus>> {
+  const statusMap = new Map<string, LiveTaskStatus>();
+
+  if (taskIds.length === 0) return statusMap;
+
+  try {
+    const client = getLinearClient();
+
+    // Fetch all tasks in parallel
+    const promises = taskIds.map(async (id) => {
+      const parts = id.split('-');
+      if (parts.length !== 2) return null;
+
+      const issues = await client.issues({
+        filter: {
+          number: { eq: parseInt(parts[1]) },
+          team: { key: { eq: parts[0] } },
+        },
+        first: 1,
+      });
+
+      const issue = issues.nodes[0];
+      if (!issue) return null;
+
+      const state = await issue.state;
+      return {
+        identifier: issue.identifier,
+        status: state?.name || 'Unknown',
+        priority: issue.priority,
+        updatedAt: issue.updatedAt.toISOString(),
+      };
+    });
+
+    const results = await Promise.all(promises);
+
+    for (const result of results) {
+      if (result) {
+        statusMap.set(result.identifier, result);
+      }
+    }
+
+    return statusMap;
+  } catch (error) {
+    console.error('Failed to fetch live task statuses:', error);
+    return statusMap;
+  }
+}
+
+// Fetch completed tasks for a sprint label
+export async function fetchCompletedTasksForSprint(sprintLabel: string): Promise<CompletedTask[]> {
+  try {
+    const client = getLinearClient();
+
+    // Fetch tasks with the sprint label
+    const issues = await client.issues({
+      filter: {
+        labels: {
+          name: { eq: sprintLabel },
+        },
+        state: {
+          name: { eq: 'Done' },
+        },
+      },
+    });
+
+    const completedTasks: CompletedTask[] = [];
+
+    for (const issue of issues.nodes) {
+      if (issue.completedAt) {
+        completedTasks.push({
+          id: issue.id,
+          identifier: issue.identifier,
+          title: issue.title,
+          completedAt: issue.completedAt.toISOString(),
+          priority: issue.priority,
+          url: issue.url,
+        });
+      }
+    }
+
+    // Sort by completion time (earliest to latest)
+    completedTasks.sort((a, b) =>
+      new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+    );
+
+    return completedTasks;
+  } catch (error) {
+    console.error('Failed to fetch completed tasks:', error);
+    return [];
+  }
+}
