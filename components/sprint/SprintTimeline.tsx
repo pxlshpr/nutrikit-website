@@ -2,19 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { SprintConfig, SprintInfo, SprintTask, getSprintName, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
+import { SprintConfig, SprintInfo, SprintTask, PlannedSprint, getSprintName, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
 
 // Sprint number offset (0 = use actual number from file, which is the source of truth)
 const SPRINT_OFFSET = 0;
-
-// Tasks per sprint for planning
-const TASKS_PER_SPRINT = 4;
 
 interface SprintTimelineProps {
   currentSprint: SprintInfo;
   config: SprintConfig;
   currentTasks: SprintTask[];
-  allTasks?: SprintTask[]; // All tasks including backlog for future planning
+  plannedSprints?: PlannedSprint[]; // Future sprint plans from planned-sprints.md
 }
 
 interface TimelineNode {
@@ -33,55 +30,36 @@ function getStatusDisplayName(status: SprintTask['status']): string {
   return status;
 }
 
-// Distribute remaining tasks into future sprints
-function distributeTasks(
+// Build task map from current sprint and planned sprints
+function buildSprintTaskMap(
   currentSprintNum: number,
   currentTasks: SprintTask[],
-  allTasks: SprintTask[]
+  plannedSprints: PlannedSprint[]
 ): Map<number, SprintTask[]> {
   const sprintTaskMap = new Map<number, SprintTask[]>();
 
   // Current sprint gets its actual tasks
   sprintTaskMap.set(currentSprintNum, currentTasks);
 
-  // Get remaining tasks (not Done, not in current sprint)
-  const currentTaskIds = new Set(currentTasks.map(t => t.id));
-  const remainingTasks = allTasks
-    .filter(t => t.status !== 'Done' && t.status !== 'Canceled' && !currentTaskIds.has(t.id))
-    .sort((a, b) => {
-      // Sort by priority
-      const priorityOrder: Record<string, number> = { 'Urgent': 0, 'High': 1, 'Medium': 2, 'Low': 3, 'None': 4 };
-      return (priorityOrder[a.priority] || 4) - (priorityOrder[b.priority] || 4);
-    });
-
-  // Distribute into future sprints
-  let sprintNum = currentSprintNum + 1;
-  let taskIndex = 0;
-
-  while (taskIndex < remainingTasks.length) {
-    const sprintTasks: SprintTask[] = [];
-    for (let i = 0; i < TASKS_PER_SPRINT && taskIndex < remainingTasks.length; i++) {
-      sprintTasks.push(remainingTasks[taskIndex]);
-      taskIndex++;
-    }
-    sprintTaskMap.set(sprintNum, sprintTasks);
-    sprintNum++;
+  // Add planned sprints from the markdown file
+  for (const planned of plannedSprints) {
+    sprintTaskMap.set(planned.number, planned.tasks);
   }
 
   return sprintTaskMap;
 }
 
-export default function SprintTimeline({ currentSprint, currentTasks, allTasks = [] }: SprintTimelineProps) {
+export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [] }: SprintTimelineProps) {
   const [selectedSprint, setSelectedSprint] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const currentSprintNum = currentSprint.number;
 
-  // Distribute tasks across sprints
-  const sprintTaskMap = distributeTasks(currentSprintNum, currentTasks, allTasks);
+  // Build task map from current sprint and planned sprints file
+  const sprintTaskMap = buildSprintTaskMap(currentSprintNum, currentTasks, plannedSprints);
 
-  // Generate timeline nodes: start from sprint 1, show all past + current + future
+  // Generate timeline nodes: start from CURRENT sprint, show current + future only
   const maxFutureSprint = Math.max(
     currentSprintNum + 4,
     ...Array.from(sprintTaskMap.keys())
@@ -89,8 +67,8 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
 
   const nodes: TimelineNode[] = [];
 
-  // Start from sprint 1 to include all history
-  for (let i = 1; i <= maxFutureSprint; i++) {
+  // Start from current sprint (no past sprints)
+  for (let i = currentSprintNum; i <= maxFutureSprint; i++) {
     const displayNumber = i + SPRINT_OFFSET;
     nodes.push({
       sprint: i,
@@ -122,14 +100,6 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
     if (container) {
       container.addEventListener('scroll', updateScrollState);
       window.addEventListener('resize', updateScrollState);
-
-      // Scroll to current sprint on mount
-      const currentIndex = nodes.findIndex(n => n.isCurrent);
-      if (currentIndex > 0) {
-        const nodeWidth = 80; // Approximate width of each node
-        const scrollPosition = Math.max(0, (currentIndex - 1) * nodeWidth);
-        container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-      }
 
       return () => {
         container.removeEventListener('scroll', updateScrollState);
@@ -193,7 +163,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
           </button>
 
           {/* Horizontal line */}
-          <div className="absolute top-1/2 left-12 right-12 h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+          <div className="absolute top-[52px] left-12 right-12 h-0.5 bg-gradient-to-r from-white/30 via-white/20 to-white/10" />
 
           {/* Fade edges for scroll indication */}
           <div className={`absolute left-10 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none transition-opacity ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
@@ -202,103 +172,92 @@ export default function SprintTimeline({ currentSprint, currentTasks, allTasks =
           {/* Timeline nodes - scrollable */}
           <div
             ref={scrollContainerRef}
-            className="relative flex items-center py-8 overflow-x-auto gap-4 px-14 scrollbar-hide"
+            className="relative flex items-start py-6 overflow-x-auto gap-6 px-14 scrollbar-hide"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {nodes.map((node) => (
               <button
                 key={node.sprint}
                 onClick={() => setSelectedSprint(selectedSprint === node.sprint ? null : node.sprint)}
-                className={`flex-shrink-0 flex flex-col items-center transition-all duration-300 ${
-                  node.isCurrent ? 'scale-110 z-10' : ''
-                } ${selectedSprint === node.sprint ? 'scale-110' : ''}`}
+                className="flex-shrink-0 flex flex-col items-center transition-all duration-300 w-16"
               >
                 {/* Node circle with distinct states */}
                 <div
                   className={`
-                    relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center
+                    relative w-14 h-14 rounded-full flex items-center justify-center
                     transition-all duration-300 font-mono text-sm font-bold cursor-pointer
                     ${selectedSprint === node.sprint
-                      ? 'ring-2 ring-accent ring-offset-2 ring-offset-background'
-                      : ''
+                      ? 'ring-2 ring-white ring-offset-2 ring-offset-background scale-110'
+                      : 'hover:scale-105'
                     }
                     ${node.isCurrent
-                      ? 'bg-accent/30 border-2 border-accent shadow-[0_0_20px_rgba(160,99,255,0.5)] scale-110'
+                      ? 'bg-orange-500 shadow-[0_0_24px_rgba(249,115,22,0.6)]'
                       : node.isPast
-                        ? 'bg-success/20 border-2 border-success/50'
-                        : 'bg-transparent border-2 border-dashed border-white/30 hover:border-white/50'
+                        ? 'bg-success'
+                        : 'bg-transparent border-2 border-dashed border-white/40 hover:border-white/60'
                     }
                   `}
                 >
-                  {/* Completed checkmark for past sprints */}
+                  {/* Sprint number */}
+                  <span className={
+                    node.isCurrent
+                      ? 'text-white font-bold'
+                      : node.isPast
+                        ? 'text-white font-bold'
+                        : 'text-white/60'
+                  }>
+                    {node.displayNumber}
+                  </span>
+
+                  {/* Task count badge */}
+                  {node.tasks.length > 0 && (
+                    <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
+                      node.isCurrent
+                        ? 'bg-white text-orange-500'
+                        : node.isPast
+                          ? 'bg-white text-success'
+                          : 'bg-white/20 text-white border border-white/30'
+                    }`}>
+                      {node.tasks.length}
+                    </div>
+                  )}
+
+                  {/* Checkmark for completed */}
                   {node.isPast && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-success flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
                   )}
 
-                  {/* Sprint number */}
-                  <span className={
-                    node.isCurrent
-                      ? 'text-accent font-bold'
-                      : node.isPast
-                        ? 'text-success'
-                        : 'text-muted-foreground'
-                  }>
-                    {node.displayNumber}
-                  </span>
-
-                  {/* Task count badge for future sprints */}
-                  {node.isFuture && node.tasks.length > 0 && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white/20 text-foreground text-xs font-bold flex items-center justify-center border border-white/30">
-                      {node.tasks.length}
-                    </div>
-                  )}
-
-                  {/* Current sprint task count */}
-                  {node.isCurrent && node.tasks.length > 0 && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-accent text-background text-xs font-bold flex items-center justify-center">
-                      {node.tasks.length}
-                    </div>
-                  )}
-
                   {/* Current indicator pulse */}
                   {node.isCurrent && (
-                    <div className="absolute inset-0 rounded-full bg-accent/20 animate-ping" />
+                    <div className="absolute inset-0 rounded-full bg-orange-500/40 animate-ping" />
                   )}
                 </div>
 
-                {/* Sprint info */}
-                <div className={`mt-3 text-center ${node.isCurrent || selectedSprint === node.sprint ? '' : 'hidden sm:block'}`}>
-                  <div className={`text-xs font-mono ${
+                {/* Sprint name - always visible */}
+                <div className="mt-3 text-center">
+                  <div className={`text-xs font-mono capitalize ${
                     node.isCurrent
-                      ? 'text-accent'
+                      ? 'text-orange-400'
                       : node.isPast
-                        ? 'text-success/80'
-                        : selectedSprint === node.sprint
-                          ? 'text-foreground'
-                          : 'text-muted-foreground'
+                        ? 'text-success'
+                        : 'text-white/50'
                   }`}>
                     {node.name}
                   </div>
-                  {node.isCurrent && (
-                    <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-accent/20 text-accent text-xs">
-                      <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                      NOW
-                    </div>
-                  )}
-                  {node.isPast && (
-                    <div className="text-xs text-success/60 mt-1">
-                      done
-                    </div>
-                  )}
-                  {node.isFuture && node.tasks.length > 0 && (
-                    <div className="text-xs text-muted-foreground mt-1">
-                      planned
-                    </div>
-                  )}
+                  {/* Status label */}
+                  <div className={`text-[10px] mt-0.5 ${
+                    node.isCurrent
+                      ? 'text-orange-400/80'
+                      : node.isPast
+                        ? 'text-success/60'
+                        : 'text-white/30'
+                  }`}>
+                    {node.isCurrent ? 'active' : node.isPast ? 'done' : 'planned'}
+                  </div>
                 </div>
               </button>
             ))}

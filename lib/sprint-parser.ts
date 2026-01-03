@@ -269,10 +269,62 @@ export function parseSprintConfig(content: string): SprintConfig {
   return { characters };
 }
 
+// Parse planned sprints markdown
+export interface PlannedSprint {
+  number: number;
+  name: string;
+  dateRange: string;
+  tasks: SprintTask[];
+}
+
+export function parsePlannedSprints(content: string): PlannedSprint[] {
+  const sprints: PlannedSprint[] = [];
+
+  // Match sprint headers like "## Sprint 48 - hecate (Tue Jan 7 - Thu Jan 9, 2026)"
+  const sprintSections = content.split(/^## Sprint /m).slice(1);
+
+  for (const section of sprintSections) {
+    const headerMatch = section.match(/^(\d+)\s*-\s*(\w+)\s*\(([^)]+)\)/);
+    if (!headerMatch) continue;
+
+    const sprintNumber = parseInt(headerMatch[1]);
+    const sprintName = headerMatch[2];
+    const dateRange = headerMatch[3];
+
+    // Extract tasks from table
+    const tasks: SprintTask[] = [];
+    const tableRows = section.match(/^\|\s*(PXL-\d+)\s*\|\s*([^|]+)\s*\|\s*(\w+)\s*\|/gm);
+
+    if (tableRows) {
+      for (const row of tableRows) {
+        const rowMatch = row.match(/^\|\s*(PXL-\d+)\s*\|\s*([^|]+)\s*\|\s*(\w+)\s*\|/);
+        if (rowMatch) {
+          tasks.push({
+            id: rowMatch[1].trim(),
+            title: rowMatch[2].trim(),
+            status: 'Prompt Ready' as SprintTask['status'], // Default for planned tasks
+            priority: parsePriority(rowMatch[3].trim()),
+          });
+        }
+      }
+    }
+
+    sprints.push({
+      number: sprintNumber,
+      name: sprintName,
+      dateRange,
+      tasks,
+    });
+  }
+
+  return sprints;
+}
+
 // Fetch sprint data from GitHub
 export async function fetchSprintData(): Promise<{
   current: SprintData;
   config: SprintConfig;
+  plannedSprints: PlannedSprint[];
 }> {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
@@ -301,14 +353,16 @@ export async function fetchSprintData(): Promise<{
     }
   }
 
-  const [currentContent, configContent] = await Promise.all([
+  const [currentContent, configContent, plannedContent] = await Promise.all([
     fetchFile('.claude/sprints/current-sprint.md'),
     fetchFile('.claude/sprints/config.md'),
+    fetchFile('.claude/sprints/planned-sprints.md').catch(() => ''), // Optional file
   ]);
 
   return {
     current: parseCurrentSprint(currentContent),
     config: parseSprintConfig(configContent),
+    plannedSprints: plannedContent ? parsePlannedSprints(plannedContent) : [],
   };
 }
 

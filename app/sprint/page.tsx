@@ -72,6 +72,7 @@ export default async function SprintPage() {
               currentSprint={sprintData.current.info}
               config={sprintData.config}
               currentTasks={sprintData.current.tasks}
+              plannedSprints={sprintData.plannedSprints}
             />
             <DailyLog entries={sprintData.current.dailyLog} />
 
