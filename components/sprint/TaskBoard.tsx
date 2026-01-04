@@ -7,9 +7,9 @@ interface TaskBoardProps {
   tasks: SprintTask[];
 }
 
-// Display names for statuses (rename "Prompt Ready" to indicate Claude readiness)
+// Display names for statuses
 function getStatusDisplayName(status: SprintTask['status']): string {
-  if (status === 'Prompt Ready') return 'Claudable';
+  // No need to map anymore - status is already 'Claudable'
   return status;
 }
 
@@ -33,7 +33,7 @@ function StatusIcon({ status }: { status: SprintTask['status'] }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       );
-    case 'Prompt Ready':
+    case 'Claudable':
       return (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -161,9 +161,9 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
                 {statusGroups['Running']} Running
               </span>
             )}
-            {statusGroups['Prompt Ready'] && (
+            {statusGroups['Claudable'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent-light border border-accent/30">
-                {statusGroups['Prompt Ready']} Claudable
+                {statusGroups['Claudable']} Claudable
               </span>
             )}
             {statusGroups['Testing'] && (

@@ -159,7 +159,7 @@ export function getStatusColorClass(status: string): string {
     'Backlog': 'bg-muted-foreground/30 text-muted',
     'Todo': 'bg-white/10 text-foreground',
     'Queue': 'bg-white/15 text-foreground',
-    'Prompt Ready': 'bg-accent/20 text-accent-light border-accent/30',
+    'Claudable': 'bg-accent/20 text-accent-light border-accent/30',
     'Running': 'bg-protein/20 text-protein-light border-protein/30',
     'Testing': 'bg-carbs/20 text-carbs-light border-carbs/30',
     'Done': 'bg-success/20 text-success-light border-success/30',
