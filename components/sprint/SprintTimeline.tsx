@@ -275,7 +275,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
 
         {/* Selected Sprint Tasks */}
         {selectedNode && (
-          <div className="mt-8 glass rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="mt-8 glass rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-300 overflow-hidden">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-bold mb-2">
@@ -307,7 +307,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 glass-subtle rounded-xl hover:bg-white/10 transition-colors"
                   >
                     <span className="text-xs font-mono text-accent flex-shrink-0">{task.id}</span>
-                    <span className="flex-1 min-w-0 w-full sm:w-auto">{task.title}</span>
+                    <span className="flex-1 min-w-0 w-full sm:w-auto break-words">{task.title}</span>
                   </Link>
                 ))}
               </div>
