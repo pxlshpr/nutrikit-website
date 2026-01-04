@@ -201,13 +201,13 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   }`}>
                     {isOverdue ? 'Overdue' : 'Time Remaining'}
                   </div>
-                  <div className="text-xl font-bold font-mono">
+                  <div className="text-xl font-bold font-mono" suppressHydrationWarning>
                     {isOverdue ? (
-                      <span className="text-red-400">
+                      <span className="text-red-400" suppressHydrationWarning>
                         +{days}d {hours}h {minutes}m {seconds}s
                       </span>
                     ) : (
-                      <span>
+                      <span suppressHydrationWarning>
                         {days}d {hours}h {minutes}m {seconds}s
                       </span>
                     )}
