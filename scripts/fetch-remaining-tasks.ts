@@ -1,0 +1,22 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import { fetchTaskDetails } from '../lib/linear-client';
+
+// Load environment variables
+dotenv.config({ path: path.join(__dirname, '../.env.local') });
+
+const taskIds = ['PXL-826', 'PXL-720', 'PXL-742', 'PXL-682', 'PXL-791', 'PXL-805'];
+
+async function main() {
+  for (const id of taskIds) {
+    const task = await fetchTaskDetails(id);
+    if (task) {
+      console.log(`\n${'='.repeat(80)}`);
+      console.log(`${id}: ${task.title}`);
+      console.log('='.repeat(80));
+      console.log(task.description || '(no description)');
+    }
+  }
+}
+
+main().catch(console.error);

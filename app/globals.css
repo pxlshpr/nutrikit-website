@@ -225,7 +225,10 @@ html {
 /* Animated Mesh Gradient Background */
 .mesh-gradient {
   position: fixed;
-  inset: 0;
+  top: -15%;
+  left: -15%;
+  width: 130%;
+  height: 130%;
   z-index: -1;
   background-color: var(--background);
   background-image:
