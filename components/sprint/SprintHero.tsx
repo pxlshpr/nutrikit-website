@@ -159,7 +159,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             {/* Left side: Sprint info */}
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge */}
-              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_8px_rgba(124,58,237,0.15)] dark:shadow-[0_0_20px_var(--accent)]">
+              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_12px_rgba(124,58,237,0.25)] dark:shadow-[0_0_20px_var(--accent)]">
                 <div className="relative flex-shrink-0 w-[21px] h-[21px]">
                   {/* Pulsing ring - 1.75x size */}
                   <div className="absolute inset-0 rounded-full bg-orange-500 opacity-75 animate-ping"></div>
