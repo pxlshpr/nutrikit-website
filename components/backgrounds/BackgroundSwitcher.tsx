@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BackgroundPoll from "@/components/BackgroundPoll";
 
 type BackgroundType =
   | "none"
@@ -24,6 +25,7 @@ const options: { value: BackgroundType; label: string; desc: string }[] = [
 export default function BackgroundSwitcher() {
   const [bg, setBg] = useState<BackgroundType>("lava");
   const [isOpen, setIsOpen] = useState(false);
+  const [isPollOpen, setIsPollOpen] = useState(false);
 
   const currentOption = options.find((o) => o.value === bg);
 
@@ -95,21 +97,38 @@ export default function BackgroundSwitcher() {
           </div>
         )}
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="px-3 py-1.5 text-xs font-mono rounded-full glass-subtle opacity-50 hover:opacity-100 transition-opacity flex items-center gap-2"
-        >
-          <span>{currentOption?.label}</span>
-          <svg
-            className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="flex items-center gap-2">
+          {/* Poll button */}
+          <button
+            onClick={() => setIsPollOpen(true)}
+            className="p-1.5 text-xs rounded-full glass-subtle opacity-50 hover:opacity-100 transition-opacity"
+            title="Vote for your favorite"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
-        </button>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </button>
+
+          {/* Background selector */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="px-3 py-1.5 text-xs font-mono rounded-full glass-subtle opacity-50 hover:opacity-100 transition-opacity flex items-center gap-2"
+          >
+            <span>{currentOption?.label}</span>
+            <svg
+              className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* Poll Dialog */}
+      <BackgroundPoll isOpen={isPollOpen} onClose={() => setIsPollOpen(false)} />
     </>
   );
 }
