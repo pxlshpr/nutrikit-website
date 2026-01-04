@@ -147,26 +147,34 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Light mode glass - solid backgrounds with dark borders for contrast */
+/* Light mode glass - gradient backgrounds similar to dark mode */
 @media (prefers-color-scheme: light) {
   .glass {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(250, 250, 255, 0.85) 50%,
+      rgba(245, 245, 255, 0.9) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.15);
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 4px 16px rgba(124, 58, 237, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
 
   .glass-subtle {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.75) 0%,
+      rgba(250, 250, 255, 0.7) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.1);
   }
 
   .glass-strong {
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(250, 245, 255, 0.92) 50%,
+      rgba(245, 240, 255, 0.95) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.2);
     box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.1),
+      0 8px 24px rgba(124, 58, 237, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 }
@@ -537,5 +545,36 @@ html {
 @media (prefers-color-scheme: dark) {
   .sprint-pulse-dot {
     background-color: #f97316; /* Orange for dark mode */
+  }
+}
+
+/* Label Tag - visible in both light and dark modes */
+.label-tag {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: light) {
+  .label-tag {
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    color: rgba(30, 30, 30, 0.9);
+  }
+}
+
+/* Label Separator - visible in both modes */
+.label-separator {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-color-scheme: light) {
+  .label-separator {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
 }

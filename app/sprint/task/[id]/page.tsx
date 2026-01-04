@@ -170,7 +170,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
                 {task.labels.map((label) => (
                   <span
                     key={label}
-                    className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/10"
+                    className="label-tag"
                   >
                     {label}
                   </span>
@@ -180,7 +180,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
           )}
 
           {/* External link */}
-          <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="mt-4 pt-4 label-separator">
             <a
               href={task.url}
               target="_blank"

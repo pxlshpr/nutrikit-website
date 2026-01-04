@@ -11,9 +11,9 @@ export const metadata: Metadata = {
     siteName: "NutriKit",
     images: [
       {
-        url: "/app-icon.png",
-        width: 1024,
-        height: 1024,
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
         alt: "NutriKit App Icon",
       },
     ],
@@ -21,10 +21,10 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "NutriKit",
     description: "You can't control what you don't measure.",
-    images: ["/app-icon.png"],
+    images: ["/og-image.png"],
   },
 };
 
