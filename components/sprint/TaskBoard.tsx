@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { SprintTask, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
+import { SprintTask } from '@/lib/sprint-parser';
 
 interface TaskBoardProps {
   tasks: SprintTask[];
@@ -57,24 +57,7 @@ function StatusIcon({ status }: { status: SprintTask['status'] }) {
   }
 }
 
-function PriorityIndicator({ priority }: { priority: SprintTask['priority'] }) {
-  const dots = priority === 'Urgent' ? 4 : priority === 'High' ? 3 : priority === 'Medium' ? 2 : 1;
-  const color = getPriorityColor(priority);
-
-  return (
-    <div className="flex items-center gap-0.5" title={`${priority} Priority`}>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div
-          key={i}
-          className={`w-1.5 h-1.5 rounded-full ${i < dots ? color.replace('text-', 'bg-') : 'bg-white/10'}`}
-        />
-      ))}
-    </div>
-  );
-}
-
 function TaskCard({ task }: { task: SprintTask }) {
-  const statusColorClass = getStatusColor(task.status);
   const isDone = task.status === 'Done';
   const isRunning = task.status === 'Running';
 
@@ -94,26 +77,19 @@ function TaskCard({ task }: { task: SprintTask }) {
       )}
 
       <div className="flex items-start justify-between gap-4">
-        {/* Left: Task info */}
+        {/* Task info */}
         <div className="flex-1 min-w-0">
           {/* Task ID */}
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-mono text-accent">
               {task.id}
             </span>
-            <PriorityIndicator priority={task.priority} />
           </div>
 
-          {/* Task title */}
+          {/* Task title - now has full width */}
           <h3 className={`font-medium leading-snug ${isDone ? 'line-through text-muted' : ''}`}>
             {task.title}
           </h3>
-        </div>
-
-        {/* Right: Status badge */}
-        <div className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${statusColorClass}`}>
-          <StatusIcon status={task.status} />
-          <span className="hidden sm:inline">{getStatusDisplayName(task.status)}</span>
         </div>
       </div>
 

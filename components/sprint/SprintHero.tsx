@@ -169,15 +169,15 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 {info.status === 'ACTIVE' ? 'Active Now' : info.status}
               </div>
 
-              {/* Block number */}
-              <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-                <span className="text-muted text-lg font-medium">BLOCK {displayBlockNumber}</span>
+              {/* Block header with rounded background */}
+              <div className="flex items-center justify-center lg:justify-start mb-2">
+                <div className="inline-flex items-baseline gap-3 bg-accent/10 border border-accent/30 rounded-2xl px-4 py-2">
+                  <span className="text-lg font-medium">Block {displayBlockNumber}</span>
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight gradient-text font-mono">
+                    {blockName}
+                  </h1>
+                </div>
               </div>
-
-              {/* Block name (Heroku-style) */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight gradient-text mb-4 font-mono">
-                {blockName}
-              </h1>
 
               {/* Block theme */}
               <p className="text-muted text-lg mb-4">{info.theme}</p>
