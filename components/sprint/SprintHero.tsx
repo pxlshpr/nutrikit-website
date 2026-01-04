@@ -159,10 +159,10 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             {/* Left side: Sprint info */}
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge */}
-              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_20px_var(--accent)]">
+                <span className="relative flex h-3 w-3 items-center justify-center">
+                  <span className="animate-ping absolute h-3 w-3 rounded-full bg-accent"></span>
+                  <span className="relative h-2 w-2 rounded-full bg-accent shadow-[0_0_6px_var(--accent)]"></span>
                 </span>
                 {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
               </div>
@@ -235,7 +235,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                     cx="96"
                     cy="96"
                     r={radius}
-                    stroke="rgba(255,255,255,0.1)"
+                    className="stroke-foreground/10 dark:stroke-white/10"
                     strokeWidth="12"
                     fill="none"
                   />
@@ -273,7 +273,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
 
           {/* Sprint goal */}
           {sprint.goal && (
-            <div className="relative z-10 mt-8 pt-8 border-t border-white/10">
+            <div className="relative z-10 mt-8 pt-8 border-t border-foreground/10">
               <h3 className="text-sm font-medium text-muted mb-2">SPRINT GOAL</h3>
               <p className="text-lg text-foreground/90">{sprint.goal}</p>
             </div>
