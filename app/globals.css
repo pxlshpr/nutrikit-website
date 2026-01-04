@@ -454,7 +454,7 @@ html {
 /* Gradient Button - macro nutrient colors */
 .gradient-button {
   position: relative;
-  background: linear-gradient(135deg, var(--protein) 0%, var(--carbs) 50%, var(--fat) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--protein) 50%, var(--fat) 100%);
   background-size: 200% 200%;
   border: none;
   transition: all 0.3s ease;
@@ -464,9 +464,9 @@ html {
 .gradient-button:hover {
   background-size: 300% 300%;
   box-shadow:
-    0 0 30px rgba(71, 172, 177, 0.4),
-    0 0 60px rgba(255, 205, 52, 0.3),
-    0 0 90px rgba(223, 0, 255, 0.2);
+    0 0 30px rgba(160, 99, 255, 0.4),
+    0 0 60px rgba(71, 172, 177, 0.2),
+    0 0 90px rgba(223, 0, 255, 0.15);
   transform: translateY(-2px);
 }
 
