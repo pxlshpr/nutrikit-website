@@ -41,9 +41,12 @@ function splitIntoSections(markdown: string): { title: string; content: string }
     const h2Match = line.match(/^##\s+(.+)$/);
 
     if (h2Match) {
-      // Save previous section if it has content
+      // Save previous section if it has content (trim to remove trailing newlines)
       if (currentSection.content.trim() || currentSection.title) {
-        sections.push(currentSection);
+        sections.push({
+          title: currentSection.title,
+          content: currentSection.content.trim(),
+        });
       }
       // Start new section
       currentSection = {
@@ -56,9 +59,12 @@ function splitIntoSections(markdown: string): { title: string; content: string }
     }
   }
 
-  // Add the last section
+  // Add the last section (trim to remove trailing newlines)
   if (currentSection.content.trim() || currentSection.title) {
-    sections.push(currentSection);
+    sections.push({
+      title: currentSection.title,
+      content: currentSection.content.trim(),
+    });
   }
 
   // If first section has no title, give it a default one
