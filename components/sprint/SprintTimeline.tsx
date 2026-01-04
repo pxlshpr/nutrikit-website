@@ -278,12 +278,12 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
           <div className="mt-8 glass rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="inline-flex items-baseline gap-2 bg-accent/10 border border-accent/30 rounded-2xl px-3 py-1.5 mb-2">
-                  <span className="text-sm font-medium">Block {selectedNode.displayNumber}</span>
-                  <h3 className="text-lg font-bold gradient-text font-mono">
+                <h3 className="text-lg font-bold mb-2">
+                  Sprint {selectedNode.displayNumber}:{' '}
+                  <span className="inline-block bg-accent/20 rounded-2xl px-3 py-1 gradient-text font-mono">
                     {selectedNode.name}
-                  </h3>
-                </div>
+                  </span>
+                </h3>
                 <p className="text-sm text-muted">
                   {selectedNode.isCurrent ? 'Current sprint' : selectedNode.isPast ? 'Completed sprint' : 'Planned tasks (tentative)'}
                 </p>
