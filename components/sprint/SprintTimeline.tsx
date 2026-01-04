@@ -225,7 +225,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                         ? 'bg-white text-orange-500'
                         : node.isPast
                           ? 'bg-white text-success'
-                          : 'bg-white dark:bg-foreground/15 text-foreground border border-foreground/20'
+                          : 'bg-white text-gray-800 border border-foreground/20'
                     }`}>
                       {node.tasks.length}
                     </div>
