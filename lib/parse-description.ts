@@ -5,7 +5,7 @@ export interface ParsedDescription {
 }
 
 export function parseDescription(markdown: string): ParsedDescription {
-  const lines = markdown.split('\n');
+  const lines = markdown.trim().split('\n');
   const sections: { title: string; content: string }[] = [];
   let preamble = '';
   let hasTechnicalDetails = false;
