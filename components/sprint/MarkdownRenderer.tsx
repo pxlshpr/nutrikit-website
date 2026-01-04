@@ -41,19 +41,19 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Paragraphs
         p: ({ children }) => (
-          <p className="mt-3 first:mt-0 leading-relaxed text-foreground/85">
+          <p className="leading-relaxed text-foreground/85">
             {children}
           </p>
         ),
 
         // Lists
         ul: ({ children }) => (
-          <ul className="mt-3 first:mt-0 ml-1 space-y-1.5">
+          <ul className="ml-1 space-y-1.5">
             {children}
           </ul>
         ),
         ol: ({ children }) => (
-          <ol className="mt-3 first:mt-0 ml-1 space-y-1.5 list-decimal list-inside">
+          <ol className="ml-1 space-y-1.5 list-decimal list-inside">
             {children}
           </ol>
         ),
@@ -81,7 +81,7 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Code blocks
         pre: ({ children }) => (
-          <pre className="mt-4 first:mt-0 p-4 bg-black/30 rounded-xl overflow-x-auto border border-foreground/10">
+          <pre className="p-4 bg-black/30 rounded-xl overflow-x-auto border border-foreground/10">
             {children}
           </pre>
         ),
@@ -103,14 +103,14 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Blockquotes
         blockquote: ({ children }) => (
-          <blockquote className="mt-4 first:mt-0 pl-4 border-l-4 border-accent/50 bg-accent/5 py-2 pr-4 rounded-r-lg italic text-foreground/80">
+          <blockquote className="pl-4 border-l-4 border-accent/50 bg-accent/5 py-2 pr-4 rounded-r-lg italic text-foreground/80">
             {children}
           </blockquote>
         ),
 
         // Horizontal rule
         hr: () => (
-          <hr className="mt-6 first:mt-0 border-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+          <hr className="border-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
         ),
 
         // Links
@@ -159,7 +159,7 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Tables
         table: ({ children }) => (
-          <div className="mt-4 first:mt-0 overflow-x-auto rounded-xl border border-foreground/10">
+          <div className="overflow-x-auto rounded-xl border border-foreground/10">
             <table className="w-full text-sm">
               {children}
             </table>
@@ -193,7 +193,7 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Images
         img: ({ src, alt }) => (
-          <span className="block mt-4 first:mt-0">
+          <span className="block">
             <img
               src={src}
               alt={alt || ''}

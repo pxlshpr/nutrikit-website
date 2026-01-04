@@ -23,7 +23,7 @@ export default function DescriptionSections({ content, taskIdentifier }: Descrip
               {section.title}
             </h2>
           )}
-          <div className="max-w-none">
+          <div className="max-w-none space-y-3">
             <MarkdownRenderer content={section.content} taskIdentifier={taskIdentifier} />
           </div>
         </div>
