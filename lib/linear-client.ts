@@ -306,6 +306,38 @@ export async function fetchCompletedTasksForIds(taskIds: string[]): Promise<Comp
   }
 }
 
+// Update task description
+export async function updateTaskDescription(identifier: string, description: string): Promise<boolean> {
+  try {
+    const client = getLinearClient();
+
+    // Search for the issue by identifier
+    const parts = identifier.split('-');
+    if (parts.length !== 2) {
+      throw new Error('Invalid identifier format');
+    }
+
+    const issues = await client.issues({
+      filter: {
+        number: { eq: parseInt(parts[1]) },
+        team: { key: { eq: parts[0] } },
+      },
+      first: 1,
+    });
+
+    const issue = issues.nodes[0];
+    if (!issue) {
+      throw new Error(`Task ${identifier} not found`);
+    }
+
+    await issue.update({ description });
+    return true;
+  } catch (error) {
+    console.error(`Failed to update task ${identifier}:`, error);
+    return false;
+  }
+}
+
 // Legacy function - kept for backwards compatibility
 export async function fetchCompletedTasksForSprint(sprintLabel: string): Promise<CompletedTask[]> {
   try {

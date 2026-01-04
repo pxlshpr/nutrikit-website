@@ -16,6 +16,7 @@
     "@linear/sdk": "^68.1.0",
     "@octokit/rest": "^22.0.1",
     "@supabase/supabase-js": "^2.89.0",
+    "dotenv": "^17.2.3",
     "gray-matter": "^4.0.3",
     "next": "^16.0.4",
     "react": "^19.2.0",
