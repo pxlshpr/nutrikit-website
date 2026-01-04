@@ -1,4 +1,13 @@
 import Link from "next/link";
+import type { Viewport } from "next";
+
+// Safari address bar color to match mesh gradient background
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0612" },
+    { media: "(prefers-color-scheme: light)", color: "#f8f5fc" },
+  ],
+};
 
 export default function Home() {
   return (
