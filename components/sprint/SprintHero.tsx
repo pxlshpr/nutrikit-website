@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { SprintData, getSprintName, calculateProgress } from '@/lib/sprint-parser';
 
 interface SprintHeroProps {
@@ -122,7 +123,20 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
 
   // Calculate dates dynamically based on sprint type
   const { start: sprintStart, end: sprintEnd } = getSprintDates(info.type);
-  const { days, hours, minutes, seconds, isOverdue, totalMs } = getTimeRemaining(sprintEnd);
+
+  // State for countdown that updates every second
+  const [timeRemaining, setTimeRemaining] = useState(() => getTimeRemaining(sprintEnd));
+
+  // Update countdown every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeRemaining(getTimeRemaining(sprintEnd));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [sprintEnd]);
+
+  const { days, hours, minutes, seconds, isOverdue, totalMs } = timeRemaining;
 
   // SVG circle calculations
   const radius = 88;
@@ -145,8 +159,10 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             {/* Left side: Sprint info */}
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge */}
-              <div className="inline-flex items-center gap-2 glass-subtle px-4 py-2 rounded-full text-sm font-medium text-accent mb-4 border border-accent/40">
-                <span className="w-3 h-3 bg-accent rounded-full animate-pulse-glow" />
+              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
+                <span className="relative w-3 h-3 bg-accent rounded-full animate-pulse-glow">
+                  <span className="absolute inset-0 bg-accent rounded-full animate-ping" />
+                </span>
                 {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
               </div>
 
