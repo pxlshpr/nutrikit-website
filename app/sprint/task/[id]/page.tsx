@@ -164,7 +164,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
 
           {/* Labels */}
           {task.labels.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-white/10">
+            <div className="mt-4">
               <span className="text-muted text-sm block mb-2">Labels</span>
               <div className="flex flex-wrap gap-2">
                 {task.labels.map((label) => (
