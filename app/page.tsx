@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -17,14 +16,13 @@ export default function Home() {
             <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-accent/50 via-protein/30 to-fat/40 rounded-full scale-150" />
 
             {/* App Icon */}
-            <div className="relative glass-strong rounded-[2rem] p-1 w-32 h-32 mx-auto">
-              <Image
+            <div className="relative glass-strong rounded-[2rem] p-1 w-32 h-32 mx-auto" suppressHydrationWarning>
+              <img
                 src="/app-icon.png"
                 alt="NutriKit"
                 width={120}
                 height={120}
                 className="rounded-[1.75rem]"
-                priority
               />
             </div>
           </div>
