@@ -85,7 +85,7 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: transparent;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto',
     'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
