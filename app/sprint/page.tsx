@@ -99,9 +99,14 @@ export default async function SprintPage() {
             <Link href="/" className="text-xl font-bold text-accent">
               NutriKit
             </Link>
-            <p className="text-sm text-muted">
-              &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
-            </p>
+            <div className="flex flex-col items-center md:items-end gap-1">
+              <p className="text-sm text-muted">
+                &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
+              </p>
+              <p className="text-xs text-muted/50 font-mono">
+                v{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'dev'}
+              </p>
+            </div>
           </div>
         </div>
       </footer>

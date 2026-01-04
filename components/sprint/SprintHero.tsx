@@ -164,7 +164,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   {/* Pulsing ring - 1.75x size */}
                   <div className="absolute inset-0 rounded-full bg-orange-500 opacity-75 animate-ping"></div>
                   {/* Solid center dot */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10" style={{ backgroundColor: '#ea580c' }}></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10 sprint-pulse-dot"></div>
                 </div>
                 {info.status === 'ACTIVE' ? 'Active Now' : info.status}
               </div>
