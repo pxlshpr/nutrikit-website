@@ -9,8 +9,8 @@ import DailyLog from '@/components/sprint/DailyLog';
 export const revalidate = 30;
 
 export const metadata = {
-  title: 'Sprint Dashboard - NutriKit',
-  description: 'Track the current NutriKit development sprint progress',
+  title: 'Development Tracker - NutriKit',
+  description: 'Track the current NutriKit development block progress',
 };
 
 export default async function SprintPage() {

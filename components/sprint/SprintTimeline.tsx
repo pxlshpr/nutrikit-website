@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { SprintConfig, SprintInfo, SprintTask, PlannedSprint, getSprintName, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
 
-// Sprint number offset (0 = use actual number from file, which is the source of truth)
-const SPRINT_OFFSET = 0;
+// Block number offset (adjusts display number from file number)
+const BLOCK_OFFSET = -45;
 
 interface SprintTimelineProps {
   currentSprint: SprintInfo;
@@ -76,9 +76,9 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
 
   const nodes: TimelineNode[] = [];
 
-  // Start from current sprint (no past sprints)
+  // Start from current block (no past blocks)
   for (let i = currentSprintNum; i <= maxFutureSprint; i++) {
-    const displayNumber = i + SPRINT_OFFSET;
+    const displayNumber = i + BLOCK_OFFSET;
     nodes.push({
       sprint: i,
       displayNumber,
@@ -134,7 +134,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
         {/* Section header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold mb-2">What's Coming Next</h2>
-          <p className="text-muted text-sm">Tap a sprint to see its tasks</p>
+          <p className="text-muted text-sm">Tap a block to see its tasks</p>
         </div>
 
         {/* Timeline */}

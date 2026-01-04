@@ -7,8 +7,8 @@ interface SprintHeroProps {
   sprint: SprintData;
 }
 
-// Sprint number offset (0 = use actual number from file, which is the source of truth)
-const SPRINT_OFFSET = 0;
+// Block number offset (adjusts display number from file number)
+const BLOCK_OFFSET = -45;
 
 // Get current time in Maldives (UTC+5)
 function getMaldivesNow(): Date {
@@ -117,8 +117,8 @@ function formatDateRange(start: Date, end: Date): string {
 export default function SprintHero({ sprint }: SprintHeroProps) {
   const { info, tasks } = sprint;
   const progress = calculateProgress(tasks);
-  const displaySprintNumber = info.number + SPRINT_OFFSET;
-  const sprintName = getSprintName(displaySprintNumber);
+  const displayBlockNumber = info.number + BLOCK_OFFSET;
+  const blockName = getSprintName(displayBlockNumber);
   const completedTasks = tasks.filter(t => t.status === 'Done' || t.status === 'Testing').length;
 
   // Calculate dates dynamically based on sprint type
@@ -169,17 +169,17 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 {info.status === 'ACTIVE' ? 'Active Now' : info.status}
               </div>
 
-              {/* Sprint number */}
+              {/* Block number */}
               <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-                <span className="text-muted text-lg font-medium">SPRINT {displaySprintNumber}</span>
+                <span className="text-muted text-lg font-medium">BLOCK {displayBlockNumber}</span>
               </div>
 
-              {/* Sprint name (Heroku-style) */}
+              {/* Block name (Heroku-style) */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight gradient-text mb-4 font-mono">
-                {sprintName}
+                {blockName}
               </h1>
 
-              {/* Sprint theme */}
+              {/* Block theme */}
               <p className="text-muted text-lg mb-4">{info.theme}</p>
 
               {/* Countdown Banner - Prominent */}
@@ -274,7 +274,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             </div>
           </div>
 
-          {/* Sprint goal */}
+          {/* Block goal */}
           {sprint.goal && (
             <div className="relative z-10 mt-8 pt-8 border-t border-foreground/10">
               <h3 className="text-sm font-medium text-muted mb-2">CURRENT FOCUS</h3>
