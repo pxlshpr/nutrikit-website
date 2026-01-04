@@ -68,10 +68,5 @@ function splitIntoSections(markdown: string): { title: string; content: string }
     });
   }
 
-  // If first section has no title, give it a default one
-  if (sections.length > 0 && !sections[0].title) {
-    sections[0].title = 'Overview';
-  }
-
   return sections;
 }
