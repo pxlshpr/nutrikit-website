@@ -943,25 +943,25 @@ body {
 .lava-blob:nth-child(1) {
   width: 200px; height: 200px;
   background: rgba(160, 99, 255, 0.6);
-  animation: lavaFloat1 15s ease-in-out infinite;
+  animation: lavaFloat1 30s ease-in-out infinite;
 }
 
 .lava-blob:nth-child(2) {
   width: 150px; height: 150px;
   background: rgba(71, 172, 177, 0.6);
-  animation: lavaFloat2 18s ease-in-out infinite;
+  animation: lavaFloat2 36s ease-in-out infinite;
 }
 
 .lava-blob:nth-child(3) {
   width: 180px; height: 180px;
   background: rgba(223, 0, 255, 0.5);
-  animation: lavaFloat3 20s ease-in-out infinite;
+  animation: lavaFloat3 40s ease-in-out infinite;
 }
 
 .lava-blob:nth-child(4) {
   width: 120px; height: 120px;
   background: rgba(255, 205, 52, 0.5);
-  animation: lavaFloat4 12s ease-in-out infinite;
+  animation: lavaFloat4 24s ease-in-out infinite;
 }
 
 @keyframes lavaFloat1 {

@@ -5,13 +5,8 @@ import { useState } from "react";
 type BackgroundType =
   | "none"
   | "particles"
-  | "plasma"
-  | "holographic"
   | "lava"
   | "crt"
-  | "chromatic"
-  | "matrix"
-  | "waves"
   | "glow"
   | "aurora"
   | "mesh";
@@ -19,20 +14,15 @@ type BackgroundType =
 const options: { value: BackgroundType; label: string; desc: string }[] = [
   { value: "none", label: "None", desc: "Solid background only" },
   { value: "particles", label: "Particles", desc: "Floating dots" },
-  { value: "plasma", label: "Plasma", desc: "Morphing color blobs" },
-  { value: "holographic", label: "Holographic", desc: "Rainbow shimmer" },
   { value: "lava", label: "Lava Lamp", desc: "Gooey metaballs" },
   { value: "crt", label: "CRT", desc: "Retro scanlines" },
-  { value: "chromatic", label: "Chromatic", desc: "RGB aberration" },
-  { value: "matrix", label: "Matrix", desc: "Digital rain" },
-  { value: "waves", label: "Waves", desc: "Flowing lines" },
   { value: "glow", label: "Glow", desc: "Spinning conic" },
   { value: "aurora", label: "Aurora", desc: "Floating orbs" },
   { value: "mesh", label: "Mesh", desc: "Original gradient" },
 ];
 
 export default function BackgroundSwitcher() {
-  const [bg, setBg] = useState<BackgroundType>("plasma");
+  const [bg, setBg] = useState<BackgroundType>("lava");
   const [isOpen, setIsOpen] = useState(false);
 
   const currentOption = options.find((o) => o.value === bg);
@@ -48,12 +38,6 @@ export default function BackgroundSwitcher() {
         </div>
       )}
 
-      {/* Plasma - morphing gradient blobs */}
-      {bg === "plasma" && <div className="plasma-overlay" />}
-
-      {/* Holographic - rainbow shimmer */}
-      {bg === "holographic" && <div className="holographic-overlay" />}
-
       {/* Lava Lamp - gooey metaballs */}
       {bg === "lava" && (
         <div className="lava-overlay">
@@ -66,33 +50,6 @@ export default function BackgroundSwitcher() {
 
       {/* CRT - retro scanlines */}
       {bg === "crt" && <div className="crt-overlay" />}
-
-      {/* Chromatic - RGB split */}
-      {bg === "chromatic" && (
-        <div className="chromatic-overlay">
-          <div className="chromatic-layer red" />
-          <div className="chromatic-layer green" />
-          <div className="chromatic-layer blue" />
-        </div>
-      )}
-
-      {/* Matrix - digital rain */}
-      {bg === "matrix" && (
-        <div className="matrix-overlay">
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className="matrix-column" />
-          ))}
-        </div>
-      )}
-
-      {/* Waves - flowing lines */}
-      {bg === "waves" && (
-        <div className="waves-overlay">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="wave-line" />
-          ))}
-        </div>
-      )}
 
       {/* Glow - spinning conic */}
       {bg === "glow" && <div className="glow-overlay" />}
