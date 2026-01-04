@@ -1,19 +1,16 @@
-import type { Viewport } from "next";
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#ff0000" },
-    { media: "(prefers-color-scheme: light)", color: "#00ff00" },
-  ],
-};
-
 export default function TestPage() {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#ff0000",
-      }}
-    />
+    <>
+      <head>
+        <meta name="theme-color" content="#ff00ff" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#00ffff" media="(prefers-color-scheme: light)" />
+      </head>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#ff00ff",
+        }}
+      />
+    </>
   );
 }
