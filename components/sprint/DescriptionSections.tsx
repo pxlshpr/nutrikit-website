@@ -4,9 +4,10 @@ import MarkdownRenderer from './MarkdownRenderer';
 
 interface DescriptionSectionsProps {
   content: string;
+  taskIdentifier?: string;
 }
 
-export default function DescriptionSections({ content }: DescriptionSectionsProps) {
+export default function DescriptionSections({ content, taskIdentifier }: DescriptionSectionsProps) {
   // Split content by H2 headers (##)
   const sections = splitIntoSections(content);
 
@@ -23,7 +24,7 @@ export default function DescriptionSections({ content }: DescriptionSectionsProp
             </h2>
           )}
           <div className="max-w-none">
-            <MarkdownRenderer content={section.content} />
+            <MarkdownRenderer content={section.content} taskIdentifier={taskIdentifier} />
           </div>
         </div>
       ))}

@@ -198,7 +198,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
 
         {/* Description Sections */}
         {task.description && (
-          <DescriptionSections content={task.description} />
+          <DescriptionSections content={task.description} taskIdentifier={task.identifier} />
         )}
 
         {/* Git branch */}

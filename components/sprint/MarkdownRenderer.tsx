@@ -1,13 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 interface MarkdownRendererProps {
   content: string;
+  taskIdentifier?: string;
 }
 
-export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+// Pattern to match Linear document URLs
+const linearDocPattern = /^https:\/\/linear\.app\/[^\/]+\/document\/[^-]+-([a-f0-9]+)$/;
+
+export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRendererProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -109,16 +114,34 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Links
-        a: ({ href, children }) => (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent hover:text-accent-light underline decoration-accent/30 hover:decoration-accent/60 transition-colors"
-          >
-            {children}
-          </a>
-        ),
+        a: ({ href, children }) => {
+          // Check if this is a Linear document link and we have a task identifier
+          if (href && taskIdentifier) {
+            const match = href.match(linearDocPattern);
+            if (match) {
+              const docId = match[1];
+              return (
+                <Link
+                  href={`/sprint/task/${taskIdentifier}/doc/${docId}`}
+                  className="text-accent hover:text-accent-light underline decoration-accent/30 hover:decoration-accent/60 transition-colors"
+                >
+                  {children}
+                </Link>
+              );
+            }
+          }
+
+          return (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:text-accent-light underline decoration-accent/30 hover:decoration-accent/60 transition-colors"
+            >
+              {children}
+            </a>
+          );
+        },
 
         // Strong/bold
         strong: ({ children }) => (
