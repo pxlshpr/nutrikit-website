@@ -219,7 +219,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
               </svg>
               Git Branch
             </h2>
-            <div className="flex items-center gap-3 bg-black/30 px-4 py-3 rounded-xl border border-white/10">
+            <div className="flex items-center gap-3 bg-foreground/5 px-4 py-3 rounded-xl border border-foreground/10">
               <code className="flex-1 text-sm font-mono text-protein overflow-x-auto">
                 {task.branchName}
               </code>

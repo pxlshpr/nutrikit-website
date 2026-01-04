@@ -14,7 +14,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
       components={{
         // Headers
         h1: ({ children }) => (
-          <h1 className="text-2xl font-bold mt-8 mb-4 pb-2 border-b border-white/10 first:mt-0">
+          <h1 className="text-2xl font-bold mt-8 mb-4 pb-2 border-b border-foreground/10 first:mt-0">
             {children}
           </h1>
         ),
@@ -64,7 +64,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
           <span className={`inline-flex items-center justify-center w-4 h-4 mr-2 rounded border ${
             checked
               ? 'bg-success/20 border-success/50 text-success'
-              : 'bg-white/5 border-white/20'
+              : 'bg-transparent border-foreground/30'
           }`}>
             {checked && (
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         // Code blocks
         pre: ({ children }) => (
-          <pre className="my-4 p-4 bg-black/30 rounded-xl overflow-x-auto border border-white/10">
+          <pre className="my-4 p-4 bg-black/30 rounded-xl overflow-x-auto border border-foreground/10">
             {children}
           </pre>
         ),
@@ -105,7 +105,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         // Horizontal rule
         hr: () => (
-          <hr className="my-6 border-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <hr className="my-6 border-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
         ),
 
         // Links
@@ -136,24 +136,24 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         // Tables
         table: ({ children }) => (
-          <div className="my-4 overflow-x-auto rounded-xl border border-white/10">
+          <div className="my-4 overflow-x-auto rounded-xl border border-foreground/10">
             <table className="w-full text-sm">
               {children}
             </table>
           </div>
         ),
         thead: ({ children }) => (
-          <thead className="bg-white/5 border-b border-white/10">
+          <thead className="bg-foreground/5 border-b border-foreground/10">
             {children}
           </thead>
         ),
         tbody: ({ children }) => (
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-foreground/10">
             {children}
           </tbody>
         ),
         tr: ({ children }) => (
-          <tr className="hover:bg-white/5 transition-colors">
+          <tr className="hover:bg-foreground/5 transition-colors">
             {children}
           </tr>
         ),
@@ -174,7 +174,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             <img
               src={src}
               alt={alt || ''}
-              className="max-w-full h-auto rounded-xl border border-white/10"
+              className="max-w-full h-auto rounded-xl border border-foreground/10"
             />
             {alt && (
               <span className="block mt-2 text-sm text-muted text-center italic">
