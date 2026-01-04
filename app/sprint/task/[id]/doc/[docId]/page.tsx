@@ -51,7 +51,7 @@ export default async function DocPage({ params }: DocPageProps) {
       <header className="sticky top-0 z-50 glass-subtle">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold gradient-text">
+            <Link href="/" className="text-2xl font-bold text-accent">
               NutriKit
             </Link>
             <div className="hidden md:flex items-center gap-8">
@@ -89,7 +89,7 @@ export default async function DocPage({ params }: DocPageProps) {
       <footer className="glass-subtle py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold gradient-text">
+            <Link href="/" className="text-xl font-bold text-accent">
               NutriKit
             </Link>
             <p className="text-sm text-muted">
