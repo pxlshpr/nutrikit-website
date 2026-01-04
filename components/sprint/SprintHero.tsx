@@ -160,9 +160,9 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge */}
               <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-                <span className="relative flex w-4 h-4">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-accent"></span>
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
                 </span>
                 {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
               </div>
