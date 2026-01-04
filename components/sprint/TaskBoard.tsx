@@ -9,7 +9,7 @@ interface TaskBoardProps {
 
 // Display names for statuses (rename "Prompt Ready" to indicate Claude readiness)
 function getStatusDisplayName(status: SprintTask['status']): string {
-  if (status === 'Prompt Ready') return 'Claude Ready';
+  if (status === 'Prompt Ready') return 'Claudable';
   return status;
 }
 
@@ -163,7 +163,7 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
             )}
             {statusGroups['Prompt Ready'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent-light border border-accent/30">
-                {statusGroups['Prompt Ready']} Claude Ready
+                {statusGroups['Prompt Ready']} Claudable
               </span>
             )}
             {statusGroups['Testing'] && (

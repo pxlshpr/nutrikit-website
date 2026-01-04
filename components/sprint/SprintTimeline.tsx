@@ -26,7 +26,7 @@ interface TimelineNode {
 
 // Display names for statuses
 function getStatusDisplayName(status: SprintTask['status']): string {
-  if (status === 'Prompt Ready') return 'Claude Ready';
+  if (status === 'Prompt Ready') return 'Claudable';
   return status;
 }
 
