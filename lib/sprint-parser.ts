@@ -5,7 +5,7 @@ import { fetchCompletedTasksForIds, fetchLiveTaskStatuses, type CompletedTask } 
 export interface SprintTask {
   id: string;
   title: string;
-  status: 'Backlog' | 'Todo' | 'Queue' | 'Claudable' | 'Running' | 'Testing' | 'Done' | 'Canceled';
+  status: 'Backlog' | 'Todo' | 'Queue' | 'Ready' | 'Running' | 'Testing' | 'Done' | 'Canceled';
   priority: 'Urgent' | 'High' | 'Medium' | 'Low' | 'None';
 }
 
@@ -69,8 +69,8 @@ function parseStatus(status: string): SprintTask['status'] {
     'backlog': 'Backlog',
     'todo': 'Todo',
     'queue': 'Queue',
-    'prompt ready': 'Claudable',
-    'claudable': 'Claudable',
+    'prompt ready': 'Ready',
+    'ready': 'Ready',
     'running': 'Running',
     'testing': 'Testing',
     'done': 'Done',
@@ -305,7 +305,7 @@ export function parsePlannedSprints(content: string): PlannedSprint[] {
           tasks.push({
             id: rowMatch[1].trim(),
             title: rowMatch[2].trim(),
-            status: 'Claudable' as SprintTask['status'], // Default for planned tasks
+            status: 'Ready' as SprintTask['status'], // Default for planned tasks
             priority: parsePriority(rowMatch[3].trim()),
           });
         }
@@ -461,7 +461,7 @@ export function getStatusColor(status: SprintTask['status']): string {
     'Backlog': 'bg-muted-foreground/30 text-muted',
     'Todo': 'bg-white/10 text-foreground',
     'Queue': 'bg-white/15 text-foreground',
-    'Claudable': 'bg-accent/20 text-accent-light border-accent/30',
+    'Ready': 'bg-accent/20 text-accent-light border-accent/30',
     'Running': 'bg-protein/20 text-protein-light border-protein/30',
     'Testing': 'bg-carbs/20 text-carbs-light border-carbs/30',
     'Done': 'bg-success/20 text-success-light border-success/30',
