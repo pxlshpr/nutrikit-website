@@ -65,7 +65,7 @@ export default function Home() {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="py-6 text-center">
+      <footer className="py-6 text-center safe-area-bottom">
         <p className="text-sm text-muted/60">
           &copy; {new Date().getFullYear()} NutriKit
         </p>

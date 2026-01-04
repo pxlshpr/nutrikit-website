@@ -42,13 +42,13 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
+    <div className="min-h-screen flex flex-col relative">
       {/* Animated Background */}
       <div className="mesh-gradient" />
       <div className="noise-overlay" />
 
       {/* Navigation */}
-      <header className="sticky top-0 z-50 glass-subtle">
+      <header className="glass-subtle header-safe-area">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <Link href="/" className="text-2xl font-bold text-accent">
@@ -75,6 +75,9 @@ export default async function DocPage({ params }: DocPageProps) {
         </nav>
       </header>
 
+      {/* Spacer for fixed header */}
+      <div className="h-20" style={{ height: `calc(5rem + env(safe-area-inset-top, 0px))` }} />
+
       <main className="flex-1">
         {error ? (
           <ErrorState error={error} taskId={id} docId={docId} />
@@ -86,7 +89,7 @@ export default async function DocPage({ params }: DocPageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="glass-subtle py-8">
+      <footer className="glass-subtle py-8 safe-area-bottom">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <Link href="/" className="text-xl font-bold text-accent">
