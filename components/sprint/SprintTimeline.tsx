@@ -278,9 +278,12 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
           <div className="mt-8 glass rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-bold">
-                  Sprint {selectedNode.displayNumber}: {selectedNode.name}
-                </h3>
+                <div className="inline-flex items-baseline gap-2 bg-accent/10 border border-accent/30 rounded-2xl px-3 py-1.5 mb-2">
+                  <span className="text-sm font-medium">Block {selectedNode.displayNumber}</span>
+                  <h3 className="text-lg font-bold gradient-text font-mono">
+                    {selectedNode.name}
+                  </h3>
+                </div>
                 <p className="text-sm text-muted">
                   {selectedNode.isCurrent ? 'Current sprint' : selectedNode.isPast ? 'Completed sprint' : 'Planned tasks (tentative)'}
                 </p>
@@ -301,30 +304,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   <Link
                     key={task.id}
                     href={`/sprint/task/${task.id}`}
-                    className="flex items-center justify-between p-3 glass-subtle rounded-xl hover:bg-white/10 transition-colors"
+                    className="flex items-start gap-3 p-3 glass-subtle rounded-xl hover:bg-white/10 transition-colors"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-xs font-mono text-accent flex-shrink-0">{task.id}</span>
-                      <span className="truncate">{task.title}</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      {/* Priority dots */}
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 4 }).map((_, i) => {
-                          const dots = task.priority === 'Urgent' ? 4 : task.priority === 'High' ? 3 : task.priority === 'Medium' ? 2 : 1;
-                          return (
-                            <div
-                              key={i}
-                              className={`w-1 h-1 rounded-full ${i < dots ? getPriorityColor(task.priority).replace('text-', 'bg-') : 'bg-white/10'}`}
-                            />
-                          );
-                        })}
-                      </div>
-                      {/* Status badge */}
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(task.status)}`}>
-                        {getStatusDisplayName(task.status)}
-                      </span>
-                    </div>
+                    <span className="text-xs font-mono text-accent flex-shrink-0">{task.id}</span>
+                    <span className="flex-1 min-w-0">{task.title}</span>
                   </Link>
                 ))}
               </div>
