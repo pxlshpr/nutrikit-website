@@ -11,6 +11,14 @@ export interface TaskComment {
   };
 }
 
+export interface LinearDocument {
+  id: string;
+  title: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface TaskDetails {
   id: string;
   identifier: string;
@@ -43,6 +51,7 @@ export interface TaskDetails {
     title: string;
     url: string;
   }[];
+  documents: LinearDocument[];
 }
 
 // Create Linear client
@@ -108,6 +117,39 @@ export async function fetchTaskDetails(identifier: string): Promise<TaskDetails 
       });
     }
 
+    // Parse Linear document links from description
+    const processedDocuments: LinearDocument[] = [];
+    const description = issue.description || '';
+    const documentLinkPattern = /\[([^\]]+)\]\((https:\/\/linear\.app\/[^\/]+\/document\/[^-]+-([a-f0-9]+))\)/g;
+    const matches = [...description.matchAll(documentLinkPattern)];
+
+    for (const match of matches) {
+      const linkText = match[1];
+      const linkUrl = match[2];
+      const docId = match[3];
+
+      try {
+        const doc = await client.document(docId);
+        processedDocuments.push({
+          id: doc.id,
+          title: doc.title,
+          url: doc.url,
+          createdAt: doc.createdAt.toISOString(),
+          updatedAt: doc.updatedAt.toISOString(),
+        });
+      } catch (error) {
+        console.error(`Failed to fetch Linear document ${docId}:`, error);
+        // If we can't fetch the document, at least include the link info
+        processedDocuments.push({
+          id: docId,
+          title: linkText,
+          url: linkUrl,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    }
+
     return {
       id: issue.id,
       identifier: issue.identifier,
@@ -146,6 +188,7 @@ export async function fetchTaskDetails(identifier: string): Promise<TaskDetails 
         title: a.title,
         url: a.url,
       })),
+      documents: processedDocuments,
     };
   } catch (error) {
     console.error('Failed to fetch task details:', error);
