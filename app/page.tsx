@@ -36,7 +36,7 @@ export default function Home() {
 
           {/* Tagline */}
           <p className="text-xl md:text-2xl text-muted mb-12">
-            Nutrition, thoughtfully.
+            You can&apos;t control what you don&apos;t measure
           </p>
 
           {/* CTAs */}
