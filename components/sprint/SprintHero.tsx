@@ -166,7 +166,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   {/* Solid center dot */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10" style={{ backgroundColor: '#ea580c' }}></div>
                 </div>
-                {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
+                {info.status === 'ACTIVE' ? 'Active Now' : info.status}
               </div>
 
               {/* Sprint number */}
@@ -277,7 +277,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
           {/* Sprint goal */}
           {sprint.goal && (
             <div className="relative z-10 mt-8 pt-8 border-t border-foreground/10">
-              <h3 className="text-sm font-medium text-muted mb-2">SPRINT GOAL</h3>
+              <h3 className="text-sm font-medium text-muted mb-2">CURRENT FOCUS</h3>
               <p className="text-lg text-foreground/90">{sprint.goal}</p>
             </div>
           )}

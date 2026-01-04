@@ -26,8 +26,17 @@ interface TimelineNode {
 
 // Display names for statuses
 function getStatusDisplayName(status: SprintTask['status']): string {
-  // No need to map anymore - status is already 'Claudable'
-  return status;
+  const statusMap: Record<SprintTask['status'], string> = {
+    'Ready': 'Ready to Start',
+    'Running': 'Working On It',
+    'Testing': 'Being Tested',
+    'Done': 'Completed',
+    'Backlog': 'Backlog',
+    'Todo': 'To Do',
+    'Queue': 'Queued',
+    'Canceled': 'Canceled',
+  };
+  return statusMap[status] || status;
 }
 
 // Build task map from current sprint and planned sprints
@@ -124,7 +133,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-2">Sprint Timeline</h2>
+          <h2 className="text-2xl font-bold mb-2">What's Coming Next</h2>
           <p className="text-muted text-sm">Tap a sprint to see its tasks</p>
         </div>
 

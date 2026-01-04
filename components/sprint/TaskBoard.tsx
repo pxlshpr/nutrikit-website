@@ -9,8 +9,17 @@ interface TaskBoardProps {
 
 // Display names for statuses
 function getStatusDisplayName(status: SprintTask['status']): string {
-  // No need to map anymore - status is already 'Claudable'
-  return status;
+  const statusMap: Record<SprintTask['status'], string> = {
+    'Ready': 'Ready to Start',
+    'Running': 'Working On It',
+    'Testing': 'Being Tested',
+    'Done': 'Completed',
+    'Backlog': 'Backlog',
+    'Todo': 'To Do',
+    'Queue': 'Queued',
+    'Canceled': 'Canceled',
+  };
+  return statusMap[status] || status;
 }
 
 function StatusIcon({ status }: { status: SprintTask['status'] }) {
@@ -150,7 +159,7 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
         {/* Section header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">
-            Sprint Tasks
+            What We're Building
           </h2>
 
           {/* Status summary pills */}
@@ -158,22 +167,22 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
             {statusGroups['Running'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-protein/20 text-protein-light border border-protein/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-protein animate-pulse" />
-                {statusGroups['Running']} Running
+                {statusGroups['Running']} Working On It
               </span>
             )}
             {statusGroups['Ready'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent-light border border-accent/30">
-                {statusGroups['Ready']} Ready
+                {statusGroups['Ready']} Ready to Start
               </span>
             )}
             {statusGroups['Testing'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-carbs/20 text-carbs-light border border-carbs/30">
-                {statusGroups['Testing']} Testing
+                {statusGroups['Testing']} Being Tested
               </span>
             )}
             {statusGroups['Done'] && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success/20 text-success-light border border-success/30">
-                {statusGroups['Done']} Done
+                {statusGroups['Done']} Completed
               </span>
             )}
           </div>

@@ -254,7 +254,7 @@ export default function DailyLog({ entries }: DailyLogProps) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">Daily Log</h2>
+          <h2 className="text-2xl font-bold">Daily Updates</h2>
           <span className="text-sm text-muted">{entries.length} days</span>
         </div>
 

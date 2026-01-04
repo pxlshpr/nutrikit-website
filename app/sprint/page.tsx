@@ -69,7 +69,7 @@ export default async function SprintPage() {
             {sprintData.current.blockers && !sprintData.current.blockers.includes('Track any blockers') && (
               <section className="py-12">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <h2 className="text-2xl font-bold mb-6">Blockers & Discoveries</h2>
+                  <h2 className="text-2xl font-bold mb-6">Challenges & Learnings</h2>
                   <div className="glass rounded-2xl p-6">
                     <p className="text-foreground/90 whitespace-pre-wrap">{sprintData.current.blockers}</p>
                   </div>
