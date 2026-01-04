@@ -15,6 +15,7 @@ export interface LinearDocument {
   id: string;
   title: string;
   url: string;
+  content?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -134,6 +135,7 @@ export async function fetchTaskDetails(identifier: string): Promise<TaskDetails 
           id: doc.id,
           title: doc.title,
           url: doc.url,
+          content: doc.content || undefined,
           createdAt: doc.createdAt.toISOString(),
           updatedAt: doc.updatedAt.toISOString(),
         });
@@ -422,5 +424,25 @@ export async function fetchCompletedTasksForSprint(sprintLabel: string): Promise
   } catch (error) {
     console.error('Failed to fetch completed tasks:', error);
     return [];
+  }
+}
+
+// Fetch a Linear document by ID
+export async function fetchDocumentById(docId: string): Promise<LinearDocument | null> {
+  try {
+    const client = getLinearClient();
+    const doc = await client.document(docId);
+
+    return {
+      id: doc.id,
+      title: doc.title,
+      url: doc.url,
+      content: doc.content || undefined,
+      createdAt: doc.createdAt.toISOString(),
+      updatedAt: doc.updatedAt.toISOString(),
+    };
+  } catch (error) {
+    console.error(`Failed to fetch document ${docId}:`, error);
+    return null;
   }
 }

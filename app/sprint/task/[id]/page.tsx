@@ -268,11 +268,9 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
             </h2>
             <div className="grid gap-3">
               {task.documents.map((document) => (
-                <a
+                <Link
                   key={document.id}
-                  href={document.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`/sprint/task/${task.identifier}/doc/${document.id}`}
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-accent/10 to-protein/10 rounded-xl hover:from-accent/20 hover:to-protein/20 transition-all border border-accent/20 hover:border-accent/40 group"
                 >
                   <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
@@ -282,12 +280,12 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-sm font-medium block truncate">{document.title}</span>
-                    <span className="text-xs text-muted">Linear Document</span>
+                    <span className="text-xs text-muted">View Documentation</span>
                   </div>
                   <svg className="w-4 h-4 text-muted group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
