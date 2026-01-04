@@ -279,7 +279,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-bold mb-2">
-                  Sprint {selectedNode.displayNumber}:{' '}
+                  Block {selectedNode.displayNumber}:{' '}
                   <span className="inline-block bg-accent/20 rounded-2xl px-3 py-1 gradient-text font-mono">
                     {selectedNode.name}
                   </span>
