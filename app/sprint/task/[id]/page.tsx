@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchTaskDetails, getStatusColorClass, getPriorityColorClass } from '@/lib/linear-client';
 import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
-import DescriptionSections, { parseDescription } from '@/components/sprint/DescriptionSections';
+import DescriptionSections from '@/components/sprint/DescriptionSections';
+import { parseDescription } from '@/lib/parse-description';
 import CopyButton from '@/components/sprint/CopyButton';
 
 // Revalidate every 2 minutes for task details

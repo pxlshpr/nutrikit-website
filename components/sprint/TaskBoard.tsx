@@ -159,7 +159,7 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
         {/* Section header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">
-            What We're Building
+            What's in This Build
           </h2>
 
           {/* Status summary pills */}
