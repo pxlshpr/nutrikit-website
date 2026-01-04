@@ -37,17 +37,6 @@ export default async function SprintPage() {
             <Link href="/" className="text-2xl font-bold gradient-text-accent">
               NutriKit
             </Link>
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Home
-              </Link>
-              <Link href="/#features" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Features
-              </Link>
-              <Link href="/sprint" className="text-sm font-medium text-accent">
-                Sprint
-              </Link>
-            </div>
             <Link
               href="https://apps.apple.com/app/nutrikit"
               className="glass-button inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-foreground rounded-full"

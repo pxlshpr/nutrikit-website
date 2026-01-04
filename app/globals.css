@@ -528,3 +528,14 @@ html {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Sprint Active Pulse Dot - Purple in light mode, Orange in dark mode */
+.sprint-pulse-dot {
+  background-color: #9333EA; /* Purple for light mode */
+}
+
+@media (prefers-color-scheme: dark) {
+  .sprint-pulse-dot {
+    background-color: #f97316; /* Orange for dark mode */
+  }
+}
