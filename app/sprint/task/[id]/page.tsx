@@ -4,7 +4,6 @@ import { fetchTaskDetails, getStatusColorClass, getPriorityColorClass } from '@/
 import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
 import DescriptionSections from '@/components/sprint/DescriptionSections';
 import { parseDescription } from '@/lib/parse-description';
-import CopyButton from '@/components/sprint/CopyButton';
 
 // Revalidate every 2 minutes for task details
 export const revalidate = 120;
@@ -47,7 +46,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
       <header className="sticky top-0 z-50 glass-subtle">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold gradient-text-accent">
+            <Link href="/" className="text-2xl font-bold gradient-text">
               NutriKit
             </Link>
             <div className="hidden md:flex items-center gap-8">
@@ -85,7 +84,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
       <footer className="glass-subtle py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold gradient-text-accent">
+            <Link href="/" className="text-xl font-bold gradient-text">
               NutriKit
             </Link>
             <p className="text-sm text-muted">
@@ -200,24 +199,6 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
         {/* Description Sections */}
         {task.description && (
           <DescriptionSections content={task.description} taskIdentifier={task.identifier} />
-        )}
-
-        {/* Git branch */}
-        {task.branchName && (
-          <div className="glass rounded-2xl p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
-              Git Branch
-            </h2>
-            <div className="flex items-center gap-3 bg-foreground/5 px-4 py-3 rounded-xl border border-foreground/10">
-              <code className="flex-1 text-sm font-mono text-protein overflow-x-auto">
-                {task.branchName}
-              </code>
-              <CopyButton text={task.branchName} />
-            </div>
-          </div>
         )}
 
         {/* Comments */}

@@ -34,7 +34,7 @@ export default async function SprintPage() {
       <header className="sticky top-0 z-50 glass-subtle">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold gradient-text-accent">
+            <Link href="/" className="text-2xl font-bold gradient-text">
               NutriKit
             </Link>
             <Link
@@ -93,7 +93,7 @@ export default async function SprintPage() {
       <footer className="glass-subtle py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold gradient-text-accent">
+            <Link href="/" className="text-xl font-bold gradient-text">
               NutriKit
             </Link>
             <p className="text-sm text-muted">
