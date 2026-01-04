@@ -64,10 +64,10 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="py-6 text-center safe-area-bottom">
-        <p className="text-sm text-muted/60">
-          &copy; {new Date().getFullYear()} NutriKit
+      {/* Footer */}
+      <footer className="pt-8 safe-area-bottom">
+        <p className="text-sm text-muted text-center mb-12">
+          &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
         </p>
       </footer>
     </div>

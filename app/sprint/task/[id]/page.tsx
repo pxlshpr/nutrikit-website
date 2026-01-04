@@ -54,7 +54,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
                 Home
               </Link>
               <Link href="/sprint" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Sprint
+                Blocks
               </Link>
             </div>
             <Link
@@ -84,17 +84,10 @@ export default async function TaskPage({ params }: TaskPageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="glass-subtle py-8 safe-area-bottom">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold text-accent">
-              NutriKit
-            </Link>
-            <p className="text-sm text-muted">
-              &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
-            </p>
-          </div>
-        </div>
+      <footer className="pt-8 safe-area-bottom">
+        <p className="text-sm text-muted text-center mb-12">
+          &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
+        </p>
       </footer>
     </div>
   );
@@ -116,7 +109,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Back to Sprint
+          Back to Blocks
         </Link>
 
         {/* Task Header */}
@@ -374,7 +367,7 @@ function ErrorState({ error, taskId }: { error: string; taskId: string }) {
             href="/sprint"
             className="glass-button inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-full"
           >
-            Back to Sprint
+            Back to Blocks
           </Link>
         </div>
       </div>

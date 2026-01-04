@@ -59,7 +59,7 @@ export default async function DocPage({ params }: DocPageProps) {
                 Home
               </Link>
               <Link href="/sprint" className="text-sm font-medium text-muted hover:text-foreground transition-colors">
-                Sprint
+                Blocks
               </Link>
             </div>
             <Link
@@ -89,17 +89,10 @@ export default async function DocPage({ params }: DocPageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="glass-subtle py-8 safe-area-bottom">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold text-accent">
-              NutriKit
-            </Link>
-            <p className="text-sm text-muted">
-              &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
-            </p>
-          </div>
-        </div>
+      <footer className="pt-8 safe-area-bottom">
+        <p className="text-sm text-muted text-center mb-12">
+          &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
+        </p>
       </footer>
     </div>
   );

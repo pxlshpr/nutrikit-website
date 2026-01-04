@@ -93,22 +93,10 @@ export default async function SprintPage() {
       </main>
 
       {/* Footer */}
-      <footer className="glass-subtle py-8 safe-area-bottom">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/" className="text-xl font-bold text-accent">
-              NutriKit
-            </Link>
-            <div className="flex flex-col items-center md:items-end gap-1">
-              <p className="text-sm text-muted">
-                &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
-              </p>
-              <p className="text-xs text-muted/50 font-mono">
-                v{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'dev'}
-              </p>
-            </div>
-          </div>
-        </div>
+      <footer className="pt-8 safe-area-bottom">
+        <p className="text-sm text-muted text-center mb-12">
+          &copy; {new Date().getFullYear()} NutriKit. All rights reserved.
+        </p>
       </footer>
     </div>
   );
