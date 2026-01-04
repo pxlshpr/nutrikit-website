@@ -9,8 +9,8 @@ interface MarkdownRendererProps {
   taskIdentifier?: string;
 }
 
-// Pattern to match Linear document URLs
-const linearDocPattern = /^https:\/\/linear\.app\/[^\/]+\/document\/[^-]+-([a-f0-9]+)$/;
+// Pattern to match Linear document URLs - ID is the last hex segment after final dash
+const linearDocPattern = /^https:\/\/linear\.app\/[^\/]+\/document\/.*-([a-f0-9]+)$/;
 
 export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRendererProps) {
   return (
