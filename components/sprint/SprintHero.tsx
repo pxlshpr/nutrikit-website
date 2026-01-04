@@ -70,6 +70,7 @@ function getTimeRemaining(endDate: Date): {
   days: number;
   hours: number;
   minutes: number;
+  seconds: number;
   isOverdue: boolean;
   totalMs: number;
 } {
@@ -86,8 +87,9 @@ function getTimeRemaining(endDate: Date): {
   const days = Math.floor(absDiffMs / (1000 * 60 * 60 * 24));
   const hours = Math.floor((absDiffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((absDiffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((absDiffMs % (1000 * 60)) / 1000);
 
-  return { days, hours, minutes, isOverdue, totalMs: diffMs };
+  return { days, hours, minutes, seconds, isOverdue, totalMs: diffMs };
 }
 
 // Format date range nicely (e.g., "Jan 3-5, 2026" or "Dec 30 - Jan 1, 2026")
@@ -120,7 +122,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
 
   // Calculate dates dynamically based on sprint type
   const { start: sprintStart, end: sprintEnd } = getSprintDates(info.type);
-  const { days, hours, minutes, isOverdue, totalMs } = getTimeRemaining(sprintEnd);
+  const { days, hours, minutes, seconds, isOverdue, totalMs } = getTimeRemaining(sprintEnd);
 
   // SVG circle calculations
   const radius = 88;
@@ -143,8 +145,8 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             {/* Left side: Sprint info */}
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge */}
-              <div className="inline-flex items-center gap-2 glass-subtle px-4 py-2 rounded-full text-sm font-medium text-accent mb-4">
-                <span className="w-2 h-2 bg-accent rounded-full animate-pulse-glow" />
+              <div className="inline-flex items-center gap-2 glass-subtle px-4 py-2 rounded-full text-sm font-medium text-accent mb-4 border border-accent/40">
+                <span className="w-3 h-3 bg-accent rounded-full animate-pulse-glow" />
                 {info.status === 'ACTIVE' ? 'Sprint Active' : info.status}
               </div>
 
@@ -183,11 +185,11 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   <div className="text-xl font-bold font-mono">
                     {isOverdue ? (
                       <span className="text-red-400">
-                        +{days}d {hours}h {minutes}m
+                        +{days}d {hours}h {minutes}m {seconds}s
                       </span>
                     ) : (
                       <span>
-                        {days}d {hours}h {minutes}m
+                        {days}d {hours}h {minutes}m {seconds}s
                       </span>
                     )}
                   </div>
