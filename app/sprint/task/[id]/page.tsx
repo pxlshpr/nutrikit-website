@@ -132,7 +132,7 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
           <h1 className="text-2xl md:text-3xl font-bold mb-4">{task.title}</h1>
 
           {/* Metadata grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
             {task.assignee && (
               <div>
                 <span className="text-muted block mb-1">Assignee</span>
@@ -146,12 +146,6 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
                   )}
                   <span className="font-medium">{task.assignee.name}</span>
                 </div>
-              </div>
-            )}
-            {task.project && (
-              <div>
-                <span className="text-muted block mb-1">Project</span>
-                <span className="font-medium">{task.project.name}</span>
               </div>
             )}
             {task.estimate && (
