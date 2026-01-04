@@ -304,10 +304,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   <Link
                     key={task.id}
                     href={`/sprint/task/${task.id}`}
-                    className="flex items-start gap-3 p-3 glass-subtle rounded-xl hover:bg-white/10 transition-colors"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 glass-subtle rounded-xl hover:bg-white/10 transition-colors"
                   >
                     <span className="text-xs font-mono text-accent flex-shrink-0">{task.id}</span>
-                    <span className="flex-1 min-w-0">{task.title}</span>
+                    <span className="flex-1 min-w-0 w-full sm:w-auto">{task.title}</span>
                   </Link>
                 ))}
               </div>
