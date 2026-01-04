@@ -482,24 +482,27 @@ export function getPriorityColor(priority: SprintTask['priority']): string {
   return colors[priority] || colors['Medium'];
 }
 
-// Generate sprint name from Greek gods/titans
-// Using sprint number to cycle through the list
+// Generate block name from Greek gods/titans
+// Using Horizon Zero Dawn AI naming theme
 export function getSprintName(sprintNumber: number): string {
-  const greekGods = [
-    'zeus', 'hera', 'poseidon', 'demeter', 'athena',
-    'apollo', 'artemis', 'ares', 'aphrodite', 'hephaestus',
-    'hermes', 'hestia', 'dionysus', 'hades', 'persephone',
-    'eros', 'pan', 'nike', 'iris', 'morpheus',
+  const blockNames = [
+    // Horizon Zero Dawn subordinate functions (blocks 1-10)
+    'gaia', 'hephaestus', 'poseidon', 'demeter', 'artemis',
+    'apollo', 'aether', 'eleuthia', 'minerva', 'hades',
+    // Additional Greek gods/titans for future blocks
+    'athena', 'ares', 'aphrodite', 'hermes', 'dionysus',
+    'persephone', 'eros', 'nike', 'iris', 'morpheus',
     'helios', 'selene', 'eos', 'atlas', 'prometheus',
     'cronus', 'rhea', 'hyperion', 'theia', 'oceanus',
     'tethys', 'mnemosyne', 'themis', 'phoebe', 'coeus',
     'crius', 'iapetus', 'dione', 'metis', 'styx',
     'triton', 'proteus', 'nereus', 'amphitrite', 'galatea',
     'calypso', 'circe', 'hecate', 'nemesis', 'tyche',
+    'pan', 'hestia', 'hera', 'zeus',
   ];
 
-  const index = (sprintNumber - 1) % greekGods.length;
-  return greekGods[index];
+  const index = (sprintNumber - 1) % blockNames.length;
+  return blockNames[index];
 }
 
 // Format date for display
