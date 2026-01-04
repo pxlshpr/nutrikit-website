@@ -163,7 +163,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
           </button>
 
           {/* Horizontal line */}
-          <div className="absolute top-[52px] left-12 right-12 h-0.5 bg-gradient-to-r from-white/30 via-white/20 to-white/10" />
+          <div className="absolute top-[52px] left-12 right-12 h-0.5 bg-gradient-to-r from-foreground/20 via-foreground/15 to-foreground/5" />
 
           {/* Fade edges for scroll indication */}
           <div className={`absolute left-10 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none transition-opacity ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
@@ -187,14 +187,14 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     relative w-14 h-14 rounded-full flex items-center justify-center
                     transition-all duration-300 font-mono text-sm font-bold cursor-pointer
                     ${selectedSprint === node.sprint
-                      ? 'ring-2 ring-white ring-offset-2 ring-offset-background scale-110'
+                      ? 'ring-2 ring-accent ring-offset-2 ring-offset-background scale-110'
                       : 'hover:scale-105'
                     }
                     ${node.isCurrent
                       ? 'bg-orange-500 shadow-[0_0_24px_rgba(249,115,22,0.6)]'
                       : node.isPast
                         ? 'bg-success'
-                        : 'bg-transparent border-2 border-dashed border-white/40 hover:border-white/60'
+                        : 'bg-transparent border-2 border-dashed border-foreground/30 hover:border-foreground/50'
                     }
                   `}
                 >
@@ -204,7 +204,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                       ? 'text-white font-bold'
                       : node.isPast
                         ? 'text-white font-bold'
-                        : 'text-white/60'
+                        : 'text-foreground/60'
                   }>
                     {node.displayNumber}
                   </span>
@@ -216,7 +216,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                         ? 'bg-white text-orange-500'
                         : node.isPast
                           ? 'bg-white text-success'
-                          : 'bg-white/20 text-white border border-white/30'
+                          : 'bg-foreground/15 text-foreground border border-foreground/20'
                     }`}>
                       {node.tasks.length}
                     </div>
@@ -241,20 +241,20 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                 <div className="mt-3 text-center">
                   <div className={`text-xs font-mono capitalize ${
                     node.isCurrent
-                      ? 'text-orange-400'
+                      ? 'text-orange-600 dark:text-orange-400'
                       : node.isPast
                         ? 'text-success'
-                        : 'text-white/50'
+                        : 'text-foreground/50'
                   }`}>
                     {node.name}
                   </div>
                   {/* Status label */}
                   <div className={`text-[10px] mt-0.5 ${
                     node.isCurrent
-                      ? 'text-orange-400/80'
+                      ? 'text-orange-600/80 dark:text-orange-400/80'
                       : node.isPast
-                        ? 'text-success/60'
-                        : 'text-white/30'
+                        ? 'text-success/70'
+                        : 'text-foreground/30'
                   }`}>
                     {node.isCurrent ? 'active' : node.isPast ? 'done' : 'planned'}
                   </div>

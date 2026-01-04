@@ -44,7 +44,7 @@ export default function Home() {
             {/* Primary CTA - TestFlight */}
             <Link
               href="https://testflight.apple.com/join/tWZZUg57"
-              className="glass-button inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white rounded-full hover:glow-accent transition-all"
+              className="gradient-button inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white rounded-full transition-all"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1.8 14.4l-3.6-3.6 1.272-1.272 2.328 2.328 5.328-5.328L16.8 9.8l-6.6 6.6z"/>
@@ -55,7 +55,7 @@ export default function Home() {
             {/* Secondary CTA - Sprint */}
             <Link
               href="/sprint"
-              className="glass inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold rounded-full hover:bg-white/10 transition-all"
+              className="glass inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-foreground rounded-full hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
