@@ -510,3 +510,47 @@ export function formatDate(dateStr: string): string {
   }
   return dateStr;
 }
+
+// Fetch just the sprint task list (lightweight version for navigation)
+export async function fetchSprintTaskList(): Promise<SprintTask[]> {
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+  });
+
+  const owner = 'pxlshpr';
+  const repo = 'NutriKit';
+  const branch = 'main';
+
+  const response = await octokit.repos.getContent({
+    owner,
+    repo,
+    path: '.claude/sprints/current-sprint.md',
+    ref: branch,
+  });
+
+  if (!('content' in response.data) || !response.data.content) {
+    return [];
+  }
+
+  const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
+  const currentSprint = parseCurrentSprint(content);
+
+  // Fetch LIVE task statuses from Linear
+  try {
+    const taskIds = currentSprint.tasks.map(t => t.id);
+    const liveStatuses = await fetchLiveTaskStatuses(taskIds);
+
+    return currentSprint.tasks.map(task => {
+      const liveStatus = liveStatuses.get(task.id);
+      if (liveStatus) {
+        return {
+          ...task,
+          status: parseStatus(liveStatus.status),
+        };
+      }
+      return task;
+    });
+  } catch {
+    return currentSprint.tasks;
+  }
+}

@@ -1,20 +1,11 @@
 import Link from "next/link";
-import type { Viewport } from "next";
-
-// Safari address bar color to match mesh gradient background
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0612" },
-    { media: "(prefers-color-scheme: light)", color: "#f8f5fc" },
-  ],
-};
+import BackgroundSwitcher from "@/components/backgrounds/BackgroundSwitcher";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="mesh-gradient" />
-      <div className="noise-overlay" />
+      {/* Animated background with switcher */}
+      <BackgroundSwitcher />
 
       {/* Main Content - Centered */}
       <main className="flex-1 flex items-center justify-center px-4">

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchTaskDetails, getStatusColorClass, getPriorityColorClass } from '@/lib/linear-client';
+import { fetchSprintTaskList, type SprintTask } from '@/lib/sprint-parser';
 import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
 import DescriptionSections from '@/components/sprint/DescriptionSections';
 import { parseDescription } from '@/lib/parse-description';
@@ -20,16 +21,37 @@ export async function generateMetadata({ params }: TaskPageProps) {
   };
 }
 
+interface TaskNavInfo {
+  prevTask: SprintTask | null;
+  nextTask: SprintTask | null;
+}
+
 export default async function TaskPage({ params }: TaskPageProps) {
   const { id } = await params;
 
   let task;
   let error = null;
+  let navInfo: TaskNavInfo = { prevTask: null, nextTask: null };
 
   try {
-    task = await fetchTaskDetails(id);
+    // Fetch task details and sprint task list in parallel
+    const [taskDetails, sprintTasks] = await Promise.all([
+      fetchTaskDetails(id),
+      fetchSprintTaskList(),
+    ]);
+
+    task = taskDetails;
     if (!task) {
       notFound();
+    }
+
+    // Find current task's position and get prev/next tasks
+    const currentIndex = sprintTasks.findIndex(t => t.id === id);
+    if (currentIndex !== -1) {
+      navInfo = {
+        prevTask: currentIndex > 0 ? sprintTasks[currentIndex - 1] : null,
+        nextTask: currentIndex < sprintTasks.length - 1 ? sprintTasks[currentIndex + 1] : null,
+      };
     }
   } catch (e) {
     console.error('Failed to fetch task:', e);
@@ -77,7 +99,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
         {error ? (
           <ErrorState error={error} taskId={id} />
         ) : task ? (
-          <TaskDetailContent task={task} />
+          <TaskDetailContent task={task} navInfo={navInfo} />
         ) : (
           <LoadingState />
         )}
@@ -93,7 +115,10 @@ export default async function TaskPage({ params }: TaskPageProps) {
   );
 }
 
-function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<typeof fetchTaskDetails>>> }) {
+function TaskDetailContent({ task, navInfo }: {
+  task: NonNullable<Awaited<ReturnType<typeof fetchTaskDetails>>>;
+  navInfo: TaskNavInfo;
+}) {
   const statusColor = getStatusColorClass(task.status);
   const priorityColor = getPriorityColorClass(task.priority);
   const parsedDescription = task.description ? parseDescription(task.description) : null;
@@ -111,6 +136,11 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
           </svg>
           Back to Blocks
         </Link>
+
+        {/* Task Navigation */}
+        {(navInfo.prevTask || navInfo.nextTask) && (
+          <TaskNavigation prevTask={navInfo.prevTask} nextTask={navInfo.nextTask} />
+        )}
 
         {/* Task Header */}
         <div className="glass-strong rounded-3xl p-6 md:p-8 mb-6">
@@ -348,6 +378,62 @@ function formatDateTime(dateStr: string): string {
     hour: 'numeric',
     minute: '2-digit',
   });
+}
+
+function TaskNavigation({ prevTask, nextTask }: { prevTask: SprintTask | null; nextTask: SprintTask | null }) {
+  return (
+    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      {/* Previous Task */}
+      {prevTask ? (
+        <Link
+          href={`/sprint/task/${prevTask.id}`}
+          className="flex-1 group glass rounded-xl p-4 hover:bg-white/10 transition-all border border-white/5 hover:border-accent/30"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors mt-0.5">
+              <svg className="w-4 h-4 text-muted group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs text-muted block mb-1">Previous</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
+                {prevTask.title}
+              </span>
+              <span className="text-xs text-muted font-mono mt-1 block">{prevTask.id}</span>
+            </div>
+          </div>
+        </Link>
+      ) : (
+        <div className="flex-1" />
+      )}
+
+      {/* Next Task */}
+      {nextTask ? (
+        <Link
+          href={`/sprint/task/${nextTask.id}`}
+          className="flex-1 group glass rounded-xl p-4 hover:bg-white/10 transition-all border border-white/5 hover:border-accent/30"
+        >
+          <div className="flex items-start gap-3 sm:flex-row-reverse sm:text-right">
+            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors mt-0.5">
+              <svg className="w-4 h-4 text-muted group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs text-muted block mb-1">Next</span>
+              <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
+                {nextTask.title}
+              </span>
+              <span className="text-xs text-muted font-mono mt-1 block">{nextTask.id}</span>
+            </div>
+          </div>
+        </Link>
+      ) : (
+        <div className="flex-1" />
+      )}
+    </div>
+  );
 }
 
 function ErrorState({ error, taskId }: { error: string; taskId: string }) {

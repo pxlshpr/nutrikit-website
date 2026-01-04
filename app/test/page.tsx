@@ -1,103 +1,147 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TestPage() {
-  const [color, setColor] = useState("#1a1a2e");
+  const [darkColor, setDarkColor] = useState("#0a0612");
+  const [lightColor, setLightColor] = useState("#f8f5fc");
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // Update or create the theme-color meta tag
-    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "theme-color";
-      document.head.appendChild(meta);
-    }
-    meta.content = color;
-  }, [color]);
+    // Detect color scheme
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(mediaQuery.matches);
 
-  const presets = [
-    { name: "Black", color: "#000000" },
-    { name: "Near Black", color: "#0a0a0a" },
-    { name: "Dark Purple", color: "#0a0612" },
-    { name: "Dark Blue", color: "#0a0a1a" },
-    { name: "Dark Gray", color: "#1a1a1a" },
-    { name: "White", color: "#ffffff" },
-    { name: "Near White", color: "#f5f5f5" },
-    { name: "Light Purple", color: "#f8f5fc" },
-    { name: "Light Blue", color: "#f0f0ff" },
-    { name: "Light Gray", color: "#e5e5e5" },
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const color = isDark ? darkColor : lightColor;
+    document.documentElement.style.background = color;
+    document.body.style.background = color;
+
+    return () => {
+      document.documentElement.style.background = "";
+      document.body.style.background = "";
+    };
+  }, [isDark, darkColor, lightColor]);
+
+  const currentColor = isDark ? darkColor : lightColor;
+  const textColor = isDark ? "#fff" : "#000";
+
+  const darkPresets = [
+    { name: "Base", color: "#050508" },
+    { name: "Purple Tint", color: "#0a0612" },
+    { name: "Blue Tint", color: "#05080a" },
+    { name: "Warm", color: "#0a0808" },
+  ];
+
+  const lightPresets = [
+    { name: "Base", color: "#fafafa" },
+    { name: "Purple Tint", color: "#f8f5fc" },
+    { name: "Blue Tint", color: "#f5f8fc" },
+    { name: "Warm", color: "#fcfaf8" },
   ];
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: color,
-        padding: "60px 20px 20px",
+        backgroundColor: currentColor,
+        padding: "80px 20px 40px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "20px",
+        gap: "24px",
       }}
     >
-      <h1 style={{ color: isLight(color) ? "#000" : "#fff", fontSize: "24px" }}>
-        Theme Color Tester
+      <h1 style={{ color: textColor, fontSize: "20px", fontWeight: "bold" }}>
+        Theme Color Picker
       </h1>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          style={{ width: "60px", height: "40px", cursor: "pointer" }}
-        />
-        <input
-          type="text"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          style={{
-            padding: "10px",
-            fontSize: "16px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            width: "120px",
-          }}
-        />
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center", maxWidth: "400px" }}>
-        {presets.map((preset) => (
-          <button
-            key={preset.name}
-            onClick={() => setColor(preset.color)}
-            style={{
-              padding: "8px 12px",
-              fontSize: "12px",
-              borderRadius: "8px",
-              border: color === preset.color ? "2px solid #007aff" : "1px solid #ccc",
-              backgroundColor: preset.color,
-              color: isLight(preset.color) ? "#000" : "#fff",
-              cursor: "pointer",
-            }}
-          >
-            {preset.name}
-          </button>
-        ))}
-      </div>
-
-      <p style={{ color: isLight(color) ? "#333" : "#ccc", fontSize: "14px", textAlign: "center" }}>
-        Current: {color}
+      <p style={{ color: textColor, opacity: 0.7, fontSize: "14px" }}>
+        Mode: {isDark ? "Dark" : "Light"} · Current: {currentColor}
       </p>
+
+      {/* Dark Mode Colors */}
+      <div style={{ width: "100%", maxWidth: "300px" }}>
+        <p style={{ color: textColor, fontSize: "14px", marginBottom: "8px", fontWeight: "600" }}>
+          Dark Mode Color:
+        </p>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "8px" }}>
+          <input
+            type="color"
+            value={darkColor}
+            onChange={(e) => setDarkColor(e.target.value)}
+            style={{ width: "50px", height: "36px" }}
+          />
+          <input
+            type="text"
+            value={darkColor}
+            onChange={(e) => setDarkColor(e.target.value)}
+            style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid #666" }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          {darkPresets.map((p) => (
+            <button
+              key={p.name}
+              onClick={() => setDarkColor(p.color)}
+              style={{
+                padding: "6px 10px",
+                fontSize: "11px",
+                borderRadius: "6px",
+                border: darkColor === p.color ? "2px solid #007aff" : "1px solid #444",
+                backgroundColor: p.color,
+                color: "#fff",
+              }}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Light Mode Colors */}
+      <div style={{ width: "100%", maxWidth: "300px" }}>
+        <p style={{ color: textColor, fontSize: "14px", marginBottom: "8px", fontWeight: "600" }}>
+          Light Mode Color:
+        </p>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "8px" }}>
+          <input
+            type="color"
+            value={lightColor}
+            onChange={(e) => setLightColor(e.target.value)}
+            style={{ width: "50px", height: "36px" }}
+          />
+          <input
+            type="text"
+            value={lightColor}
+            onChange={(e) => setLightColor(e.target.value)}
+            style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          {lightPresets.map((p) => (
+            <button
+              key={p.name}
+              onClick={() => setLightColor(p.color)}
+              style={{
+                padding: "6px 10px",
+                fontSize: "11px",
+                borderRadius: "6px",
+                border: lightColor === p.color ? "2px solid #007aff" : "1px solid #ccc",
+                backgroundColor: p.color,
+                color: "#000",
+              }}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
-}
-
-function isLight(color: string): boolean {
-  const hex = color.replace("#", "");
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness > 128;
 }
