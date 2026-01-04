@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchTaskDetails, getStatusColorClass, getPriorityColorClass } from '@/lib/linear-client';
 import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
-import DescriptionSections from '@/components/sprint/DescriptionSections';
+import DescriptionSections, { parseDescription } from '@/components/sprint/DescriptionSections';
 import CopyButton from '@/components/sprint/CopyButton';
 
 // Revalidate every 2 minutes for task details
@@ -100,6 +100,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
 function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<typeof fetchTaskDetails>>> }) {
   const statusColor = getStatusColorClass(task.status);
   const priorityColor = getPriorityColorClass(task.priority);
+  const parsedDescription = task.description ? parseDescription(task.description) : null;
 
   return (
     <div className="py-8 md:py-12">
@@ -180,21 +181,20 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
             </div>
           )}
 
-          {/* External link */}
-          <div className="mt-4 pt-4 label-separator">
-            <a
-              href={task.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-accent hover:text-accent-light transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              View in Linear
-            </a>
-          </div>
+          {/* Preamble */}
+          {parsedDescription?.preamble && (
+            <div className="mt-4 pt-4 label-separator">
+              <p className="text-muted-foreground leading-relaxed">{parsedDescription.preamble}</p>
+            </div>
+          )}
         </div>
+
+        {/* Technical Details Header */}
+        {parsedDescription?.hasTechnicalDetails && parsedDescription.sections.length > 0 && (
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 mt-2">
+            Technical details
+          </h2>
+        )}
 
         {/* Description Sections */}
         {task.description && (
