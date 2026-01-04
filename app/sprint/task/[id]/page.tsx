@@ -184,8 +184,8 @@ function TaskDetailContent({ task }: { task: NonNullable<Awaited<ReturnType<type
 
           {/* Preamble */}
           {parsedDescription?.preamble && (
-            <div className="mt-4 pt-4 label-separator">
-              <p className="text-muted-foreground leading-relaxed">{parsedDescription.preamble}</p>
+            <div className="mt-4 pt-4 label-separator text-muted-foreground">
+              <MarkdownRenderer content={parsedDescription.preamble} />
             </div>
           )}
         </div>
