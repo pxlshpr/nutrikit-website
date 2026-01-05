@@ -471,7 +471,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           : node.isPast
                             ? 'bg-success shadow-md border border-success/50'
                             : 'glass-strong'
-                      } ${isSelected ? 'ring-2 ring-accent' : ''}`}>
+                      } ${isSelected ? 'ring-2 ring-white/80' : ''}`}>
                         {/* Animated glow for current */}
                         {node.isCurrent && (
                           <div className="absolute inset-0 rounded-xl bg-orange-500/30 animate-pulse" />
