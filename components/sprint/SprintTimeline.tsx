@@ -124,7 +124,7 @@ function buildSprintMaps(
 
 export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [] }: SprintTimelineProps) {
   const currentSprintNum = currentSprint.number;
-  const [selectedSprint, setSelectedSprint] = useState<number>(currentSprintNum);
+  const [selectedSprint, setSelectedSprint] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -444,12 +444,9 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     <button
                       key={node.sprint}
                       onClick={() => {
-                        // Always allow selecting the current block, prevent deselecting it
-                        if (node.isCurrent) {
-                          setSelectedSprint(node.sprint);
-                        } else if (isSelected) {
-                          // Allow deselecting other blocks, but selecting current is permanent
-                          setSelectedSprint(currentSprintNum);
+                        // Toggle selection - tap again to deselect
+                        if (isSelected) {
+                          setSelectedSprint(null);
                         } else {
                           setSelectedSprint(node.sprint);
                         }
@@ -459,7 +456,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           ? 'z-20 scale-105 ring-2 ring-accent ring-offset-2 ring-offset-background'
                           : 'z-10 hover:scale-102 hover:z-15'
                         }
-                        ${selectedSprint !== null && !isSelected ? 'opacity-50' : 'opacity-100'}
+                        ${selectedSprint !== null && !isSelected ? 'opacity-60' : 'opacity-100'}
                       `}
                       style={{
                         left: `${pos.left}%`,
@@ -546,13 +543,9 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
           </div>
         </div>
 
-        {/* Selected Sprint Tasks Panel */}
-        <div className={`mt-8 transition-all duration-500 ease-out ${
-          selectedNode
-            ? 'opacity-100 translate-y-0 max-h-[600px]'
-            : 'opacity-0 -translate-y-4 max-h-0 overflow-hidden pointer-events-none'
-        }`}>
-          {selectedNode && (
+        {/* Selected Sprint Tasks Panel - only renders when a block is selected */}
+        {selectedNode && (
+          <div className="mt-8">
             <div className="glass rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -571,16 +564,15 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     )}
                   </div>
                 </div>
-                {!selectedNode.isCurrent && (
-                  <button
-                    onClick={() => setSelectedSprint(currentSprintNum)}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+                <button
+                  onClick={() => setSelectedSprint(null)}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  aria-label="Close panel"
+                >
+                  <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
 
               {selectedNode.tasks.length > 0 ? (
@@ -603,8 +595,8 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                 </p>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

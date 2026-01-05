@@ -137,11 +137,6 @@ function TaskDetailContent({ task, navInfo }: {
           Back to Blocks
         </Link>
 
-        {/* Task Navigation */}
-        {(navInfo.prevTask || navInfo.nextTask) && (
-          <TaskNavigation prevTask={navInfo.prevTask} nextTask={navInfo.nextTask} />
-        )}
-
         {/* Task Header */}
         <div className="glass-strong rounded-3xl p-6 md:p-8 mb-6">
           {/* Identifier and badges */}
@@ -336,9 +331,14 @@ function TaskDetailContent({ task, navInfo }: {
         )}
 
         {/* Timestamps */}
-        <div className="text-center text-xs text-muted-foreground">
+        <div className="text-center text-xs text-muted-foreground mb-8">
           Created {formatDateTime(task.createdAt)} &middot; Updated {formatDateTime(task.updatedAt)}
         </div>
+
+        {/* Task Navigation */}
+        {(navInfo.prevTask || navInfo.nextTask) && (
+          <TaskNavigation prevTask={navInfo.prevTask} nextTask={navInfo.nextTask} />
+        )}
       </div>
     </div>
   );
