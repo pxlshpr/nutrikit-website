@@ -353,10 +353,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                 {dateMarkers.map((marker, idx) => (
                   <div
                     key={idx}
-                    className="flex-shrink-0 flex items-center justify-center py-2"
+                    className="flex-shrink-0 flex items-center justify-start py-2"
                     style={{ width: `${100 / totalDays}%` }}
                   >
-                    <span className={`text-[11px] font-mono px-1.5 py-0.5 rounded-md transition-colors ${
+                    <span className={`text-[11px] font-mono px-1 py-0.5 rounded-md transition-colors ${
                       marker.isWeekend
                         ? 'bg-foreground/8 text-muted-foreground'
                         : 'bg-foreground/5 text-muted'
@@ -451,10 +451,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           setSelectedSprint(node.sprint);
                         }
                       }}
-                      className={`absolute top-1/2 -translate-y-1/2 h-16 rounded-xl transition-all duration-500 ease-out cursor-pointer group
+                      className={`absolute top-1/2 -translate-y-1/2 h-16 rounded-xl transition-[transform,opacity] duration-300 ease-out cursor-pointer group
                         ${isSelected
-                          ? 'z-20 scale-105 ring-2 ring-accent ring-offset-2 ring-offset-background'
-                          : 'z-10 hover:scale-102 hover:z-15'
+                          ? 'z-20 scale-105'
+                          : 'z-10 hover:scale-[1.02]'
                         }
                         ${selectedSprint !== null && !isSelected ? 'opacity-60' : 'opacity-100'}
                       `}
@@ -471,7 +471,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           : node.isPast
                             ? 'bg-success shadow-md border border-success/50'
                             : 'glass-strong'
-                      }`}>
+                      } ${isSelected ? 'ring-2 ring-accent' : ''}`}>
                         {/* Animated glow for current */}
                         {node.isCurrent && (
                           <div className="absolute inset-0 rounded-xl bg-orange-500/30 animate-pulse" />
@@ -516,7 +516,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     <div
                       key={node.sprint}
                       className={`absolute flex justify-center transition-all duration-300 ${
-                        isSelected || node.isCurrent
+                        isSelected || (node.isCurrent && selectedSprint === null)
                           ? 'opacity-100'
                           : 'opacity-0'
                       }`}
