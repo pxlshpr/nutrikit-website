@@ -22,6 +22,7 @@ interface TimelineNode {
   isPast: boolean;
   isFuture: boolean;
   tasks: SprintTask[];
+  dateRange?: string;
 }
 
 // Display names for statuses
@@ -39,23 +40,25 @@ function getStatusDisplayName(status: SprintTask['status']): string {
   return statusMap[status] || status;
 }
 
-// Build task map from current sprint and planned sprints
-function buildSprintTaskMap(
+// Build task map and date map from current sprint and planned sprints
+function buildSprintMaps(
   currentSprintNum: number,
   currentTasks: SprintTask[],
   plannedSprints: PlannedSprint[]
-): Map<number, SprintTask[]> {
-  const sprintTaskMap = new Map<number, SprintTask[]>();
+): { taskMap: Map<number, SprintTask[]>, dateMap: Map<number, string> } {
+  const taskMap = new Map<number, SprintTask[]>();
+  const dateMap = new Map<number, string>();
 
-  // Current sprint gets its actual tasks
-  sprintTaskMap.set(currentSprintNum, currentTasks);
+  // Current sprint gets its actual tasks (no date in map, will be handled separately)
+  taskMap.set(currentSprintNum, currentTasks);
 
   // Add planned sprints from the markdown file
   for (const planned of plannedSprints) {
-    sprintTaskMap.set(planned.number, planned.tasks);
+    taskMap.set(planned.number, planned.tasks);
+    dateMap.set(planned.number, planned.dateRange);
   }
 
-  return sprintTaskMap;
+  return { taskMap, dateMap };
 }
 
 export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [] }: SprintTimelineProps) {
@@ -65,8 +68,8 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
   const [canScrollRight, setCanScrollRight] = useState(false);
   const currentSprintNum = currentSprint.number;
 
-  // Build task map from current sprint and planned sprints file
-  const sprintTaskMap = buildSprintTaskMap(currentSprintNum, currentTasks, plannedSprints);
+  // Build task map and date map from current sprint and planned sprints file
+  const { taskMap: sprintTaskMap, dateMap: sprintDateMap } = buildSprintMaps(currentSprintNum, currentTasks, plannedSprints);
 
   // Generate timeline nodes: start from CURRENT sprint, show current + future only
   const maxFutureSprint = Math.max(
@@ -87,6 +90,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
       isPast: i < currentSprintNum,
       isFuture: i > currentSprintNum,
       tasks: sprintTaskMap.get(i) || [],
+      dateRange: sprintDateMap.get(i),
     });
   }
 
@@ -284,9 +288,12 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     {selectedNode.name}
                   </span>
                 </h3>
-                <p className="text-sm text-muted">
-                  {selectedNode.isCurrent ? 'Current sprint' : selectedNode.isPast ? 'Completed sprint' : 'Planned tasks (tentative)'}
-                </p>
+                <div className="text-sm text-muted space-y-1">
+                  <p>{selectedNode.isCurrent ? 'Current block' : selectedNode.isPast ? 'Completed block' : 'Planned tasks (tentative)'}</p>
+                  {selectedNode.dateRange && (
+                    <p className="text-xs text-muted-foreground">{selectedNode.dateRange}</p>
+                  )}
+                </div>
               </div>
               <button
                 onClick={() => setSelectedSprint(null)}

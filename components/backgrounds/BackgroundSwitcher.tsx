@@ -23,7 +23,7 @@ const options: { value: BackgroundType; label: string; desc: string }[] = [
 ];
 
 export default function BackgroundSwitcher() {
-  const [bg, setBg] = useState<BackgroundType>("lava");
+  const [bg, setBg] = useState<BackgroundType>("aurora");
   const [isOpen, setIsOpen] = useState(false);
   const [isPollOpen, setIsPollOpen] = useState(false);
 
