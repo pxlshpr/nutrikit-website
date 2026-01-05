@@ -42,10 +42,28 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
     try {
       const res = await fetch("/api/vote");
       const data = await res.json();
-      setVoteData(data);
-      setHasVoted(!!data.userChoice);
+
+      // Check for error in response
+      if (data.error) {
+        console.error("API Error:", data.error);
+        // Set default empty counts
+        setVoteData({
+          userChoice: null,
+          counts: { none: 0, particles: 0, lava: 0, crt: 0, glow: 0, aurora: 0, mesh: 0 },
+          total: 0
+        });
+      } else {
+        setVoteData(data);
+        setHasVoted(!!data.userChoice);
+      }
     } catch (error) {
       console.error("Failed to fetch votes:", error);
+      // Set default empty counts on error
+      setVoteData({
+        userChoice: null,
+        counts: { none: 0, particles: 0, lava: 0, crt: 0, glow: 0, aurora: 0, mesh: 0 },
+        total: 0
+      });
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +91,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
 
   if (!isOpen) return null;
 
-  const maxVotes = voteData ? Math.max(...Object.values(voteData.counts), 1) : 1;
+  const maxVotes = voteData?.counts ? Math.max(...Object.values(voteData.counts), 1) : 1;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -84,16 +102,16 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
       />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-md glass rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 pt-6 pb-4">
+        <div className="px-6 pt-6 pb-4 border-b border-black/5 dark:border-white/5">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold gradient-text-accent">
               Vote for Your Favorite Background
             </h2>
             <button
               onClick={onClose}
-              className="p-1 rounded-lg hover:bg-white/10 transition-colors"
+              className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -129,24 +147,26 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
                   key={option.value}
                   onClick={() => submitVote(option.value)}
                   disabled={isSubmitting}
-                  className={`w-full relative overflow-hidden rounded-xl transition-all ${
+                  className={`w-full relative overflow-hidden rounded-xl transition-all duration-200 ${
                     isUserChoice
-                      ? "ring-2 ring-accent bg-accent/10"
-                      : "hover:bg-white/5"
-                  } ${isSubmitting ? "opacity-50 cursor-wait" : ""}`}
+                      ? "ring-2 ring-accent bg-gradient-to-r from-accent/15 to-accent/5 dark:bg-accent/10"
+                      : "hover:bg-black/5 dark:hover:bg-white/5"
+                  } ${isSubmitting ? "opacity-50 cursor-wait" : ""} border border-transparent ${
+                    isUserChoice ? "border-accent/30 dark:border-accent/30" : "border-black/10 dark:border-white/10"
+                  }`}
                 >
                   {/* Progress bar background */}
                   <div
-                    className="absolute inset-y-0 left-0 bg-accent/20 transition-all duration-500"
+                    className="absolute inset-y-0 left-0 bg-accent/15 dark:bg-accent/20 transition-all duration-500"
                     style={{ width: `${barWidth}%` }}
                   />
 
                   {/* Content */}
                   <div className="relative px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className={`flex items-center flex-1 ${isUserChoice ? "gap-2" : ""}`}>
                       {isUserChoice && (
-                        <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="w-6 h-6 rounded-full bg-slate-800 dark:bg-accent flex items-center justify-center animate-in fade-in scale-in-50 duration-200 flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
@@ -172,7 +192,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
 
         {/* Footer */}
         {voteData && (
-          <div className="px-6 py-4 border-t border-white/10 text-center text-sm text-muted">
+          <div className="px-6 py-4 border-t border-black/5 dark:border-white/10 text-center text-sm text-muted">
             {voteData.total} {voteData.total === 1 ? "vote" : "votes"} total
           </div>
         )}
