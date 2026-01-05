@@ -470,8 +470,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg shadow-orange-500/40 border border-orange-400/50'
                           : node.isPast
                             ? 'bg-success shadow-md border border-success/50'
-                            : 'glass-strong'
-                      } ${isSelected ? 'ring-2 ring-white/80' : ''}`}>
+                            : isSelected
+                              ? 'glass-strong'
+                              : 'glass'
+                      }`}>
                         {/* Animated glow for current */}
                         {node.isCurrent && (
                           <div className="absolute inset-0 rounded-xl bg-orange-500/30 animate-pulse" />
