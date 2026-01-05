@@ -123,11 +123,11 @@ function buildSprintMaps(
 }
 
 export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [] }: SprintTimelineProps) {
-  const [selectedSprint, setSelectedSprint] = useState<number | null>(null);
+  const currentSprintNum = currentSprint.number;
+  const [selectedSprint, setSelectedSprint] = useState<number>(currentSprintNum);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-  const currentSprintNum = currentSprint.number;
 
   const { taskMap: sprintTaskMap, dateMap: sprintDateMap } = buildSprintMaps(currentSprintNum, currentTasks, plannedSprints);
 
@@ -443,7 +443,17 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   return (
                     <button
                       key={node.sprint}
-                      onClick={() => setSelectedSprint(isSelected ? null : node.sprint)}
+                      onClick={() => {
+                        // Always allow selecting the current block, prevent deselecting it
+                        if (node.isCurrent) {
+                          setSelectedSprint(node.sprint);
+                        } else if (isSelected) {
+                          // Allow deselecting other blocks, but selecting current is permanent
+                          setSelectedSprint(currentSprintNum);
+                        } else {
+                          setSelectedSprint(node.sprint);
+                        }
+                      }}
                       className={`absolute top-1/2 -translate-y-1/2 h-16 rounded-xl transition-all duration-500 ease-out cursor-pointer group
                         ${isSelected
                           ? 'z-20 scale-105 ring-2 ring-accent ring-offset-2 ring-offset-background'
@@ -561,14 +571,16 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => setSelectedSprint(null)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                {!selectedNode.isCurrent && (
+                  <button
+                    onClick={() => setSelectedSprint(currentSprintNum)}
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
 
               {selectedNode.tasks.length > 0 ? (
