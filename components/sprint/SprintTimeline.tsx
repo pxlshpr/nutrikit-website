@@ -536,62 +536,6 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
           </div>
         </div>
 
-        {/* Mobile-Friendly Circle View (shown on small screens) */}
-        <div className="md:hidden mt-8">
-          <div className="flex overflow-x-auto gap-4 pb-4 px-4 scrollbar-hide snap-x snap-mandatory">
-            {nodes.map((node) => {
-              const isSelected = selectedSprint === node.sprint;
-
-              return (
-                <button
-                  key={node.sprint}
-                  onClick={() => setSelectedSprint(isSelected ? null : node.sprint)}
-                  className={`flex-shrink-0 snap-center flex flex-col items-center transition-all duration-300 ${
-                    isSelected ? 'scale-110' : ''
-                  }`}
-                >
-                  <div
-                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                      isSelected
-                        ? 'ring-2 ring-accent ring-offset-2 ring-offset-background'
-                        : ''
-                    } ${
-                      node.isCurrent
-                        ? 'bg-orange-500 shadow-lg shadow-orange-500/40'
-                        : node.isPast
-                          ? 'bg-success'
-                          : 'bg-transparent border-2 border-dashed border-foreground/30'
-                    }`}
-                  >
-                    <span className={`font-bold ${
-                      node.isCurrent || node.isPast ? 'text-white' : 'text-foreground/60'
-                    }`}>
-                      {node.displayNumber}
-                    </span>
-
-                    {node.isCurrent && (
-                      <div className="absolute inset-0 rounded-full bg-orange-500/40 animate-ping" />
-                    )}
-                  </div>
-
-                  <div className="mt-2 text-center">
-                    <div className={`text-xs font-mono capitalize ${
-                      node.isCurrent ? 'text-orange-400' : node.isPast ? 'text-success' : 'text-foreground/50'
-                    }`}>
-                      {node.name}
-                    </div>
-                    {node.startDate && (
-                      <div className="text-[10px] text-muted-foreground">
-                        {formatDateShort(node.startDate)}
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Selected Sprint Tasks Panel */}
         <div className={`mt-8 transition-all duration-500 ease-out ${
           selectedNode
@@ -653,3 +597,63 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
     </section>
   );
 }
+
+/*
+LEGACY: Mobile-Friendly Circle View - Replaced by responsive Gantt chart
+This code is preserved for reference but no longer used.
+
+<div className="md:hidden mt-8">
+  <div className="flex overflow-x-auto gap-4 pb-4 px-4 scrollbar-hide snap-x snap-mandatory">
+    {nodes.map((node) => {
+      const isSelected = selectedSprint === node.sprint;
+
+      return (
+        <button
+          key={node.sprint}
+          onClick={() => setSelectedSprint(isSelected ? null : node.sprint)}
+          className={`flex-shrink-0 snap-center flex flex-col items-center transition-all duration-300 ${
+            isSelected ? 'scale-110' : ''
+          }`}
+        >
+          <div
+            className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
+              isSelected
+                ? 'ring-2 ring-accent ring-offset-2 ring-offset-background'
+                : ''
+            } ${
+              node.isCurrent
+                ? 'bg-orange-500 shadow-lg shadow-orange-500/40'
+                : node.isPast
+                  ? 'bg-success'
+                  : 'bg-transparent border-2 border-dashed border-foreground/30'
+            }`}
+          >
+            <span className={`font-bold ${
+              node.isCurrent || node.isPast ? 'text-white' : 'text-foreground/60'
+            }`}>
+              {node.displayNumber}
+            </span>
+
+            {node.isCurrent && (
+              <div className="absolute inset-0 rounded-full bg-orange-500/40 animate-ping" />
+            )}
+          </div>
+
+          <div className="mt-2 text-center">
+            <div className={`text-xs font-mono capitalize ${
+              node.isCurrent ? 'text-orange-400' : node.isPast ? 'text-success' : 'text-foreground/50'
+            }`}>
+              {node.name}
+            </div>
+            {node.startDate && (
+              <div className="text-[10px] text-muted-foreground">
+                {formatDateShort(node.startDate)}
+              </div>
+            )}
+          </div>
+        </button>
+      );
+    })}
+  </div>
+</div>
+*/
