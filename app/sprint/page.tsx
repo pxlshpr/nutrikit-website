@@ -108,9 +108,9 @@ function ErrorState({ error }: { error: string }) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="glass-strong rounded-3xl p-12">
           <div className="text-6xl mb-6">😅</div>
-          <h2 className="text-2xl font-bold mb-4">Couldn&apos;t load sprint data</h2>
+          <h2 className="text-2xl font-bold mb-4">Couldn&apos;t load block data</h2>
           <p className="text-muted mb-6">
-            There was an issue fetching the current sprint information.
+            There was an issue fetching the current block information.
           </p>
           <code className="block text-sm text-red-400 bg-white/5 p-4 rounded-xl mb-6 overflow-x-auto">
             {error}
@@ -133,8 +133,8 @@ function LoadingState() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="glass-strong rounded-3xl p-12">
           <div className="text-6xl mb-6 animate-pulse">⏳</div>
-          <h2 className="text-2xl font-bold mb-4">Loading sprint data...</h2>
-          <p className="text-muted">Please wait while we fetch the latest sprint information.</p>
+          <h2 className="text-2xl font-bold mb-4">Loading block data...</h2>
+          <p className="text-muted">Please wait while we fetch the latest block information.</p>
         </div>
       </div>
     </section>

@@ -8,7 +8,7 @@ interface SprintHeroProps {
 }
 
 // Block number offset (adjusts display number from file number)
-const BLOCK_OFFSET = -45;
+const BLOCK_OFFSET = 0;
 
 // Get current time in Maldives (UTC+5)
 function getMaldivesNow(): Date {
@@ -121,8 +121,9 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
   const blockName = getSprintName(displayBlockNumber);
   const completedTasks = tasks.filter(t => t.status === 'Done' || t.status === 'Testing').length;
 
-  // Calculate dates dynamically based on sprint type
-  const { start: sprintStart, end: sprintEnd } = getSprintDates(info.type);
+  // Use dates from the markdown file instead of calculating dynamically
+  const sprintStart = new Date(info.startDate);
+  const sprintEnd = new Date(info.endDate);
 
   // State for countdown that updates every second
   const [timeRemaining, setTimeRemaining] = useState(() => getTimeRemaining(sprintEnd));
@@ -183,27 +184,17 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
               <p className="text-muted text-lg mb-4">{info.theme}</p>
 
               {/* Countdown Banner - Prominent */}
-              <div className={`inline-flex items-center gap-3 px-5 py-3 rounded-xl ${
-                isOverdue
-                  ? 'bg-red-500/20 border border-red-500/30'
-                  : isUrgent
-                    ? 'bg-red-500/20 border border-red-500/30'
-                    : isWarning
-                      ? 'bg-carbs/20 border border-carbs/30'
-                      : 'bg-accent/10 border border-accent/20'
-              }`}>
-                <svg className="w-5 h-5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-accent/10 border border-accent/20">
+                <svg className="w-5 h-5 gradient-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div className="text-left">
-                  <div className={`text-xs font-medium uppercase tracking-wide ${
-                    isOverdue ? 'text-red-400' : isUrgent ? 'text-red-400' : isWarning ? 'text-carbs-light' : 'text-accent-light'
-                  }`}>
+                  <div className="text-xs font-medium uppercase tracking-wide gradient-text">
                     {isOverdue ? 'Overdue' : 'Time Remaining'}
                   </div>
-                  <div className="text-xl font-bold font-mono" suppressHydrationWarning>
+                  <div className="text-xl font-bold font-mono gradient-text" suppressHydrationWarning>
                     {isOverdue ? (
-                      <span className="text-red-400" suppressHydrationWarning>
+                      <span suppressHydrationWarning>
                         +{days}d {hours}h {minutes}m {seconds}s
                       </span>
                     ) : (
@@ -255,7 +246,7 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                     className="transition-all duration-1000 ease-out"
                   />
                   <defs>
-                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="var(--accent)" />
                       <stop offset="50%" stopColor="var(--protein)" />
                       <stop offset="100%" stopColor="var(--fat)" />

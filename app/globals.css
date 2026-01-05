@@ -473,6 +473,8 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-bottom: 0.1em;
+  line-height: 1.2;
 }
 
 .gradient-text-accent {
@@ -654,15 +656,9 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Sprint Active Pulse Dot - Purple in light mode, Orange in dark mode */
+/* Sprint Active Pulse Dot - Orange in both light and dark modes */
 .sprint-pulse-dot {
-  background-color: #9333EA; /* Purple for light mode */
-}
-
-@media (prefers-color-scheme: dark) {
-  .sprint-pulse-dot {
-    background-color: #f97316; /* Orange for dark mode */
-  }
+  background-color: #f97316; /* Orange for both modes */
 }
 
 /* Label Tag - visible in both light and dark modes */

@@ -161,8 +161,8 @@ function extractSection(content: string, headerPattern: RegExp, endPattern?: Reg
 
 // Parse current sprint markdown
 export function parseCurrentSprint(content: string): SprintData {
-  // Parse Sprint Info table
-  const infoRows = extractTableRows(content, /## Sprint Info/);
+  // Parse Block Info table (also supports legacy "Sprint Info")
+  const infoRows = extractTableRows(content, /## (?:Block|Sprint) Info/);
   const infoMap: Record<string, string> = {};
   for (const row of infoRows) {
     if (row.length >= 2) {
@@ -170,27 +170,28 @@ export function parseCurrentSprint(content: string): SprintData {
     }
   }
 
-  // Extract character from label (e.g., sprint-1-link -> link)
-  const label = infoMap['sprint label']?.replace(/`/g, '') || '';
-  const character = label.split('-').pop() || '';
+  // Extract character from label (e.g., block-1-circe -> circe, or legacy sprint-1-link -> link)
+  const label = infoMap['block label'] || infoMap['sprint label'] || '';
+  const cleanLabel = label.replace(/`/g, '');
+  const character = cleanLabel.split('-').pop() || '';
 
   // Parse status from the blockquote
   const statusMatch = content.match(/>\s*\*\*Status\*\*:\s*(\w+)/);
   const status = (statusMatch?.[1]?.toUpperCase() || 'ACTIVE') as SprintInfo['status'];
 
   const info: SprintInfo = {
-    number: parseInt(infoMap['sprint number'] || '0'),
-    label,
+    number: parseInt(infoMap['block number'] || infoMap['sprint number'] || '0'),
+    label: cleanLabel,
     character: character.charAt(0).toUpperCase() + character.slice(1),
     theme: infoMap['theme'] || '',
     startDate: infoMap['start date'] || '',
     endDate: infoMap['end date'] || '',
-    type: (infoMap['sprint type']?.charAt(0) || 'A') as 'A' | 'B',
+    type: (infoMap['block type']?.charAt(0) || infoMap['sprint type']?.charAt(0) || 'A') as 'A' | 'B',
     status,
   };
 
-  // Parse Sprint Goal
-  const goalSection = extractSection(content, /## Sprint Goal/);
+  // Parse Block Goal (also supports legacy "Sprint Goal")
+  const goalSection = extractSection(content, /## (?:Block|Sprint) Goal/);
 
   // Parse Selected Tasks table
   const taskRows = extractTableRows(content, /## Selected Tasks/);
@@ -234,8 +235,8 @@ export function parseCurrentSprint(content: string): SprintData {
   // Parse Blockers
   const blockers = extractSection(content, /## Blockers & Discoveries/);
 
-  // Parse Sprint Outcome table
-  const outcomeRows = extractTableRows(content, /## Sprint Outcome/);
+  // Parse Block Outcome table (also supports legacy "Sprint Outcome")
+  const outcomeRows = extractTableRows(content, /## (?:Block|Sprint) Outcome/);
   const outcomeMap: Record<string, string> = {};
   for (const row of outcomeRows) {
     if (row.length >= 2) {
@@ -272,7 +273,7 @@ export function parseSprintConfig(content: string): SprintConfig {
   return { characters };
 }
 
-// Parse planned sprints markdown
+// Parse planned blocks/sprints markdown
 export interface PlannedSprint {
   number: number;
   name: string;
@@ -283,8 +284,8 @@ export interface PlannedSprint {
 export function parsePlannedSprints(content: string): PlannedSprint[] {
   const sprints: PlannedSprint[] = [];
 
-  // Match sprint headers like "## Sprint 48 - hecate (Tue Jan 7 - Thu Jan 9, 2026)"
-  const sprintSections = content.split(/^## Sprint /m).slice(1);
+  // Match block/sprint headers like "## Block 2 - hecate (Thu Jan 8 - Sat Jan 10, 2026)" or "## Sprint 48 - hecate (Tue Jan 7 - Thu Jan 9, 2026)"
+  const sprintSections = content.split(/^## (?:Block|Sprint) /m).slice(1);
 
   for (const section of sprintSections) {
     const headerMatch = section.match(/^(\d+)\s*-\s*(\w+)\s*\(([^)]+)\)/);

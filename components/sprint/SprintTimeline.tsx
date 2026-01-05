@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { SprintConfig, SprintInfo, SprintTask, PlannedSprint, getSprintName, getStatusColor, getPriorityColor } from '@/lib/sprint-parser';
 
 // Block number offset (adjusts display number from file number)
-const BLOCK_OFFSET = -45;
+const BLOCK_OFFSET = 0;
 
 interface SprintTimelineProps {
   currentSprint: SprintInfo;
