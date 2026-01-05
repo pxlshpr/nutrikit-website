@@ -27,7 +27,6 @@ export interface SprintInfo {
   theme: string;
   startDate: string;
   endDate: string;
-  type: 'A' | 'B';
   status: 'ACTIVE' | 'COMPLETED' | 'PLANNED';
 }
 
@@ -53,7 +52,6 @@ export interface SprintHistory {
   completedSprints: {
     label: string;
     dateRange: string;
-    type: 'A' | 'B';
     goal: string;
     completedTasks: string[];
     incompleteTasks: string[];
@@ -186,7 +184,6 @@ export function parseCurrentSprint(content: string): SprintData {
     theme: infoMap['theme'] || '',
     startDate: infoMap['start date'] || '',
     endDate: infoMap['end date'] || '',
-    type: (infoMap['block type']?.charAt(0) || infoMap['sprint type']?.charAt(0) || 'A') as 'A' | 'B',
     status,
   };
 

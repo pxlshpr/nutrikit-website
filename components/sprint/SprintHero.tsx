@@ -18,54 +18,6 @@ function getMaldivesNow(): Date {
   return new Date(utc + 5 * 60 * 60 * 1000); // UTC+5
 }
 
-// Calculate sprint dates based on type (A=Sat-Mon, B=Tue-Thu) for current week
-function getSprintDates(type: 'A' | 'B'): { start: Date; end: Date } {
-  const now = getMaldivesNow();
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-
-  // For Type A (Sat-Mon): Saturday=6, Sunday=0, Monday=1
-  // For Type B (Tue-Thu): Tuesday=2, Wednesday=3, Thursday=4
-
-  let startDayOffset: number;
-
-  if (type === 'A') {
-    // Find Saturday of current sprint week
-    // If we're on Sat(6), Sun(0), or Mon(1), we're in an active A sprint
-    if (dayOfWeek === 6) {
-      startDayOffset = 0; // Today is Saturday
-    } else if (dayOfWeek === 0) {
-      startDayOffset = -1; // Yesterday was Saturday
-    } else if (dayOfWeek === 1) {
-      startDayOffset = -2; // Saturday was 2 days ago
-    } else {
-      // We're between Tue-Fri, find previous Saturday
-      startDayOffset = -(dayOfWeek + 1);
-    }
-  } else {
-    // Type B: Find Tuesday of current sprint week
-    if (dayOfWeek === 2) {
-      startDayOffset = 0; // Today is Tuesday
-    } else if (dayOfWeek === 3) {
-      startDayOffset = -1; // Yesterday was Tuesday
-    } else if (dayOfWeek === 4) {
-      startDayOffset = -2; // Tuesday was 2 days ago
-    } else {
-      // We're on Fri, Sat, Sun, or Mon - find previous or next Tuesday
-      startDayOffset = 2 - dayOfWeek;
-      if (startDayOffset > 0) startDayOffset -= 7; // Go to previous week's Tuesday
-    }
-  }
-
-  const start = new Date(now);
-  start.setDate(start.getDate() + startDayOffset);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(start);
-  end.setDate(end.getDate() + 2); // 3-day sprint: Sat-Mon or Tue-Thu
-
-  return { start, end };
-}
-
 // Calculate time remaining until midnight Maldives time on end date
 function getTimeRemaining(endDate: Date): {
   days: number;
@@ -212,10 +164,6 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span>{formatDateRange(sprintStart, sprintEnd)}</span>
-                <span className="text-muted-foreground">·</span>
-                <span className="text-muted-foreground">
-                  {info.type === 'A' ? 'Sat-Mon' : 'Tue-Thu'}
-                </span>
               </div>
             </div>
 
