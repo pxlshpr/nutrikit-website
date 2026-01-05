@@ -4,6 +4,9 @@ import BackgroundSwitcher from "@/components/backgrounds/BackgroundSwitcher";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Safe area cover - prevents Safari from sampling aurora colors */}
+      <div className="safe-area-cover" />
+
       {/* Animated background with switcher */}
       <BackgroundSwitcher />
 

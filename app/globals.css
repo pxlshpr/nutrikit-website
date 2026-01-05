@@ -85,7 +85,7 @@
 
 html {
   /* Safari uses HTML background for toolbar/address bar color */
-  background: #0a0612; /* Dark mode default - purple tint for Safari */
+  background: #0c0c0e; /* Dark mode - soft dark gray */
   scroll-behavior: smooth;
   /* Extend to fill entire viewport including Safari toolbar area */
   min-height: 100%;
@@ -98,7 +98,7 @@ html {
 
 @media (prefers-color-scheme: light) {
   html {
-    background: #f8f5fc; /* Light mode - purple tint for Safari */
+    background: #ffffff; /* Light mode - white */
   }
 }
 
@@ -617,6 +617,24 @@ body {
 /* Safe area padding - top only (for headers) */
 .safe-area-top {
   padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Safe area cover - fills the notch/status bar area with solid color */
+.safe-area-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: #0c0c0e;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: light) {
+  .safe-area-cover {
+    background: #ffffff;
+  }
 }
 
 /* Header that extends into safe area (behind status bar/notch) */

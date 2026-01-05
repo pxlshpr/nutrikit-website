@@ -9,7 +9,6 @@ type BackgroundType =
   | "lava"
   | "crt"
   | "glow"
-  | "aurora"
   | "mesh";
 
 const options: { value: BackgroundType; label: string; desc: string }[] = [
@@ -18,12 +17,11 @@ const options: { value: BackgroundType; label: string; desc: string }[] = [
   { value: "lava", label: "Lava Lamp", desc: "Gooey metaballs" },
   { value: "crt", label: "CRT", desc: "Retro scanlines" },
   { value: "glow", label: "Glow", desc: "Spinning conic" },
-  { value: "aurora", label: "Aurora", desc: "Floating orbs" },
   { value: "mesh", label: "Mesh", desc: "Original gradient" },
 ];
 
 export default function BackgroundSwitcher() {
-  const [bg, setBg] = useState<BackgroundType>("aurora");
+  const [bg, setBg] = useState<BackgroundType>("lava");
   const [isOpen, setIsOpen] = useState(false);
   const [isPollOpen, setIsPollOpen] = useState(false);
 
@@ -55,15 +53,6 @@ export default function BackgroundSwitcher() {
 
       {/* Glow - spinning conic */}
       {bg === "glow" && <div className="glow-overlay" />}
-
-      {/* Aurora - floating orbs */}
-      {bg === "aurora" && (
-        <div className="aurora-overlay">
-          <div className="aurora-orb aurora-1" />
-          <div className="aurora-orb aurora-2" />
-          <div className="aurora-orb aurora-3" />
-        </div>
-      )}
 
       {/* Mesh - original gradient */}
       {bg === "mesh" && (
