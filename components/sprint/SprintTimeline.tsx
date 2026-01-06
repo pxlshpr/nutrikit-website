@@ -451,12 +451,12 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           setSelectedSprint(node.sprint);
                         }
                       }}
-                      className={`absolute top-1/2 -translate-y-1/2 h-16 rounded-xl transition-[transform,filter] duration-300 ease-out cursor-pointer group
+                      className={`absolute top-1/2 -translate-y-1/2 h-16 rounded-xl transition-[transform,filter,opacity] duration-300 ease-out cursor-pointer group
                         ${isSelected
                           ? 'z-20 scale-105'
                           : 'z-10 hover:scale-[1.02]'
                         }
-                        ${selectedSprint !== null && !isSelected ? 'saturate-50 brightness-75' : ''}
+                        ${selectedSprint !== null && !isSelected ? 'opacity-40' : ''}
                       `}
                       style={{
                         left: `${pos.left}%`,
