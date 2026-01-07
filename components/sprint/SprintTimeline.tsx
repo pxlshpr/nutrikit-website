@@ -386,10 +386,10 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   const position = ((today.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24)) / totalDays * 100;
                   return (
                     <div
-                      className="absolute top-14 bottom-8 w-0.5 bg-orange-500/80 z-5 pointer-events-none"
+                      className="absolute top-14 bottom-10 w-0.5 bg-orange-500/80 z-5 pointer-events-none"
                       style={{ left: `${position}%` }}
                     >
-                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap shadow-lg">
+                      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap shadow-lg">
                         TODAY
                       </div>
                     </div>

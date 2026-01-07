@@ -188,7 +188,6 @@ function TaskDetailContent({ task, navInfo }: {
           {/* Labels */}
           {task.labels.length > 0 && (
             <div className="mt-4">
-              <span className="text-muted text-sm block mb-2">Labels</span>
               <div className="flex flex-wrap gap-2">
                 {task.labels.map((label) => (
                   <span
