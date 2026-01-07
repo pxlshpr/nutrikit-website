@@ -368,7 +368,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
               </div>
 
               {/* Vertical Grid Lines - extremely subtle gray */}
-              <div className="absolute top-14 bottom-0 left-0 right-0 pointer-events-none">
+              <div className="absolute top-14 bottom-40 left-0 right-0 pointer-events-none">
                 {dateMarkers.map((marker, idx) => (
                   <div
                     key={idx}
@@ -386,7 +386,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   const position = ((today.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24)) / totalDays * 100;
                   return (
                     <div
-                      className="absolute top-14 bottom-0 w-0.5 bg-orange-500/80 z-10 pointer-events-none"
+                      className="absolute top-14 bottom-8 w-0.5 bg-orange-500/80 z-5 pointer-events-none"
                       style={{ left: `${position}%` }}
                     >
                       <div className="absolute -top-1 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap shadow-lg">
@@ -416,6 +416,8 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                     const x1 = pos.left + pos.width;
                     const x2 = nextPos.left;
 
+                    const isConnected = selectedSprint === null || selectedSprint === node.sprint || selectedSprint === nextNode.sprint;
+
                     return (
                       <line
                         key={idx}
@@ -428,7 +430,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                         strokeDasharray={node.isCurrent || nextNode.isCurrent ? "none" : "4 4"}
                         className="transition-all duration-500"
                         style={{
-                          opacity: selectedSprint === null || selectedSprint === node.sprint || selectedSprint === nextNode.sprint ? 1 : 0.3,
+                          filter: isConnected ? 'none' : 'saturate(0.5) brightness(0.6)',
                         }}
                       />
                     );
@@ -456,15 +458,15 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                           ? 'z-20 scale-105'
                           : 'z-10 hover:scale-[1.02]'
                         }
-                        ${selectedSprint !== null && !isSelected ? 'opacity-40' : ''}
+                        ${selectedSprint !== null && !isSelected ? 'saturate-50 brightness-75' : ''}
                       `}
                       style={{
-                        left: `${pos.left}%`,
-                        width: `${Math.max(pos.width, 3)}%`,
-                        minWidth: '80px',
+                        left: `calc(${pos.left}% + 2px)`,
+                        width: `calc(${Math.max(pos.width, 3)}% - 4px)`,
+                        minWidth: '76px',
                       }}
                     >
-                      {/* Block Background - Solid glass effect */}
+                      {/* Block Background - Glass effect */}
                       <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
                         node.isCurrent
                           ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg shadow-orange-500/40 border border-orange-400/50'
@@ -509,7 +511,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
               </div>
 
               {/* Date Range Labels (below blocks) */}
-              <div className="relative h-10 mt-4">
+              <div className="relative h-10 mt-4 z-20">
                 {nodes.map((node) => {
                   const pos = getBlockPosition(node);
                   const isSelected = selectedSprint === node.sprint;
