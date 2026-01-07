@@ -480,19 +480,14 @@ export function getPriorityColor(priority: SprintTask['priority']): string {
   return colors[priority] || colors['Medium'];
 }
 
-// Generate block name from Hades video game characters
+// Generate block name from Greek gods/titans (synced with config.md)
 export function getSprintName(sprintNumber: number): string {
   const blockNames = [
-    // Main characters and deities from Hades
-    'zagreus', 'hades', 'persephone', 'nyx', 'achilles',
-    'thanatos', 'megaera', 'hypnos', 'charon', 'cerberus',
-    'dusa', 'orpheus', 'eurydice', 'sisyphus', 'patroclus',
-    // Olympian gods (in order of appearance)
-    'zeus', 'poseidon', 'athena', 'ares', 'artemis',
-    'dionysus', 'aphrodite', 'demeter', 'hermes', 'chaos',
-    // Furies and other characters
-    'alecto', 'tisiphone', 'asterius', 'theseus', 'skelly',
-    'bouldy', 'daedalus', 'nemesis', 'chaos', 'erebus',
+    'zeus', 'hera', 'poseidon', 'demeter', 'athena', 'apollo', 'artemis', 'ares', 'aphrodite', 'hephaestus',
+    'hermes', 'hestia', 'dionysus', 'hades', 'persephone', 'eros', 'pan', 'nike', 'iris', 'morpheus',
+    'helios', 'selene', 'eos', 'atlas', 'prometheus', 'cronus', 'rhea', 'hyperion', 'theia', 'oceanus',
+    'tethys', 'mnemosyne', 'themis', 'phoebe', 'coeus', 'crius', 'iapetus', 'dione', 'metis', 'styx',
+    'triton', 'proteus', 'nereus', 'amphitrite', 'galatea', 'calypso', 'circe', 'hecate', 'nemesis', 'tyche',
   ];
 
   const index = (sprintNumber - 1) % blockNames.length;
