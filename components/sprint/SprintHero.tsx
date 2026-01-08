@@ -115,9 +115,9 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
               <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-none text-sm font-mono uppercase tracking-wider text-secondary mb-6 border-2 border-secondary/60 shadow-glow-cyan transform -skew-x-6">
                 <div className="relative flex items-center justify-center w-5 h-5 skew-x-6">
                   {/* Pulsing ring */}
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--tertiary)' }}></span>
                   {/* Solid center dot */}
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-tertiary"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3" style={{ backgroundColor: 'var(--tertiary)' }}></span>
                 </div>
                 <span className="skew-x-6">
                   {info.status === 'ACTIVE' ? 'Active Now' : info.status}
