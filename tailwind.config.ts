@@ -30,6 +30,7 @@ const config: Config = {
         'rotate': 'rotate 20s linear infinite',
         'holographic-shift': 'holographic-shift 3s ease infinite',
         'glitch': 'glitch 0.3s infinite',
+        'ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
       keyframes: {
         float: {
@@ -59,6 +60,12 @@ const config: Config = {
           '60%': { transform: 'translate(2px, 2px)' },
           '80%': { transform: 'translate(2px, -2px)' },
           '100%': { transform: 'translate(0)' },
+        },
+        ping: {
+          '75%, 100%': {
+            transform: 'scale(2)',
+            opacity: '0',
+          },
         },
       },
       backdropBlur: {

@@ -14,22 +14,22 @@ export default function Home() {
           {/* App Icon with Neon Glow */}
           <div className="relative inline-block mb-12 animate-float">
             {/* Magenta + Cyan dual glow effect */}
-            <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-primary/60 via-secondary/40 to-tertiary/30 scale-150" />
+            <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-primary/60 via-secondary/40 to-tertiary/30 rounded-full scale-150" />
 
-            {/* Icon Container - Diamond shape on hover */}
-            <div className="relative glass-strong border-2 border-primary/30 rounded-none p-2 w-36 h-36 mx-auto transition-all duration-200 hover:border-secondary hover:shadow-glow-cyan" suppressHydrationWarning>
+            {/* Icon Container - Rounded like the old design */}
+            <div className="relative glass-strong border-2 border-primary/30 rounded-[2rem] p-1 w-32 h-32 mx-auto transition-all duration-200 hover:border-secondary hover:shadow-glow-cyan" suppressHydrationWarning>
               <img
                 src="/app-icon.png"
                 alt="NutriKit"
-                width={128}
-                height={128}
-                className="w-full h-full object-cover"
+                width={120}
+                height={120}
+                className="rounded-[1.75rem]"
               />
             </div>
           </div>
 
           {/* App Name - Gradient text with glow */}
-          <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl font-black mb-6 gradient-text heading-glow">
+          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-black mb-6 gradient-text heading-glow">
             NUTRIKIT
           </h1>
 

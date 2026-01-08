@@ -16,10 +16,7 @@ export default function VaporwaveBackground() {
       <div className="floating-sun" aria-hidden="true" />
 
       {/* Perspective Grid Floor */}
-      <div
-        className="perspective-grid fixed inset-0 -z-10"
-        aria-hidden="true"
-      />
+      <div className="perspective-grid" aria-hidden="true" />
     </>
   );
 }

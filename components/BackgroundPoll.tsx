@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from "react";
 
-type BackgroundType = "none" | "particles" | "lava" | "crt" | "glow" | "aurora" | "mesh";
+type BackgroundType = "none" | "particles" | "lava" | "crt" | "glow" | "mesh";
 
 interface VoteData {
   userChoice: BackgroundType | null;
-  counts: Record<BackgroundType, number>;
-  total: number;
 }
 
 const options: { value: BackgroundType; label: string; desc: string }[] = [
@@ -16,7 +14,6 @@ const options: { value: BackgroundType; label: string; desc: string }[] = [
   { value: "lava", label: "Lava Lamp", desc: "Gooey metaballs" },
   { value: "crt", label: "CRT", desc: "Retro scanlines" },
   { value: "glow", label: "Glow", desc: "Spinning conic" },
-  { value: "aurora", label: "Aurora", desc: "Floating orbs" },
   { value: "mesh", label: "Mesh", desc: "Original gradient" },
 ];
 
@@ -46,24 +43,14 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
       // Check for error in response
       if (data.error) {
         console.error("API Error:", data.error);
-        // Set default empty counts
-        setVoteData({
-          userChoice: null,
-          counts: { none: 0, particles: 0, lava: 0, crt: 0, glow: 0, aurora: 0, mesh: 0 },
-          total: 0
-        });
+        setVoteData({ userChoice: null });
       } else {
-        setVoteData(data);
+        setVoteData({ userChoice: data.userChoice });
         setHasVoted(!!data.userChoice);
       }
     } catch (error) {
       console.error("Failed to fetch votes:", error);
-      // Set default empty counts on error
-      setVoteData({
-        userChoice: null,
-        counts: { none: 0, particles: 0, lava: 0, crt: 0, glow: 0, aurora: 0, mesh: 0 },
-        total: 0
-      });
+      setVoteData({ userChoice: null });
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +66,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
       });
       const data = await res.json();
       if (data.success) {
-        setVoteData(data);
+        setVoteData({ userChoice: choice });
         setHasVoted(true);
       }
     } catch (error) {
@@ -90,8 +77,6 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
   }
 
   if (!isOpen) return null;
-
-  const maxVotes = voteData?.counts ? Math.max(...Object.values(voteData.counts), 1) : 1;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -119,7 +104,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
             </button>
           </div>
           <p className="text-sm text-muted mt-1">
-            {hasVoted ? "Thanks for voting! Here are the results." : "Click on your favorite to cast your vote."}
+            {hasVoted ? "Thanks for voting!" : "Click on your favorite to cast your vote."}
             {voteData?.userChoice && (
               <span className="block mt-1 text-accent">
                 You can change your vote anytime.
@@ -129,7 +114,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
         </div>
 
         {/* Options */}
-        <div className="px-6 pb-6 space-y-2">
+        <div className="px-6 py-4 space-y-2">
           {isLoading ? (
             <div className="py-8 text-center text-muted">
               <div className="inline-block w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
@@ -137,10 +122,7 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
             </div>
           ) : (
             options.map((option) => {
-              const votes = voteData?.counts[option.value] || 0;
-              const percentage = voteData?.total ? (votes / voteData.total) * 100 : 0;
               const isUserChoice = voteData?.userChoice === option.value;
-              const barWidth = voteData?.total ? (votes / maxVotes) * 100 : 0;
 
               return (
                 <button
@@ -155,14 +137,8 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
                     isUserChoice ? "border-accent/30 dark:border-accent/30" : "border-black/10 dark:border-white/10"
                   }`}
                 >
-                  {/* Progress bar background */}
-                  <div
-                    className="absolute inset-y-0 left-0 bg-accent/15 dark:bg-accent/20 transition-all duration-500"
-                    style={{ width: `${barWidth}%` }}
-                  />
-
                   {/* Content */}
-                  <div className="relative px-4 py-3 flex items-center justify-between">
+                  <div className="relative px-4 py-3 flex items-center">
                     <div className={`flex items-center flex-1 ${isUserChoice ? "gap-2" : ""}`}>
                       {isUserChoice && (
                         <div className="w-6 h-6 rounded-full bg-slate-800 dark:bg-accent flex items-center justify-center animate-in fade-in scale-in-50 duration-200 flex-shrink-0">
@@ -176,26 +152,12 @@ export default function BackgroundPoll({ isOpen, onClose }: BackgroundPollProps)
                         <div className="text-xs text-muted">{option.desc}</div>
                       </div>
                     </div>
-
-                    <div className="text-right flex-shrink-0 ml-4">
-                      <div className="font-bold text-accent">{votes}</div>
-                      <div className="text-xs text-muted">
-                        {percentage.toFixed(0)}%
-                      </div>
-                    </div>
                   </div>
                 </button>
               );
             })
           )}
         </div>
-
-        {/* Footer */}
-        {voteData && (
-          <div className="px-6 py-4 border-t border-black/5 dark:border-white/10 text-center text-sm text-muted">
-            {voteData.total} {voteData.total === 1 ? "vote" : "votes"} total
-          </div>
-        )}
       </div>
     </div>
   );
