@@ -101,47 +101,51 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
   const isWarning = !isOverdue && !isUrgent && totalMs < 48 * 60 * 60 * 1000; // Less than 48 hours
 
   return (
-    <section className="relative pt-8 pb-12 md:pt-12 md:pb-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-strong rounded-3xl p-8 md:p-12 relative overflow-hidden">
-          {/* Background glow effect */}
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-protein/20 rounded-full blur-3xl" />
+    <section className="relative section-padding">
+      <div className="container-vaporwave">
+        <div className="glass border-2 border-primary/30 border-t-2 border-t-secondary rounded-none p-8 md:p-12 relative overflow-hidden transition-all duration-200 hover:border-secondary/50 hover:shadow-glow-cyan">
+          {/* Neon background glow effect */}
+          <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-secondary/20 rounded-full blur-3xl" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
             {/* Left side: Sprint info */}
             <div className="flex-1 text-center lg:text-left">
-              {/* Status badge */}
-              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-full text-sm font-semibold text-accent mb-4 border-2 border-accent/60 shadow-[0_0_12px_rgba(124,58,237,0.25)] dark:shadow-[0_0_20px_var(--accent)]">
-                <div className="relative flex-shrink-0 w-[21px] h-[21px]">
-                  {/* Pulsing ring - 1.75x size */}
-                  <div className="absolute inset-0 rounded-full bg-orange-500 opacity-75 animate-ping"></div>
+              {/* Status badge - Terminal style */}
+              <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-none text-sm font-mono uppercase tracking-wider text-secondary mb-6 border-2 border-secondary/60 shadow-glow-cyan transform -skew-x-6">
+                <div className="relative flex-shrink-0 w-[21px] h-[21px] skew-x-6">
+                  {/* Pulsing ring */}
+                  <div className="absolute inset-0 rounded-full bg-tertiary opacity-75 animate-ping"></div>
                   {/* Solid center dot */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10 sprint-pulse-dot"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10 bg-tertiary"></div>
                 </div>
-                {info.status === 'ACTIVE' ? 'Active Now' : info.status}
+                <span className="skew-x-6">
+                  {info.status === 'ACTIVE' ? 'Active Now' : info.status}
+                </span>
               </div>
 
-              {/* Block number */}
-              <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-                <span className="text-muted text-lg font-medium">BLOCK {displayBlockNumber}</span>
+              {/* Block number - Cyan terminal text */}
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-3">
+                <span className="font-mono text-lg font-medium text-secondary/70 uppercase tracking-widest">
+                  &gt; BLOCK {displayBlockNumber}
+                </span>
               </div>
 
-              {/* Block name (Heroku-style) */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight gradient-text mb-4 font-mono">
+              {/* Block name - Gradient with glow */}
+              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black tracking-tight gradient-text heading-glow mb-4">
                 {blockName}
               </h1>
 
-              {/* Block theme */}
-              <p className="text-muted text-lg mb-4">{info.theme}</p>
+              {/* Block theme - Monospace */}
+              <p className="font-mono text-foreground/70 text-lg mb-6">{info.theme}</p>
 
-              {/* Countdown Banner - Prominent */}
-              <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-accent/10 border border-accent/20">
-                <svg className="w-5 h-5 gradient-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* Countdown Banner - Terminal display */}
+              <div className="inline-flex items-center gap-3 px-5 py-3 rounded-none bg-black/50 border-2 border-primary/30">
+                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div className="text-left">
-                  <div className="text-xs font-medium uppercase tracking-wide gradient-text">
+                  <div className="text-xs font-mono uppercase tracking-widest text-primary">
                     {isOverdue ? 'Overdue' : 'Time Remaining'}
                   </div>
                   <div className="text-xl font-bold font-mono gradient-text" suppressHydrationWarning>
@@ -158,8 +162,8 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
                 </div>
               </div>
 
-              {/* Date range */}
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-muted mt-4 text-sm">
+              {/* Date range - Terminal style */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-foreground/50 mt-6 text-sm font-mono">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -167,45 +171,44 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
               </div>
             </div>
 
-            {/* Right side: Progress ring */}
+            {/* Right side: Progress ring - Vaporwave gradient */}
             <div className="flex-shrink-0">
               <div className="relative w-48 h-48 md:w-56 md:h-56">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 192 192">
+                <svg className="w-full h-full -rotate-90 drop-shadow-[0_0_20px_rgba(0,255,255,0.3)]" viewBox="0 0 192 192">
                   {/* Background circle */}
                   <circle
                     cx="96"
                     cy="96"
                     r={radius}
-                    stroke="rgba(0,0,0,0.08)"
-                    className="dark:stroke-white/10"
+                    stroke="rgba(45,27,78,0.5)"
                     strokeWidth="12"
                     fill="none"
                   />
-                  {/* Progress circle */}
+                  {/* Progress circle with sunset gradient */}
                   <circle
                     cx="96"
                     cy="96"
                     r={radius}
-                    stroke="url(#progressGradient)"
+                    stroke="url(#vaporwaveGradient)"
                     strokeWidth="12"
                     fill="none"
                     strokeLinecap="round"
                     strokeDasharray={strokeDasharray}
-                    className="transition-all duration-1000 ease-out"
+                    className="transition-all duration-1000 ease-linear"
                   />
                   <defs>
-                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="var(--accent)" />
-                      <stop offset="50%" stopColor="var(--protein)" />
-                      <stop offset="100%" stopColor="var(--fat)" />
+                    <linearGradient id="vaporwaveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="var(--tertiary)" />
+                      <stop offset="50%" stopColor="var(--primary)" />
+                      <stop offset="100%" stopColor="var(--secondary)" />
                     </linearGradient>
                   </defs>
                 </svg>
-                {/* Center content */}
+                {/* Center content - Terminal style */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-4xl md:text-5xl font-bold">{progress}%</div>
-                  <div className="text-xs text-muted mt-1">Complete</div>
-                  <div className="text-sm text-muted-foreground mt-2">
+                  <div className="font-heading text-4xl md:text-5xl font-black gradient-text">{progress}%</div>
+                  <div className="text-xs font-mono uppercase tracking-widest text-secondary/70 mt-2">Complete</div>
+                  <div className="text-sm font-mono text-foreground/60 mt-2">
                     {completedTasks} / {tasks.length} tasks
                   </div>
                 </div>
@@ -213,11 +216,13 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             </div>
           </div>
 
-          {/* Block goal */}
+          {/* Block goal - Terminal section */}
           {sprint.goal && (
-            <div className="relative z-10 mt-8 pt-8 border-t border-foreground/10">
-              <h3 className="text-sm font-medium text-muted mb-2">CURRENT FOCUS</h3>
-              <p className="text-lg text-foreground/90">{sprint.goal}</p>
+            <div className="relative z-10 mt-8 pt-8 border-t-2 border-secondary/20">
+              <h3 className="text-sm font-mono uppercase tracking-widest text-secondary/70 mb-3">
+                &gt; Current Focus
+              </h3>
+              <p className="font-mono text-lg text-foreground/90 leading-relaxed">{sprint.goal}</p>
             </div>
           )}
         </div>

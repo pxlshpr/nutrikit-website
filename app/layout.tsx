@@ -1,5 +1,20 @@
 import type { Metadata, Viewport } from "next";
+import { Orbitron, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+  variable: "--font-orbitron",
+  display: "swap",
+});
+
+const shareTechMono = Share_Tech_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-share-tech",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -44,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${orbitron.variable} ${shareTechMono.variable}`}>
       <body>{children}</body>
     </html>
   );

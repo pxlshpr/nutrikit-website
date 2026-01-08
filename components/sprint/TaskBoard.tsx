@@ -60,45 +60,74 @@ function StatusIcon({ status }: { status: SprintTask['status'] }) {
 function TaskCard({ task }: { task: SprintTask }) {
   const isDone = task.status === 'Done';
   const isRunning = task.status === 'Running';
+  const isTesting = task.status === 'Testing';
 
   return (
     <Link
       href={`/sprint/task/${task.id}`}
       className={`
-        block glass feature-card rounded-2xl p-5 relative overflow-hidden
-        hover:ring-2 hover:ring-accent/30 transition-all cursor-pointer
-        ${isRunning ? 'ring-2 ring-protein/50' : ''}
-        ${isDone ? 'opacity-75' : ''}
+        block glass border-2 rounded-none p-5 relative overflow-hidden
+        transition-all duration-200 cursor-pointer
+        ${isRunning ? 'border-secondary/60 shadow-glow-cyan' : ''}
+        ${isTesting ? 'border-tertiary/50 hover:border-tertiary/70 hover:shadow-glow-orange' : ''}
+        ${isDone ? 'border-secondary/30 bg-black/30 opacity-70 hover:opacity-90' : 'border-primary/20 hover:border-secondary/50 hover:shadow-glow-cyan'}
       `}
     >
-      {/* Running indicator */}
+      {/* Status indicator bars */}
       {isRunning && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-protein via-accent to-protein animate-shimmer" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-primary to-secondary animate-shimmer" />
+      )}
+      {isTesting && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tertiary via-primary to-tertiary animate-shimmer" />
+      )}
+      {isDone && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/50 to-secondary/20" />
       )}
 
       <div className="flex items-start justify-between gap-4">
         {/* Task info */}
         <div className="flex-1 min-w-0">
-          {/* Task ID */}
+          {/* Task ID - Terminal style with status indicator */}
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-mono text-accent">
+            {isDone && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-none bg-secondary/10 border border-secondary/40 transform -skew-x-6">
+                <svg className="w-3 h-3 text-secondary skew-x-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-secondary skew-x-6">
+                  Done
+                </span>
+              </span>
+            )}
+            <span className={`text-xs font-mono uppercase tracking-wider ${isDone ? 'text-secondary/40' : 'text-secondary/70'}`}>
               {task.id}
             </span>
           </div>
 
-          {/* Task title - now has full width */}
-          <h3 className={`font-medium leading-snug ${isDone ? 'line-through text-muted' : ''}`}>
+          {/* Task title - Monospace with strikethrough for done */}
+          <h3 className={`font-mono text-base leading-relaxed ${isDone ? 'line-through text-foreground/50' : 'text-foreground'}`}>
             {task.title}
           </h3>
         </div>
+
+        {/* Status icon on the right */}
+        {isDone && (
+          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-secondary/30 rounded-full bg-secondary/5">
+            <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        )}
       </div>
 
-      {/* Tap indicator */}
-      <div className="absolute bottom-2 right-2 text-muted-foreground/30">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </div>
+      {/* Chevron indicator - Only show if not done */}
+      {!isDone && (
+        <div className="absolute bottom-2 right-2 text-secondary/30">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      )}
     </Link>
   );
 }
@@ -130,38 +159,46 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
   });
 
   return (
-    <section className="py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">
-            What's in This Build
+    <section className="section-padding">
+      <div className="container-vaporwave">
+        {/* Section header - Terminal style */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <h2 className="font-heading text-3xl font-bold text-glow-cyan">
+            &gt; What's in This Build
           </h2>
 
-          {/* Status summary pills */}
-          <div className="hidden sm:flex items-center gap-2">
+          {/* Status summary badges - Vaporwave style */}
+          <div className="flex flex-wrap items-center gap-2">
             {statusGroups['Running'] && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-protein/20 text-protein-light border border-protein/30">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-protein opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-protein"></span>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider bg-secondary/10 text-secondary border-2 border-secondary/40 transform -skew-x-6">
+                <span className="relative flex h-2 w-2 skew-x-6">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
                 </span>
-                {statusGroups['Running']} Working On It
+                <span className="skew-x-6">
+                  {statusGroups['Running']} Working
+                </span>
               </span>
             )}
             {statusGroups['Ready'] && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent-light border border-accent/30">
-                {statusGroups['Ready']} Ready to Start
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider bg-primary/10 text-primary border-2 border-primary/40 transform -skew-x-6">
+                <span className="skew-x-6">
+                  {statusGroups['Ready']} Ready
+                </span>
               </span>
             )}
             {statusGroups['Testing'] && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-carbs/20 text-carbs-light border border-carbs/30">
-                {statusGroups['Testing']} Being Tested
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider bg-tertiary/10 text-tertiary border-2 border-tertiary/40 transform -skew-x-6">
+                <span className="skew-x-6">
+                  {statusGroups['Testing']} Testing
+                </span>
               </span>
             )}
             {statusGroups['Done'] && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success/20 text-success-light border border-success/30">
-                {statusGroups['Done']} Completed
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider bg-secondary/10 text-secondary border-2 border-secondary/40 transform -skew-x-6">
+                <span className="skew-x-6">
+                  {statusGroups['Done']} Done
+                </span>
               </span>
             )}
           </div>
@@ -174,12 +211,26 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
           ))}
         </div>
 
-        {/* Empty state */}
+        {/* Empty state - Terminal window */}
         {tasks.length === 0 && (
-          <div className="glass rounded-2xl p-12 text-center">
-            <div className="text-4xl mb-4">📋</div>
-            <h3 className="text-lg font-medium mb-2">No tasks yet</h3>
-            <p className="text-muted text-sm">Tasks will appear here once the sprint is planned.</p>
+          <div className="terminal-window max-w-md mx-auto">
+            <div className="terminal-title-bar">
+              <div className="terminal-dots">
+                <div className="terminal-dot-magenta" />
+                <div className="terminal-dot-cyan" />
+                <div className="terminal-dot-orange" />
+              </div>
+              <span className="text-xs font-mono uppercase text-secondary/70">
+                Tasks
+              </span>
+            </div>
+            <div className="p-12 text-center">
+              <div className="text-4xl mb-4">📋</div>
+              <h3 className="font-heading text-lg font-bold mb-2 text-glow-cyan">No Tasks Yet</h3>
+              <p className="font-mono text-foreground/60 text-sm">
+                &gt; Awaiting sprint planning...
+              </p>
+            </div>
           </div>
         )}
       </div>

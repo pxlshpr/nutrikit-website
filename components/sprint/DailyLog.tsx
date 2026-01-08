@@ -26,8 +26,8 @@ function DayCard({ entry, isExpanded, onToggle }: {
   return (
     <div
       className={`
-        glass rounded-2xl overflow-hidden transition-all duration-300
-        ${isToday ? 'ring-2 ring-accent/50' : ''}
+        glass border-2 rounded-none overflow-hidden transition-all duration-300
+        ${isToday ? 'border-primary/60 shadow-glow-magenta' : 'border-primary/20'}
         ${isFuture ? 'opacity-50' : ''}
       `}
     >
@@ -37,31 +37,31 @@ function DayCard({ entry, isExpanded, onToggle }: {
         className="w-full p-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-4">
-          {/* Day number badge */}
+          {/* Day number badge - Terminal style */}
           <div className={`
-            w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold
+            w-10 h-10 rounded-none border-2 flex items-center justify-center text-lg font-heading font-bold transform -skew-x-6
             ${isToday
-              ? 'bg-accent/20 text-accent'
+              ? 'bg-primary/20 text-primary border-primary/60'
               : isPast
-                ? hasContent ? 'bg-success/20 text-success' : 'bg-white/10 text-muted'
-                : 'bg-white/5 text-muted-foreground'
+                ? hasContent ? 'bg-secondary/10 text-secondary border-secondary/40' : 'bg-white/5 text-foreground/40 border-border-default'
+                : 'bg-white/5 text-foreground/40 border-border-default'
             }
           `}>
-            {entry.day}
+            <span className="skew-x-6">{entry.day}</span>
           </div>
 
           {/* Day info */}
           <div>
-            <div className="font-medium flex items-center gap-2">
+            <div className="font-mono font-medium flex items-center gap-2">
               Day {entry.day}
               {isToday && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/20 text-accent text-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  Today
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none bg-primary/10 text-primary text-xs border border-primary/40 transform -skew-x-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse skew-x-6" />
+                  <span className="skew-x-6 uppercase tracking-wider">Today</span>
                 </span>
               )}
             </div>
-            <div className="text-sm text-muted">
+            <div className="text-sm font-mono text-foreground/60">
               {entry.dayName}, {entry.date}
             </div>
           </div>
@@ -70,23 +70,27 @@ function DayCard({ entry, isExpanded, onToggle }: {
         {/* Status indicator & expand arrow */}
         <div className="flex items-center gap-3">
           {hasContent && (
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono">
               {entry.morningStandup && (
-                <span className="px-2 py-0.5 rounded-full bg-white/10">AM</span>
+                <span className="px-2 py-0.5 rounded-none bg-white/10 border border-white/20 text-foreground/70 uppercase tracking-wider transform -skew-x-6">
+                  <span className="inline-block skew-x-6">AM</span>
+                </span>
               )}
               {entry.completedTasks && entry.completedTasks.length > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-success/20 text-success">
-                  {entry.completedTasks.length} done
+                <span className="px-2 py-0.5 rounded-none bg-secondary/10 border border-secondary/40 text-secondary uppercase tracking-wider transform -skew-x-6">
+                  <span className="inline-block skew-x-6">{entry.completedTasks.length} done</span>
                 </span>
               )}
               {entry.buildSubmitted && (
-                <span className="px-2 py-0.5 rounded-full bg-success/20 text-success">Build</span>
+                <span className="px-2 py-0.5 rounded-none bg-tertiary/10 border border-tertiary/40 text-tertiary uppercase tracking-wider transform -skew-x-6">
+                  <span className="inline-block skew-x-6">Build</span>
+                </span>
               )}
             </div>
           )}
 
           <svg
-            className={`w-5 h-5 text-muted transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-secondary/70 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -104,14 +108,14 @@ function DayCard({ entry, isExpanded, onToggle }: {
         `}
       >
         <div className="px-4 pb-4 space-y-3">
-          {/* Completed Tasks Checklist */}
+          {/* Completed Tasks Checklist - Terminal style */}
           {entry.completedTasks && entry.completedTasks.length > 0 && (
-            <div className="bg-white/5 p-3 rounded-xl">
-              <div className="flex items-center gap-2 text-xs font-medium mb-2 text-success">
+            <div className="bg-black/30 border-2 border-secondary/30 p-3 rounded-none">
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider mb-3 text-secondary">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Completed Tasks ({entry.completedTasks.length})
+                &gt; Completed Tasks ({entry.completedTasks.length})
               </div>
               <div className="space-y-2">
                 {entry.completedTasks.map((task) => (
@@ -181,30 +185,32 @@ function TaskChecklistItem({ task }: { task: { id: string; identifier: string; t
   return (
     <Link
       href={`/sprint/task/${task.identifier}`}
-      className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group"
+      className="flex items-start gap-3 p-3 rounded-none border-l-2 border-secondary/40 bg-black/20 hover:bg-black/40 hover:border-secondary transition-all duration-200 group"
     >
-      {/* Checkmark icon */}
+      {/* Checkmark icon - Vaporwave style */}
       <div className="flex-shrink-0 mt-0.5">
-        <svg className="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
+        <div className="w-5 h-5 rounded-full border-2 border-secondary/40 bg-secondary/10 flex items-center justify-center group-hover:border-secondary group-hover:bg-secondary/20 transition-all">
+          <svg className="w-3 h-3 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
       </div>
 
       {/* Task info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
-          <span className="text-xs font-mono text-accent">{task.identifier}</span>
-          <span className="text-xs text-muted">{completedTime}</span>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs font-mono text-secondary/70 uppercase tracking-wider">{task.identifier}</span>
+          <span className="text-xs font-mono text-foreground/40">{completedTime}</span>
         </div>
-        <p className="text-sm text-foreground/90 group-hover:text-foreground transition-colors">
+        <p className="text-sm font-mono text-foreground/80 group-hover:text-foreground transition-colors leading-relaxed">
           {task.title}
         </p>
       </div>
 
-      {/* External link indicator */}
+      {/* Chevron indicator - appears on hover */}
       <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-        <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        <svg className="w-4 h-4 text-secondary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </div>
     </Link>
@@ -250,12 +256,16 @@ export default function DailyLog({ entries }: DailyLogProps) {
   };
 
   return (
-    <section className="py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">Daily Updates</h2>
-          <span className="text-sm text-muted">{entries.length} days</span>
+    <section className="section-padding">
+      <div className="container-vaporwave">
+        {/* Section header - Terminal style */}
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="font-heading text-3xl font-bold text-glow-cyan">
+            &gt; Daily Updates
+          </h2>
+          <span className="text-sm font-mono uppercase tracking-wider text-secondary/70">
+            {entries.length} days
+          </span>
         </div>
 
         {/* Day cards */}
@@ -270,12 +280,26 @@ export default function DailyLog({ entries }: DailyLogProps) {
           ))}
         </div>
 
-        {/* Empty state */}
+        {/* Empty state - Terminal window */}
         {entries.length === 0 && (
-          <div className="glass rounded-2xl p-12 text-center">
-            <div className="text-4xl mb-4">📔</div>
-            <h3 className="text-lg font-medium mb-2">No daily logs yet</h3>
-            <p className="text-muted text-sm">Daily standups and summaries will appear here.</p>
+          <div className="terminal-window max-w-md mx-auto">
+            <div className="terminal-title-bar">
+              <div className="terminal-dots">
+                <div className="terminal-dot-magenta" />
+                <div className="terminal-dot-cyan" />
+                <div className="terminal-dot-orange" />
+              </div>
+              <span className="text-xs font-mono uppercase text-secondary/70">
+                Daily Log
+              </span>
+            </div>
+            <div className="p-12 text-center">
+              <div className="text-4xl mb-4">📔</div>
+              <h3 className="font-heading text-lg font-bold mb-2 text-glow-cyan">No Logs Yet</h3>
+              <p className="font-mono text-foreground/60 text-sm">
+                &gt; Daily standups will appear here...
+              </p>
+            </div>
           </div>
         )}
       </div>

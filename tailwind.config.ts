@@ -11,59 +11,65 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        muted: "var(--muted)",
-        "muted-foreground": "var(--muted-foreground)",
-        accent: {
-          DEFAULT: "var(--accent)",
-          light: "var(--accent-light)",
-          soft: "var(--accent-soft)",
-        },
-        protein: {
-          DEFAULT: "var(--protein)",
-          light: "var(--protein-light)",
-          soft: "var(--protein-soft)",
-        },
-        carbs: {
-          DEFAULT: "var(--carbs)",
-          light: "var(--carbs-light)",
-          soft: "var(--carbs-soft)",
-        },
-        fat: {
-          DEFAULT: "var(--fat)",
-          light: "var(--fat-light)",
-          soft: "var(--fat-soft)",
-        },
-        success: {
-          DEFAULT: "var(--success)",
-          light: "var(--success-light)",
-        },
-        "section-alt": "var(--section-alt)",
-        border: {
-          DEFAULT: "var(--border)",
-          light: "var(--border-light)",
-        },
+        'card-bg': "var(--card-bg)",
+        'card-bg-solid': "var(--card-bg-solid)",
+        primary: "var(--primary)",    // Hot Magenta
+        secondary: "var(--secondary)", // Electric Cyan
+        tertiary: "var(--tertiary)",   // Sunset Orange
+        'border-default': "var(--border-default)",
+        'border-active': "var(--border-active)",
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        heading: ['var(--font-orbitron)', 'sans-serif'],
+        mono: ['var(--font-share-tech)', 'monospace'],
       },
       animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'float-slow': 'float-slow 8s ease-in-out infinite',
-        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
         'shimmer': 'shimmer 2s infinite',
-        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
-        'scale-in': 'scale-in 0.5s ease-out forwards',
+        'rotate': 'rotate 20s linear infinite',
+        'holographic-shift': 'holographic-shift 3s ease infinite',
+        'glitch': 'glitch 0.3s infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 255, 255, 0.4)' },
+          '50%': { boxShadow: '0 0 40px rgba(0, 255, 255, 0.8)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
+        },
+        rotate: {
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(360deg)' },
+        },
+        'holographic-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        glitch: {
+          '0%': { transform: 'translate(0)' },
+          '20%': { transform: 'translate(-2px, 2px)' },
+          '40%': { transform: 'translate(-2px, -2px)' },
+          '60%': { transform: 'translate(2px, 2px)' },
+          '80%': { transform: 'translate(2px, -2px)' },
+          '100%': { transform: 'translate(0)' },
+        },
       },
       backdropBlur: {
         'xs': '2px',
       },
       boxShadow: {
-        'glass': '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
-        'glass-lg': '0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-        'glow-accent': '0 0 50px rgba(160, 99, 255, 0.4), 0 0 100px rgba(160, 99, 255, 0.2)',
-        'glow-protein': '0 0 40px rgba(71, 172, 177, 0.4)',
-        'glow-carbs': '0 0 40px rgba(255, 205, 52, 0.4)',
-        'glow-fat': '0 0 40px rgba(223, 0, 255, 0.4)',
+        'glow-cyan': '0 0 20px rgba(0, 255, 255, 0.4)',
+        'glow-cyan-strong': '0 0 30px rgba(0, 255, 255, 0.6), 0 0 50px rgba(0, 255, 255, 0.3)',
+        'glow-magenta': '0 0 20px rgba(255, 0, 255, 0.4)',
+        'glow-magenta-strong': '0 0 30px rgba(255, 0, 255, 0.6), 0 0 50px rgba(255, 0, 255, 0.3)',
+        'glow-orange': '0 0 20px rgba(255, 153, 0, 0.4)',
       },
     },
   },
