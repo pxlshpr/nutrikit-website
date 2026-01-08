@@ -113,11 +113,11 @@ export default function SprintHero({ sprint }: SprintHeroProps) {
             <div className="flex-1 text-center lg:text-left">
               {/* Status badge - Terminal style */}
               <div className="inline-flex items-center gap-3 glass-subtle px-5 py-2.5 rounded-none text-sm font-mono uppercase tracking-wider text-secondary mb-6 border-2 border-secondary/60 shadow-glow-cyan transform -skew-x-6">
-                <div className="relative flex-shrink-0 w-[21px] h-[21px] skew-x-6">
-                  {/* Pulsing ring */}
-                  <div className="absolute inset-0 rounded-full bg-tertiary opacity-75 animate-ping"></div>
+                <div className="relative flex-shrink-0 w-6 h-6 skew-x-6 flex items-center justify-center">
+                  {/* Pulsing ring - scales to 2x so needs space */}
+                  <span className="absolute inline-flex h-3 w-3 rounded-full bg-tertiary opacity-75 animate-ping"></span>
                   {/* Solid center dot */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-10 bg-tertiary"></div>
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-tertiary"></span>
                 </div>
                 <span className="skew-x-6">
                   {info.status === 'ACTIVE' ? 'Active Now' : info.status}
