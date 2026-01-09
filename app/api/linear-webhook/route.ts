@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
     // Trigger on-demand revalidation for sprint pages
     if (result.changes.length > 0) {
       try {
-        revalidatePath('/sprint');
-        revalidatePath('/sprint/task/[id]', 'page');
+        revalidatePath('/block');
+        revalidatePath('/block/task/[id]', 'page');
         console.log('[Linear Webhook] Triggered revalidation for sprint pages');
       } catch (revalidateError) {
         console.error('[Linear Webhook] Revalidation error:', revalidateError);

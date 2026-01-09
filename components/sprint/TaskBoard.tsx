@@ -64,7 +64,7 @@ function TaskCard({ task }: { task: SprintTask }) {
 
   return (
     <Link
-      href={`/sprint/task/${task.id}`}
+      href={`/block/task/${task.id}`}
       className={`
         block glass border-2 rounded-none p-5 relative overflow-hidden
         transition-all duration-200 cursor-pointer

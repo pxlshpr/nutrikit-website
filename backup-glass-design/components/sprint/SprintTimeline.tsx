@@ -584,7 +584,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
                   {selectedNode.tasks.map((task, idx) => (
                     <Link
                       key={task.id}
-                      href={`/block/task/${task.id}`}
+                      href={`/sprint/task/${task.id}`}
                       className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 glass-subtle rounded-xl hover:bg-white/10 transition-all duration-200 animate-in fade-in slide-in-from-left-2"
                       style={{ animationDelay: `${idx * 50}ms` }}
                     >

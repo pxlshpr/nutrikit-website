@@ -122,7 +122,7 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
               const docId = match[1];
               return (
                 <Link
-                  href={`/block/task/${taskIdentifier}/doc/${docId}`}
+                  href={`/sprint/task/${taskIdentifier}/doc/${docId}`}
                   className="text-accent hover:text-accent-light underline decoration-accent/30 hover:decoration-accent/60 transition-colors"
                 >
                   {children}

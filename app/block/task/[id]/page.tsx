@@ -77,7 +77,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
               <Link href="/" className="text-sm text-foreground/70 hover:text-secondary transition-colors">
                 &gt; Home
               </Link>
-              <Link href="/sprint" className="text-sm text-secondary">
+              <Link href="/block" className="text-sm text-secondary">
                 &gt; Blocks
               </Link>
             </div>
@@ -130,7 +130,7 @@ function TaskDetailContent({ task, navInfo }: {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back link - Terminal style */}
         <Link
-          href="/sprint"
+          href="/block"
           className="inline-flex items-center gap-2 text-sm font-mono text-secondary hover:text-primary transition-colors mb-6"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,9 +139,10 @@ function TaskDetailContent({ task, navInfo }: {
           &lt; Back to Blocks
         </Link>
 
-        {/* Claude Terminal - temporarily hidden
-        <TaskTerminal taskIdentifier={task.identifier} taskTitle={task.title} />
-        */}
+        {/* Claude Terminal - localhost only */}
+        {process.env.NODE_ENV === 'development' && (
+          <TaskTerminal taskIdentifier={task.identifier} taskTitle={task.title} />
+        )}
 
         {/* Task Header - Terminal window */}
         <div className="terminal-window mb-6">
@@ -299,7 +300,7 @@ function TaskDetailContent({ task, navInfo }: {
               {task.documents.map((document) => (
                 <Link
                   key={document.id}
-                  href={`/sprint/task/${task.identifier}/doc/${document.id}`}
+                  href={`/block/task/${task.identifier}/doc/${document.id}`}
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-none hover:border-secondary hover:bg-gradient-to-r hover:from-primary/20 hover:to-secondary/20 transition-all group transform -skew-x-3"
                 >
                   <div className="skew-x-3 w-10 h-10 rounded-none bg-secondary/20 flex items-center justify-center group-hover:bg-secondary/30 transition-colors border border-secondary/40">
@@ -416,7 +417,7 @@ function TaskNavigation({ prevTask, nextTask }: { prevTask: SprintTask | null; n
       {/* Previous Task */}
       {prevTask ? (
         <Link
-          href={`/sprint/task/${prevTask.id}`}
+          href={`/block/task/${prevTask.id}`}
           className="flex-1 group glass border-2 border-primary/20 rounded-none p-4 hover:bg-white/5 hover:border-secondary transition-all"
         >
           <div className="flex items-start gap-3">
@@ -441,7 +442,7 @@ function TaskNavigation({ prevTask, nextTask }: { prevTask: SprintTask | null; n
       {/* Next Task */}
       {nextTask ? (
         <Link
-          href={`/sprint/task/${nextTask.id}`}
+          href={`/block/task/${nextTask.id}`}
           className="flex-1 group glass border-2 border-primary/20 rounded-none p-4 hover:bg-white/5 hover:border-secondary transition-all"
         >
           <div className="flex items-start gap-3 sm:flex-row-reverse sm:text-right">
@@ -490,7 +491,7 @@ function ErrorState({ error, taskId }: { error: string; taskId: string }) {
             <code className="block text-sm font-mono text-primary bg-black/50 border border-primary/30 p-4 rounded-none mb-6 overflow-x-auto">
               {error}
             </code>
-            <Link href="/sprint">
+            <Link href="/block">
               <Button variant="primary" size="lg">
                 &lt; Back to Blocks
               </Button>
