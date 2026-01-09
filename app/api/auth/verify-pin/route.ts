@@ -8,7 +8,13 @@ export async function POST(request: Request) {
   try {
     const { pin } = await request.json();
 
+    console.log('[verify-pin] Received PIN length:', pin?.length);
+    console.log('[verify-pin] Expected PIN length:', TERMINAL_PIN?.length);
+    console.log('[verify-pin] PIN configured:', !!TERMINAL_PIN);
+    console.log('[verify-pin] PINs match:', pin === TERMINAL_PIN);
+
     if (!TERMINAL_PIN) {
+      console.log('[verify-pin] ERROR: PIN not configured in environment');
       return NextResponse.json(
         { error: 'PIN not configured' },
         { status: 500 }
@@ -16,6 +22,9 @@ export async function POST(request: Request) {
     }
 
     if (pin !== TERMINAL_PIN) {
+      console.log('[verify-pin] ERROR: PIN mismatch');
+      console.log('[verify-pin] Received:', JSON.stringify(pin));
+      console.log('[verify-pin] Expected:', JSON.stringify(TERMINAL_PIN));
       return NextResponse.json(
         { error: 'Invalid PIN' },
         { status: 401 }

@@ -428,6 +428,7 @@
     user-select: none;
     font-size: 14px;
     min-height: 48px;
+    white-space: nowrap;
   }
 
   /* Primary - Skewed cyan outline that fills on hover */
