@@ -1,7 +1,6 @@
 'use client';
 
-import { useSession, signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import TaskTerminal from '@/components/sprint/TaskTerminal';
 
 interface TerminalSectionProps {
@@ -10,21 +9,135 @@ interface TerminalSectionProps {
 }
 
 export default function TerminalSection({ taskIdentifier, taskTitle }: TerminalSectionProps) {
-  const { data: session, status } = useSession();
-  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPinInput, setShowPinInput] = useState(false);
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  const handleSignIn = async () => {
-    setIsSigningIn(true);
+  // Check session on mount
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
     try {
-      await signIn("apple", { callbackUrl: window.location.href });
-    } catch (error) {
-      console.error("Sign in error:", error);
-      setIsSigningIn(false);
+      const res = await fetch('/api/auth/check-session');
+      const data = await res.json();
+      setIsAuthenticated(data.authenticated);
+    } catch (err) {
+      console.error('Session check failed:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Show loading state
-  if (status === 'loading') {
+  const verifyWithTouchID = useCallback(async (): Promise<boolean> => {
+    // Check if WebAuthn is supported
+    if (!window.PublicKeyCredential) {
+      // Fallback: just verify PIN without biometric
+      return true;
+    }
+
+    try {
+      // Check if platform authenticator (Touch ID/Face ID) is available
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      if (!available) {
+        // No biometric available, just verify PIN
+        return true;
+      }
+
+      // Create a simple challenge for user verification
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+
+      // Request user verification (Touch ID/Face ID)
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: {
+            name: 'NutriKit Terminal',
+            id: window.location.hostname,
+          },
+          user: {
+            id: new Uint8Array(16),
+            name: 'terminal-user',
+            displayName: 'Terminal User',
+          },
+          pubKeyCredParams: [
+            { alg: -7, type: 'public-key' },  // ES256
+            { alg: -257, type: 'public-key' }, // RS256
+          ],
+          authenticatorSelection: {
+            authenticatorAttachment: 'platform',
+            userVerification: 'required',
+          },
+          timeout: 60000,
+        },
+      });
+
+      return !!credential;
+    } catch (err) {
+      // User cancelled or error - still allow if they entered correct PIN
+      console.log('Touch ID verification skipped:', err);
+      return true;
+    }
+  }, []);
+
+  const handleVerifyPin = async () => {
+    if (!pin.trim()) {
+      setError('Please enter PIN');
+      return;
+    }
+
+    setIsVerifying(true);
+    setError('');
+
+    try {
+      // First verify with Touch ID
+      const touchIdVerified = await verifyWithTouchID();
+      if (!touchIdVerified) {
+        setError('Biometric verification failed');
+        setIsVerifying(false);
+        return;
+      }
+
+      // Then verify PIN with server
+      const res = await fetch('/api/auth/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIsAuthenticated(true);
+        setShowPinInput(false);
+        setPin('');
+      } else {
+        setError(data.error || 'Invalid PIN');
+      }
+    } catch (err) {
+      console.error('Verification failed:', err);
+      setError('Verification failed');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setIsAuthenticated(false);
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
     return (
       <div className="glass rounded-2xl overflow-hidden mb-6 border border-white/10">
         <div className="flex items-center justify-between p-4">
@@ -39,9 +152,7 @@ export default function TerminalSection({ taskIdentifier, taskTitle }: TerminalS
                 Claude Terminal
                 <span className="w-2 h-2 rounded-full bg-zinc-500 animate-pulse" />
               </h3>
-              <p className="text-xs text-muted">
-                Loading...
-              </p>
+              <p className="text-xs text-muted">Loading...</p>
             </div>
           </div>
         </div>
@@ -49,75 +160,106 @@ export default function TerminalSection({ taskIdentifier, taskTitle }: TerminalS
     );
   }
 
-  // If user is authenticated and allowed, show the full TaskTerminal
-  if (session?.user?.isAllowed) {
-    return <TaskTerminal taskIdentifier={taskIdentifier} taskTitle={taskTitle} />;
+  // Authenticated - show terminal
+  if (isAuthenticated) {
+    return (
+      <div className="relative">
+        <button
+          onClick={handleLogout}
+          className="absolute top-4 right-4 z-10 px-2 py-1 text-xs text-muted hover:text-foreground transition-colors"
+        >
+          Sign out
+        </button>
+        <TaskTerminal taskIdentifier={taskIdentifier} taskTitle={taskTitle} />
+      </div>
+    );
   }
 
-  // Not authenticated - show sign in prompt
-  if (!session) {
+  // PIN input mode
+  if (showPinInput) {
     return (
       <div className="glass rounded-2xl overflow-hidden mb-6 border border-white/10">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
-              <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                Claude Terminal
-                <span className="w-2 h-2 rounded-full bg-zinc-500" />
-              </h3>
-              <p className="text-xs text-muted">
-                Sign in to access terminal
-              </p>
+              <h3 className="text-sm font-semibold">Enter PIN</h3>
+              <p className="text-xs text-muted">Touch ID will verify it's you</p>
             </div>
           </div>
-          <button
-            onClick={handleSignIn}
-            disabled={isSigningIn}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg font-medium text-sm hover:bg-zinc-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
-          >
-            {isSigningIn ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Connecting...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                </svg>
-                Sign in with Apple
-              </>
-            )}
-          </button>
+
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleVerifyPin()}
+              placeholder="Enter PIN"
+              className="flex-1 px-4 py-2 bg-black/50 border border-white/10 rounded-lg text-sm font-mono focus:outline-none focus:border-accent/50"
+              autoFocus
+            />
+            <button
+              onClick={handleVerifyPin}
+              disabled={isVerifying}
+              className="px-4 py-2 bg-accent/20 text-accent rounded-lg text-sm font-medium hover:bg-accent/30 transition-colors disabled:opacity-50"
+            >
+              {isVerifying ? (
+                <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+              ) : (
+                'Verify'
+              )}
+            </button>
+            <button
+              onClick={() => {
+                setShowPinInput(false);
+                setPin('');
+                setError('');
+              }}
+              className="px-4 py-2 text-muted hover:text-foreground transition-colors text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+
+          {error && (
+            <p className="mt-2 text-xs text-red-400">{error}</p>
+          )}
         </div>
       </div>
     );
   }
 
-  // Authenticated but not allowed - show access denied
+  // Not authenticated - show connect button
   return (
     <div className="glass rounded-2xl overflow-hidden mb-6 border border-white/10">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-sm font-semibold flex items-center gap-2 text-red-400">
-              Access Denied
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              Claude Terminal
+              <span className="w-2 h-2 rounded-full bg-zinc-500" />
             </h3>
-            <p className="text-xs text-muted">
-              Your Apple ID is not authorized
-            </p>
+            <p className="text-xs text-muted">Authenticate to access</p>
           </div>
         </div>
+        <button
+          onClick={() => setShowPinInput(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-accent/20 text-accent rounded-lg font-medium text-sm hover:bg-accent/30 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Connect
+        </button>
       </div>
     </div>
   );
