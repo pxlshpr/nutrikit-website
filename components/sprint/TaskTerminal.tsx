@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
 import '@xterm/xterm/css/xterm.css';
+import TerminalAuthGate from './TerminalAuthGate';
 
 // Terminal status type
 type TerminalStatus = 'disconnected' | 'connecting' | 'connected' | 'error' | 'starting-claude' | 'ready';
@@ -26,6 +28,10 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
   const [statusMessage, setStatusMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  // Check if user is authenticated and allowed
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user?.isAllowed;
 
   // Claude command with the task identifier
   const claudeCommand = `claude --dangerously-skip-permissions`;
@@ -350,8 +356,8 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Connect/Disconnect button */}
-          {isExpanded && (
+          {/* Connect/Disconnect button - only show when authenticated and allowed */}
+          {isExpanded && isAuthenticated && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -386,28 +392,30 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
       {/* Terminal container - shown when expanded */}
       {isExpanded && (
         <div className="border-t border-white/10">
-          {/* Startup sequence info */}
-          <div className="px-4 py-2 bg-black/30 border-b border-white/5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-            <div className="flex items-center gap-2">
-              <span className={`w-1.5 h-1.5 rounded-full ${status === 'disconnected' ? 'bg-zinc-600' : startupPhaseRef.current === 'init' ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`} />
-              <span className="text-muted">Select NutriKit</span>
+          <TerminalAuthGate>
+            {/* Startup sequence info */}
+            <div className="px-4 py-2 bg-black/30 border-b border-white/5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+              <div className="flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${status === 'disconnected' ? 'bg-zinc-600' : startupPhaseRef.current === 'init' ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`} />
+                <span className="text-muted">Select NutriKit</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${startupPhaseRef.current === 'cd' ? 'bg-yellow-500 animate-pulse' : startupPhaseRef.current === 'claude' || startupPhaseRef.current === 'prompt' || startupPhaseRef.current === 'done' ? 'bg-green-500' : 'bg-zinc-600'}`} />
+                <span className="text-muted">{claudeCommand}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${startupPhaseRef.current === 'claude' || startupPhaseRef.current === 'prompt' ? 'bg-yellow-500 animate-pulse' : startupPhaseRef.current === 'done' ? 'bg-green-500' : 'bg-zinc-600'}`} />
+                <span className="text-protein font-medium">{taskPrompt}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className={`w-1.5 h-1.5 rounded-full ${startupPhaseRef.current === 'cd' ? 'bg-yellow-500 animate-pulse' : startupPhaseRef.current === 'claude' || startupPhaseRef.current === 'prompt' || startupPhaseRef.current === 'done' ? 'bg-green-500' : 'bg-zinc-600'}`} />
-              <span className="text-muted">{claudeCommand}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`w-1.5 h-1.5 rounded-full ${startupPhaseRef.current === 'claude' || startupPhaseRef.current === 'prompt' ? 'bg-yellow-500 animate-pulse' : startupPhaseRef.current === 'done' ? 'bg-green-500' : 'bg-zinc-600'}`} />
-              <span className="text-protein font-medium">{taskPrompt}</span>
-            </div>
-          </div>
 
-          {/* Terminal */}
-          <div
-            ref={terminalRef}
-            className="h-[500px] bg-[#0a0a0f]"
-            style={{ padding: '12px' }}
-          />
+            {/* Terminal */}
+            <div
+              ref={terminalRef}
+              className="h-[500px] bg-[#0a0a0f]"
+              style={{ padding: '12px' }}
+            />
+          </TerminalAuthGate>
         </div>
       )}
     </div>

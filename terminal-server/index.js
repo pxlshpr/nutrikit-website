@@ -6,6 +6,7 @@ import { Client } from 'ssh2';
 import { readFileSync, existsSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import { validateControllerToken } from './auth.js';
 
 const app = express();
 const server = createServer(app);
@@ -19,6 +20,7 @@ const SSH_PORT = parseInt(process.env.SSH_PORT || '22', 10);
 const SSH_USERNAME = process.env.SSH_USERNAME;
 const SSH_PRIVATE_KEY_PATH = process.env.SSH_PRIVATE_KEY_PATH?.replace('~', homedir());
 const SSH_PASSWORD = process.env.SSH_PASSWORD;
+const MAX_HISTORY_BYTES = parseInt(process.env.MAX_HISTORY_BYTES || '1048576', 10); // 1MB default
 
 // Validate config
 if (!SSH_HOST || !SSH_USERNAME) {
@@ -48,59 +50,98 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', ssh_host: SSH_HOST });
-});
+// =============================================================================
+// Session State (single shared session)
+// =============================================================================
 
-// Track active connections
-const connections = new Map();
+const session = {
+  controller: null,        // WebSocket of authenticated controller
+  viewers: new Set(),      // Set of viewer WebSockets
+  sshConnection: null,     // SSH2 client
+  shellStream: null,       // SSH shell stream
+  outputBuffer: '',        // Rolling buffer for history
+  cols: 120,
+  rows: 30,
+  active: false,
+  taskIdentifier: null,    // Current task being worked on
+};
 
-wss.on('connection', (ws, req) => {
-  const connectionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
-  console.log(`[${connectionId}] New WebSocket connection from ${req.socket.remoteAddress}`);
+// Helper to append to output buffer (with size limit)
+function appendToBuffer(data) {
+  session.outputBuffer += data;
+  if (session.outputBuffer.length > MAX_HISTORY_BYTES) {
+    // Keep the last MAX_HISTORY_BYTES of data
+    session.outputBuffer = session.outputBuffer.slice(-MAX_HISTORY_BYTES);
+  }
+}
 
-  // Parse initial command from URL query
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const initialCommand = url.searchParams.get('command');
-  const initialDir = url.searchParams.get('dir') || '~';
+// Broadcast to all connected clients (controller + viewers)
+function broadcast(message) {
+  const messageStr = typeof message === 'string' ? message : JSON.stringify(message);
 
-  let sshConnection = null;
-  let shellStream = null;
-  let currentCols = 120;
-  let currentRows = 30;
-
-  // Send status to client
-  const sendStatus = (status, message = '') => {
+  if (session.controller?.readyState === 1) {
     try {
-      ws.send(JSON.stringify({ type: 'status', status, message }));
+      session.controller.send(messageStr);
     } catch (e) {
-      console.error(`[${connectionId}] Failed to send status:`, e.message);
+      console.error('Failed to send to controller:', e.message);
     }
-  };
+  }
 
-  // Send output to client
-  const sendOutput = (data) => {
+  for (const viewer of session.viewers) {
+    if (viewer.readyState === 1) {
+      try {
+        viewer.send(messageStr);
+      } catch (e) {
+        console.error('Failed to send to viewer:', e.message);
+      }
+    }
+  }
+}
+
+// Send session info to all clients
+function broadcastSessionInfo() {
+  broadcast({
+    type: 'session-info',
+    hasController: session.controller !== null,
+    viewerCount: session.viewers.size,
+    active: session.active,
+    taskIdentifier: session.taskIdentifier,
+  });
+}
+
+// Send to a single client
+function sendTo(ws, message) {
+  if (ws.readyState === 1) {
     try {
-      ws.send(JSON.stringify({ type: 'output', data }));
+      ws.send(typeof message === 'string' ? message : JSON.stringify(message));
     } catch (e) {
-      console.error(`[${connectionId}] Failed to send output:`, e.message);
+      console.error('Failed to send message:', e.message);
     }
-  };
+  }
+}
 
-  // Create SSH connection
-  sshConnection = new Client();
+// =============================================================================
+// SSH Session Management
+// =============================================================================
 
-  sshConnection.on('ready', () => {
-    console.log(`[${connectionId}] SSH connection established`);
-    sendStatus('connected', 'SSH connection established');
+function createSSHSession() {
+  if (session.sshConnection) {
+    console.log('SSH session already exists');
+    return;
+  }
 
-    // Create shell with PTY
-    sshConnection.shell(
+  console.log('Creating new SSH session...');
+  session.sshConnection = new Client();
+
+  session.sshConnection.on('ready', () => {
+    console.log('SSH connection established');
+    broadcast({ type: 'status', status: 'connected', message: 'SSH connection established' });
+
+    session.sshConnection.shell(
       {
         term: 'xterm-256color',
-        cols: currentCols,
-        rows: currentRows,
+        cols: session.cols,
+        rows: session.rows,
         env: {
           LANG: 'en_US.UTF-8',
           LC_ALL: 'en_US.UTF-8',
@@ -108,119 +149,52 @@ wss.on('connection', (ws, req) => {
       },
       (err, stream) => {
         if (err) {
-          console.error(`[${connectionId}] Failed to create shell:`, err.message);
-          sendStatus('error', `Failed to create shell: ${err.message}`);
-          ws.close();
+          console.error('Failed to create shell:', err.message);
+          broadcast({ type: 'status', status: 'error', message: `Failed to create shell: ${err.message}` });
+          destroySSHSession();
           return;
         }
 
-        shellStream = stream;
-        connections.set(connectionId, { ws, sshConnection, shellStream });
+        session.shellStream = stream;
+        session.active = true;
+        broadcastSessionInfo();
 
-        // Pipe SSH output to WebSocket
+        // Pipe SSH output to all clients
         stream.on('data', (data) => {
-          sendOutput(data.toString('utf-8'));
+          const output = data.toString('utf-8');
+          appendToBuffer(output);
+          broadcast({ type: 'output', data: output });
         });
 
         stream.stderr.on('data', (data) => {
-          sendOutput(data.toString('utf-8'));
+          const output = data.toString('utf-8');
+          appendToBuffer(output);
+          broadcast({ type: 'output', data: output });
         });
 
         stream.on('close', () => {
-          console.log(`[${connectionId}] Shell stream closed`);
-          sendStatus('disconnected', 'Shell closed');
-          cleanup();
+          console.log('Shell stream closed');
+          broadcast({ type: 'status', status: 'disconnected', message: 'Shell closed' });
+          destroySSHSession();
         });
-
-        // Note: Directory change and commands are now handled by the frontend
-        // to allow for proper sequencing with Claude's prompts
       }
     );
   });
 
-  sshConnection.on('error', (err) => {
-    console.error(`[${connectionId}] SSH connection error:`, err.message);
-    sendStatus('error', `SSH error: ${err.message}`);
-    cleanup();
+  session.sshConnection.on('error', (err) => {
+    console.error('SSH connection error:', err.message);
+    broadcast({ type: 'status', status: 'error', message: `SSH error: ${err.message}` });
+    destroySSHSession();
   });
 
-  sshConnection.on('close', () => {
-    console.log(`[${connectionId}] SSH connection closed`);
-    sendStatus('disconnected', 'SSH connection closed');
-    cleanup();
+  session.sshConnection.on('close', () => {
+    console.log('SSH connection closed');
+    broadcast({ type: 'status', status: 'disconnected', message: 'SSH connection closed' });
+    destroySSHSession();
   });
 
-  // Handle WebSocket messages
-  ws.on('message', (message) => {
-    try {
-      const msg = JSON.parse(message.toString());
-
-      switch (msg.type) {
-        case 'input':
-          if (shellStream && msg.data) {
-            shellStream.write(msg.data);
-          }
-          break;
-
-        case 'resize':
-          if (shellStream && msg.cols && msg.rows) {
-            currentCols = msg.cols;
-            currentRows = msg.rows;
-            shellStream.setWindow(msg.rows, msg.cols, 0, 0);
-          }
-          break;
-
-        case 'ping':
-          ws.send(JSON.stringify({ type: 'pong' }));
-          break;
-
-        default:
-          console.log(`[${connectionId}] Unknown message type:`, msg.type);
-      }
-    } catch (e) {
-      console.error(`[${connectionId}] Failed to parse message:`, e.message);
-    }
-  });
-
-  ws.on('close', () => {
-    console.log(`[${connectionId}] WebSocket closed`);
-    cleanup();
-  });
-
-  ws.on('error', (err) => {
-    console.error(`[${connectionId}] WebSocket error:`, err.message);
-    cleanup();
-  });
-
-  // Cleanup function
-  const cleanup = () => {
-    connections.delete(connectionId);
-
-    if (shellStream) {
-      try {
-        shellStream.close();
-      } catch (e) {
-        // Ignore
-      }
-      shellStream = null;
-    }
-
-    if (sshConnection) {
-      try {
-        sshConnection.end();
-      } catch (e) {
-        // Ignore
-      }
-      sshConnection = null;
-    }
-
-    if (ws.readyState === ws.OPEN) {
-      ws.close();
-    }
-  };
-
-  // Connect to SSH server
-  sendStatus('connecting', `Connecting to ${SSH_HOST}...`);
+  // Connect
+  broadcast({ type: 'status', status: 'connecting', message: `Connecting to ${SSH_HOST}...` });
 
   const connectionConfig = {
     host: SSH_HOST,
@@ -236,24 +210,239 @@ wss.on('connection', (ws, req) => {
   } else if (SSH_PASSWORD) {
     connectionConfig.password = SSH_PASSWORD;
   } else {
-    sendStatus('error', 'No authentication method configured (need SSH key or password)');
-    ws.close();
+    broadcast({ type: 'status', status: 'error', message: 'No authentication method configured' });
     return;
   }
 
-  sshConnection.connect(connectionConfig);
+  session.sshConnection.connect(connectionConfig);
+}
+
+function destroySSHSession() {
+  session.active = false;
+
+  if (session.shellStream) {
+    try {
+      session.shellStream.close();
+    } catch (e) {
+      // Ignore
+    }
+    session.shellStream = null;
+  }
+
+  if (session.sshConnection) {
+    try {
+      session.sshConnection.end();
+    } catch (e) {
+      // Ignore
+    }
+    session.sshConnection = null;
+  }
+
+  // Clear buffer when session ends
+  session.outputBuffer = '';
+  session.taskIdentifier = null;
+
+  broadcastSessionInfo();
+}
+
+// =============================================================================
+// WebSocket Connection Handling
+// =============================================================================
+
+wss.on('connection', (ws, req) => {
+  const connectionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+  console.log(`[${connectionId}] New WebSocket connection from ${req.socket.remoteAddress}`);
+
+  let mode = null; // 'controller' or 'viewer'
+  let handshakeComplete = false;
+
+  // Wait for connect handshake
+  const handshakeTimeout = setTimeout(() => {
+    if (!handshakeComplete) {
+      console.log(`[${connectionId}] Handshake timeout`);
+      sendTo(ws, { type: 'error', code: 'HANDSHAKE_TIMEOUT', message: 'Connection timeout - no handshake received' });
+      ws.close();
+    }
+  }, 5000);
+
+  ws.on('message', async (message) => {
+    try {
+      const msg = JSON.parse(message.toString());
+
+      // Handle handshake
+      if (!handshakeComplete) {
+        if (msg.type !== 'connect') {
+          sendTo(ws, { type: 'error', code: 'INVALID_HANDSHAKE', message: 'First message must be connect handshake' });
+          ws.close();
+          return;
+        }
+
+        clearTimeout(handshakeTimeout);
+        handshakeComplete = true;
+
+        if (msg.mode === 'controller') {
+          // Validate controller token
+          const isValid = await validateControllerToken(msg.token);
+
+          if (!isValid) {
+            console.log(`[${connectionId}] Controller auth failed, downgrading to viewer`);
+            sendTo(ws, { type: 'error', code: 'AUTH_FAILED', message: 'Not authorized to control terminal' });
+            // Downgrade to viewer
+            mode = 'viewer';
+            session.viewers.add(ws);
+          } else if (session.controller) {
+            // Already have a controller
+            console.log(`[${connectionId}] Controller slot taken, assigning as viewer`);
+            sendTo(ws, { type: 'error', code: 'CONTROLLER_EXISTS', message: 'Another controller is already connected' });
+            mode = 'viewer';
+            session.viewers.add(ws);
+          } else {
+            console.log(`[${connectionId}] Assigned as controller`);
+            mode = 'controller';
+            session.controller = ws;
+
+            // Store task identifier if provided
+            if (msg.taskIdentifier) {
+              session.taskIdentifier = msg.taskIdentifier;
+            }
+
+            // Create SSH session if not exists
+            if (!session.sshConnection) {
+              createSSHSession();
+            }
+          }
+        } else {
+          // Viewer mode
+          console.log(`[${connectionId}] Assigned as viewer`);
+          mode = 'viewer';
+          session.viewers.add(ws);
+        }
+
+        // Send connection confirmation
+        sendTo(ws, { type: 'connected', mode });
+
+        // Send history to late joiners
+        if (session.outputBuffer) {
+          sendTo(ws, { type: 'history', data: session.outputBuffer });
+        }
+
+        // Send current session info
+        sendTo(ws, {
+          type: 'session-info',
+          hasController: session.controller !== null,
+          viewerCount: session.viewers.size,
+          active: session.active,
+          taskIdentifier: session.taskIdentifier,
+        });
+
+        // Notify others of viewer count change
+        broadcastSessionInfo();
+        return;
+      }
+
+      // Handle regular messages (post-handshake)
+      switch (msg.type) {
+        case 'input':
+          // Only controller can send input
+          if (mode === 'controller' && session.shellStream && msg.data) {
+            session.shellStream.write(msg.data);
+          }
+          break;
+
+        case 'resize':
+          // Only controller can resize
+          if (mode === 'controller' && session.shellStream && msg.cols && msg.rows) {
+            session.cols = msg.cols;
+            session.rows = msg.rows;
+            session.shellStream.setWindow(msg.rows, msg.cols, 0, 0);
+          }
+          break;
+
+        case 'ping':
+          sendTo(ws, { type: 'pong' });
+          break;
+
+        case 'set-task':
+          // Controller can update current task
+          if (mode === 'controller' && msg.taskIdentifier) {
+            session.taskIdentifier = msg.taskIdentifier;
+            broadcastSessionInfo();
+          }
+          break;
+
+        default:
+          console.log(`[${connectionId}] Unknown message type:`, msg.type);
+      }
+    } catch (e) {
+      console.error(`[${connectionId}] Failed to parse message:`, e.message);
+    }
+  });
+
+  ws.on('close', () => {
+    console.log(`[${connectionId}] WebSocket closed (mode: ${mode})`);
+    clearTimeout(handshakeTimeout);
+
+    if (mode === 'controller') {
+      session.controller = null;
+      // Notify viewers that controller left
+      broadcast({ type: 'controller-left' });
+      broadcastSessionInfo();
+
+      // Optionally destroy SSH session when controller leaves
+      // Uncomment if you want session to end when controller disconnects:
+      // destroySSHSession();
+    } else if (mode === 'viewer') {
+      session.viewers.delete(ws);
+      broadcastSessionInfo();
+    }
+  });
+
+  ws.on('error', (err) => {
+    console.error(`[${connectionId}] WebSocket error:`, err.message);
+  });
 });
 
-// Graceful shutdown
+// =============================================================================
+// HTTP Endpoints
+// =============================================================================
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', ssh_host: SSH_HOST });
+});
+
+// Session info endpoint
+app.get('/session', (req, res) => {
+  res.json({
+    active: session.active,
+    hasController: session.controller !== null,
+    viewerCount: session.viewers.size,
+    taskIdentifier: session.taskIdentifier,
+    historySize: session.outputBuffer.length,
+  });
+});
+
+// =============================================================================
+// Graceful Shutdown
+// =============================================================================
+
 process.on('SIGTERM', () => {
   console.log('Shutting down...');
 
-  // Close all connections
-  for (const [id, conn] of connections) {
+  destroySSHSession();
+
+  // Close all viewer connections
+  for (const viewer of session.viewers) {
     try {
-      conn.shellStream?.close();
-      conn.sshConnection?.end();
-      conn.ws?.close();
+      viewer.close();
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  if (session.controller) {
+    try {
+      session.controller.close();
     } catch (e) {
       // Ignore
     }
@@ -266,8 +455,12 @@ process.on('SIGTERM', () => {
   });
 });
 
-// Start server
+// =============================================================================
+// Start Server
+// =============================================================================
+
 server.listen(PORT, BIND_ADDRESS, () => {
   console.log(`Terminal server listening on ${BIND_ADDRESS}:${PORT}`);
   console.log(`SSH target: ${SSH_USERNAME}@${SSH_HOST}:${SSH_PORT}`);
+  console.log(`Max history buffer: ${MAX_HISTORY_BYTES} bytes`);
 });
