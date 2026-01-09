@@ -5,7 +5,7 @@ import { fetchSprintTaskList, type SprintTask } from '@/lib/sprint-parser';
 import MarkdownRenderer from '@/components/sprint/MarkdownRenderer';
 import DescriptionSections from '@/components/sprint/DescriptionSections';
 import { parseDescription } from '@/lib/parse-description';
-import TaskTerminal from '@/components/sprint/TaskTerminal';
+import TerminalSection from '@/components/terminal/TerminalSection';
 import VaporwaveBackground from '@/components/backgrounds/VaporwaveBackground';
 import { Button } from '@/components/ui';
 
@@ -139,10 +139,8 @@ function TaskDetailContent({ task, navInfo }: {
           &lt; Back to Blocks
         </Link>
 
-        {/* Claude Terminal - localhost only */}
-        {process.env.NODE_ENV === 'development' && (
-          <TaskTerminal taskIdentifier={task.identifier} taskTitle={task.title} />
-        )}
+        {/* Live Terminal - shows viewer for guests, full terminal for allowed users */}
+        <TerminalSection taskIdentifier={task.identifier} taskTitle={task.title} />
 
         {/* Task Header - Terminal window */}
         <div className="terminal-window mb-6">

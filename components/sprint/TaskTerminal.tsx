@@ -23,11 +23,14 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
   const wsRef = useRef<WebSocket | null>(null);
   const outputBufferRef = useRef<string>('');
   const startupPhaseRef = useRef<'init' | 'cd' | 'claude' | 'prompt' | 'done'>('init');
+  const inputDisposableRef = useRef<{ dispose: () => void } | null>(null);
 
   const [status, setStatus] = useState<TerminalStatus>('disconnected');
   const [statusMessage, setStatusMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [assignedMode, setAssignedMode] = useState<'controller' | 'viewer' | null>(null);
+  const [viewerCount, setViewerCount] = useState(0);
 
   // Check if user is authenticated and allowed
   const { data: session } = useSession();
@@ -38,12 +41,26 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
   const workingDir = '~/Developer/NutriKit';
   const taskPrompt = `let's work on ${taskIdentifier}`;
 
+  // Get controller token
+  const getControllerToken = useCallback(async (): Promise<string | undefined> => {
+    try {
+      const response = await fetch('/api/terminal/token');
+      if (response.ok) {
+        const data = await response.json();
+        return data.token;
+      }
+    } catch (e) {
+      console.error('Failed to get controller token:', e);
+    }
+    return undefined;
+  }, []);
+
   // Send input to terminal
   const sendInput = useCallback((data: string) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
+    if (wsRef.current?.readyState === WebSocket.OPEN && assignedMode === 'controller') {
       wsRef.current.send(JSON.stringify({ type: 'input', data }));
     }
-  }, []);
+  }, [assignedMode]);
 
   // Initialize terminal only when expanded
   const initializeTerminal = useCallback(async () => {
@@ -109,7 +126,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
         if (fitAddonRef.current && terminalInstanceRef.current) {
           fitAddonRef.current.fit();
           // Send resize to WebSocket
-          if (wsRef.current?.readyState === WebSocket.OPEN) {
+          if (wsRef.current?.readyState === WebSocket.OPEN && assignedMode === 'controller') {
             wsRef.current.send(JSON.stringify({
               type: 'resize',
               cols: terminalInstanceRef.current.cols,
@@ -130,7 +147,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
       setStatus('error');
       setStatusMessage('Failed to load terminal');
     }
-  }, [isInitialized]);
+  }, [isInitialized, assignedMode]);
 
   // Handle automatic startup sequence
   const handleStartupSequence = useCallback((output: string) => {
@@ -192,23 +209,34 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
   }, [sendInput, claudeCommand, taskPrompt]);
 
   // Connect to terminal server
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
     if (!terminalInstanceRef.current) return;
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
     // Reset startup sequence
     startupPhaseRef.current = 'init';
     outputBufferRef.current = '';
+    setAssignedMode(null);
 
     setStatus('connecting');
     setStatusMessage('Connecting to terminal server...');
 
-    // Connect without initial commands - we'll handle the sequence ourselves
+    // Get controller token
+    const token = await getControllerToken();
+
     const ws = new WebSocket(TERMINAL_SERVER_URL);
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket connected, sending handshake');
+      // Send handshake with controller mode and token
+      ws.send(JSON.stringify({
+        type: 'connect',
+        mode: 'controller',
+        token,
+        taskIdentifier,
+      }));
+
       // Send initial resize
       if (terminalInstanceRef.current) {
         ws.send(JSON.stringify({
@@ -224,10 +252,23 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
         const msg = JSON.parse(event.data);
 
         switch (msg.type) {
+          case 'connected':
+            console.log('Handshake complete, assigned mode:', msg.mode);
+            setAssignedMode(msg.mode);
+            if (msg.mode === 'viewer') {
+              setStatusMessage('Connected as viewer (read-only)');
+            }
+            break;
+
+          case 'history':
+            // Write history to terminal for late joiners
+            terminalInstanceRef.current?.write(msg.data);
+            break;
+
           case 'output':
             terminalInstanceRef.current?.write(msg.data);
-            // Handle startup sequence
-            if (startupPhaseRef.current !== 'done') {
+            // Handle startup sequence (only if we're controller and not done)
+            if (assignedMode === 'controller' && startupPhaseRef.current !== 'done') {
               handleStartupSequence(msg.data);
             }
             break;
@@ -239,6 +280,19 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
             } else if (msg.status === 'error' || msg.status === 'disconnected') {
               setStatus(msg.status as TerminalStatus);
               setStatusMessage(msg.message || '');
+            }
+            break;
+
+          case 'session-info':
+            setViewerCount(msg.viewerCount || 0);
+            break;
+
+          case 'error':
+            console.warn('Server error:', msg.code, msg.message);
+            if (msg.code === 'AUTH_FAILED') {
+              setStatusMessage('Auth failed - connected as viewer');
+            } else if (msg.code === 'CONTROLLER_EXISTS') {
+              setStatusMessage('Another controller connected - viewing');
             }
             break;
 
@@ -257,6 +311,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
       setStatusMessage('Connection closed');
       wsRef.current = null;
       startupPhaseRef.current = 'init';
+      setAssignedMode(null);
     };
 
     ws.onerror = (error) => {
@@ -265,22 +320,23 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
       setStatusMessage('Connection error');
     };
 
-    // Handle terminal input
-    const inputDisposable = terminalInstanceRef.current.onData((data) => {
-      if (ws.readyState === WebSocket.OPEN) {
+    // Handle terminal input (only if we become controller)
+    if (inputDisposableRef.current) {
+      inputDisposableRef.current.dispose();
+    }
+    inputDisposableRef.current = terminalInstanceRef.current.onData((data) => {
+      if (ws.readyState === WebSocket.OPEN && assignedMode === 'controller') {
         ws.send(JSON.stringify({ type: 'input', data }));
       }
     });
-
-    // Cleanup on unmount
-    return () => {
-      inputDisposable.dispose();
-      ws.close();
-    };
-  }, [handleStartupSequence]);
+  }, [handleStartupSequence, getControllerToken, taskIdentifier, assignedMode]);
 
   // Disconnect from terminal server
   const disconnect = useCallback(() => {
+    if (inputDisposableRef.current) {
+      inputDisposableRef.current.dispose();
+      inputDisposableRef.current = null;
+    }
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -289,6 +345,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
     setStatusMessage('');
     startupPhaseRef.current = 'init';
     outputBufferRef.current = '';
+    setAssignedMode(null);
 
     // Clear terminal
     if (terminalInstanceRef.current) {
@@ -316,6 +373,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      inputDisposableRef.current?.dispose();
       wsRef.current?.close();
       terminalInstanceRef.current?.dispose();
     };
@@ -348,6 +406,15 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
             <h3 className="text-sm font-semibold flex items-center gap-2">
               Claude Terminal
               <span className={`w-2 h-2 rounded-full ${statusConfig.color}`} />
+              {assignedMode === 'controller' && viewerCount > 0 && (
+                <span className="text-xs text-muted font-normal flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  {viewerCount}
+                </span>
+              )}
             </h3>
             <p className="text-xs text-muted">
               {statusConfig.text}
