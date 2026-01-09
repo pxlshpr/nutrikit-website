@@ -17,13 +17,11 @@ export default function Home() {
             <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-primary/60 via-secondary/40 to-tertiary/30 rounded-full scale-150" />
 
             {/* Icon Container - Rounded like the old design */}
-            <div className="relative glass-strong border-2 border-primary/30 rounded-[2rem] p-1 w-32 h-32 mx-auto transition-all duration-200 hover:border-secondary hover:shadow-glow-cyan" suppressHydrationWarning>
+            <div className="relative glass-strong border-2 border-primary/30 rounded-[1.75rem] md:rounded-[2.5rem] p-1 w-32 h-32 md:w-44 md:h-44 mx-auto transition-all duration-200 hover:border-secondary hover:shadow-glow-cyan" suppressHydrationWarning>
               <img
                 src="/app-icon.png"
                 alt="NutriKit"
-                width={120}
-                height={120}
-                className="rounded-[1.75rem]"
+                className="rounded-[1.5rem] md:rounded-[2.25rem] w-full h-full"
               />
             </div>
           </div>
