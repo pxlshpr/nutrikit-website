@@ -49,14 +49,13 @@ export async function POST(request: NextRequest) {
     const result = await syncIssueUpdate(payload);
 
     // Trigger on-demand revalidation for sprint pages
-    if (result.changes.length > 0) {
-      try {
-        revalidatePath('/block');
-        revalidatePath('/block/task/[id]', 'page');
-        console.log('[Linear Webhook] Triggered revalidation for sprint pages');
-      } catch (revalidateError) {
-        console.error('[Linear Webhook] Revalidation error:', revalidateError);
-      }
+    // Always revalidate on Issue updates since we fetch live data from Linear
+    try {
+      revalidatePath('/block');
+      revalidatePath('/block/task/[id]', 'page');
+      console.log('[Linear Webhook] Triggered revalidation for block pages');
+    } catch (revalidateError) {
+      console.error('[Linear Webhook] Revalidation error:', revalidateError);
     }
 
     return NextResponse.json({

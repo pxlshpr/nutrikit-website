@@ -367,12 +367,13 @@ export async function fetchSprintData(): Promise<{
     const taskIds = currentSprint.tasks.map(t => t.id);
     const liveStatuses = await fetchLiveTaskStatuses(taskIds);
 
-    // Update tasks with live statuses from Linear
+    // Update tasks with live data from Linear (status and title)
     currentSprint.tasks = currentSprint.tasks.map(task => {
       const liveStatus = liveStatuses.get(task.id);
       if (liveStatus) {
         return {
           ...task,
+          title: liveStatus.title, // Use live title from Linear
           status: parseStatus(liveStatus.status),
         };
       }
@@ -538,6 +539,7 @@ export async function fetchSprintTaskList(): Promise<SprintTask[]> {
       if (liveStatus) {
         return {
           ...task,
+          title: liveStatus.title, // Use live title from Linear
           status: parseStatus(liveStatus.status),
         };
       }

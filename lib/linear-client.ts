@@ -239,6 +239,7 @@ export interface CompletedTask {
 // Interface for live task status
 export interface LiveTaskStatus {
   identifier: string;
+  title: string;
   status: string;
   priority: number;
   updatedAt: string;
@@ -272,6 +273,7 @@ export async function fetchLiveTaskStatuses(taskIds: string[]): Promise<Map<stri
       const state = await issue.state;
       return {
         identifier: issue.identifier,
+        title: issue.title,
         status: state?.name || 'Unknown',
         priority: issue.priority,
         updatedAt: issue.updatedAt.toISOString(),
