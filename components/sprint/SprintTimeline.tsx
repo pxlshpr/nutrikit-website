@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { SprintConfig, SprintInfo, SprintTask, PlannedSprint, getSprintName } from '@/lib/sprint-parser';
+import { SprintConfig, SprintInfo, SprintTask, PlannedSprint, CompletedSprint, getSprintName } from '@/lib/sprint-parser';
 
 // Block number offset (adjusts display number from file number)
 const BLOCK_OFFSET = 0;
@@ -12,6 +12,7 @@ interface SprintTimelineProps {
   config: SprintConfig;
   currentTasks: SprintTask[];
   plannedSprints?: PlannedSprint[];
+  completedSprints?: CompletedSprint[];
 }
 
 interface TimelineNode {
@@ -103,17 +104,26 @@ function formatDateFull(date: Date): string {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-// Build task map and date map from current sprint and planned sprints
+// Build task map and date map from completed, current, and planned sprints
 function buildSprintMaps(
   currentSprintNum: number,
   currentTasks: SprintTask[],
-  plannedSprints: PlannedSprint[]
+  plannedSprints: PlannedSprint[],
+  completedSprints: CompletedSprint[] = []
 ): { taskMap: Map<number, SprintTask[]>, dateMap: Map<number, string> } {
   const taskMap = new Map<number, SprintTask[]>();
   const dateMap = new Map<number, string>();
 
+  // Add completed sprints first
+  for (const completed of completedSprints) {
+    taskMap.set(completed.number, completed.tasks);
+    dateMap.set(completed.number, completed.dateRange);
+  }
+
+  // Add current sprint
   taskMap.set(currentSprintNum, currentTasks);
 
+  // Add planned sprints
   for (const planned of plannedSprints) {
     taskMap.set(planned.number, planned.tasks);
     dateMap.set(planned.number, planned.dateRange);
@@ -122,17 +132,22 @@ function buildSprintMaps(
   return { taskMap, dateMap };
 }
 
-export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [] }: SprintTimelineProps) {
+export default function SprintTimeline({ currentSprint, currentTasks, plannedSprints = [], completedSprints = [] }: SprintTimelineProps) {
   const currentSprintNum = currentSprint.number;
   const [selectedSprint, setSelectedSprint] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const { taskMap: sprintTaskMap, dateMap: sprintDateMap } = buildSprintMaps(currentSprintNum, currentTasks, plannedSprints);
+  const { taskMap: sprintTaskMap, dateMap: sprintDateMap } = buildSprintMaps(currentSprintNum, currentTasks, plannedSprints, completedSprints);
 
   // Generate timeline nodes with date information
   const nodes: TimelineNode[] = useMemo(() => {
+    // Calculate min and max sprint numbers
+    const minPastSprint = completedSprints.length > 0
+      ? Math.min(...completedSprints.map(s => s.number))
+      : currentSprintNum;
+
     const maxFutureSprint = Math.max(
       currentSprintNum + 4,
       ...Array.from(sprintTaskMap.keys())
@@ -140,7 +155,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
 
     const result: TimelineNode[] = [];
 
-    for (let i = currentSprintNum; i <= maxFutureSprint; i++) {
+    for (let i = minPastSprint; i <= maxFutureSprint; i++) {
       const displayNumber = i + BLOCK_OFFSET;
       const dateRange = sprintDateMap.get(i);
 
@@ -189,7 +204,7 @@ export default function SprintTimeline({ currentSprint, currentTasks, plannedSpr
     }
 
     return result;
-  }, [currentSprintNum, currentSprint.startDate, currentSprint.endDate, sprintTaskMap, sprintDateMap]);
+  }, [currentSprintNum, currentSprint.startDate, currentSprint.endDate, sprintTaskMap, sprintDateMap, completedSprints]);
 
   // Calculate timeline date range for grid
   const { timelineStart, timelineEnd, totalDays } = useMemo(() => {

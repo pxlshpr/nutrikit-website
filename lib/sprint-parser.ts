@@ -278,6 +278,14 @@ export interface PlannedSprint {
   tasks: SprintTask[];
 }
 
+export interface CompletedSprint {
+  number: number;
+  name: string;
+  dateRange: string;
+  tasks: SprintTask[];
+  focus: string;
+}
+
 export function parsePlannedSprints(content: string): PlannedSprint[] {
   const sprints: PlannedSprint[] = [];
 
@@ -321,11 +329,61 @@ export function parsePlannedSprints(content: string): PlannedSprint[] {
   return sprints;
 }
 
+// Parse completed blocks/sprints markdown
+export function parseCompletedSprints(content: string): CompletedSprint[] {
+  const sprints: CompletedSprint[] = [];
+
+  // Match block/sprint headers like "## Block 1 - zeus (Wed, Jan 7 - Fri, Jan 9, 2026)"
+  const sprintSections = content.split(/^## (?:Block|Sprint) /m).slice(1);
+
+  for (const section of sprintSections) {
+    const headerMatch = section.match(/^(\d+)\s*-\s*(\w+)\s*\(([^)]+)\)/);
+    if (!headerMatch) continue;
+
+    const sprintNumber = parseInt(headerMatch[1]);
+    const sprintName = headerMatch[2];
+    const dateRange = headerMatch[3];
+
+    // Extract focus/theme from the line after header (e.g., "**Focus: Fresh Start**")
+    const focusMatch = section.match(/\*\*Focus:\s*([^*]+)\*\*/);
+    const focus = focusMatch ? focusMatch[1].trim() : '';
+
+    // Extract tasks from table
+    const tasks: SprintTask[] = [];
+    const tableRows = section.match(/^\|\s*(PXL-\d+)\s*\|\s*([^|]+)\s*\|\s*(\w+)\s*\|\s*(\w+)\s*\|/gm);
+
+    if (tableRows) {
+      for (const row of tableRows) {
+        const rowMatch = row.match(/^\|\s*(PXL-\d+)\s*\|\s*([^|]+)\s*\|\s*(\w+)\s*\|\s*(\w+)\s*\|/);
+        if (rowMatch) {
+          tasks.push({
+            id: rowMatch[1].trim(),
+            title: rowMatch[2].trim(),
+            status: parseStatus(rowMatch[3].trim()),
+            priority: parsePriority(rowMatch[4].trim()),
+          });
+        }
+      }
+    }
+
+    sprints.push({
+      number: sprintNumber,
+      name: sprintName,
+      dateRange,
+      tasks,
+      focus,
+    });
+  }
+
+  return sprints;
+}
+
 // Fetch sprint data from GitHub
 export async function fetchSprintData(): Promise<{
   current: SprintData;
   config: SprintConfig;
   plannedSprints: PlannedSprint[];
+  completedSprints: CompletedSprint[];
 }> {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
@@ -354,10 +412,11 @@ export async function fetchSprintData(): Promise<{
     }
   }
 
-  const [currentContent, configContent, plannedContent] = await Promise.all([
+  const [currentContent, configContent, plannedContent, completedContent] = await Promise.all([
     fetchFile('.claude/sprints/current-sprint.md'),
     fetchFile('.claude/sprints/config.md'),
     fetchFile('.claude/sprints/planned-sprints.md').catch(() => ''), // Optional file
+    fetchFile('.claude/sprints/completed-sprints.md').catch(() => ''), // Optional file
   ]);
 
   const currentSprint = parseCurrentSprint(currentContent);
@@ -405,6 +464,7 @@ export async function fetchSprintData(): Promise<{
     current: currentSprint,
     config: parseSprintConfig(configContent),
     plannedSprints: plannedContent ? parsePlannedSprints(plannedContent) : [],
+    completedSprints: completedContent ? parseCompletedSprints(completedContent) : [],
   };
 }
 
