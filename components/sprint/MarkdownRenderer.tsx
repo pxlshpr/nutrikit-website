@@ -81,21 +81,23 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Code blocks
         pre: ({ children }) => (
-          <pre className="p-4 bg-black/30 rounded-xl overflow-x-auto border border-foreground/10">
-            {children}
-          </pre>
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <pre className="p-3 md:p-4 bg-black/30 rounded-xl border border-foreground/10 text-xs md:text-sm min-w-0">
+              {children}
+            </pre>
+          </div>
         ),
         code: ({ className, children }) => {
           const isInline = !className;
           if (isInline) {
             return (
-              <code className="px-1.5 py-0.5 bg-white/10 rounded text-sm font-mono text-protein">
+              <code className="px-1.5 py-0.5 bg-white/10 rounded text-sm font-mono text-protein break-words">
                 {children}
               </code>
             );
           }
           return (
-            <code className="text-sm font-mono text-foreground/90 leading-relaxed">
+            <code className="font-mono text-foreground/90 leading-relaxed">
               {children}
             </code>
           );
@@ -159,10 +161,12 @@ export default function MarkdownRenderer({ content, taskIdentifier }: MarkdownRe
 
         // Tables
         table: ({ children }) => (
-          <div className="overflow-x-auto rounded-xl border border-foreground/10">
-            <table className="w-full text-sm">
-              {children}
-            </table>
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="rounded-xl border border-foreground/10 inline-block min-w-full">
+              <table className="w-full text-sm">
+                {children}
+              </table>
+            </div>
           </div>
         ),
         thead: ({ children }) => (

@@ -252,27 +252,27 @@ function TaskDetailContent({ task, navInfo }: {
                 Comments ({task.comments.length})
               </span>
             </div>
-            <div className="p-6 md:p-8 space-y-4">
+            <div className="divide-y divide-primary/20">
               {task.comments.map((comment) => (
-                <div key={comment.id} className="bg-black/30 border-2 border-primary/20 rounded-none p-4 md:p-5">
-                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-primary/20">
+                <div key={comment.id} className="px-4 py-5 md:px-6 md:py-6">
+                  <div className="flex items-center gap-3 mb-3">
                     {comment.user.avatarUrl ? (
                       <img
                         src={comment.user.avatarUrl}
                         alt={comment.user.name}
-                        className="w-8 h-8 rounded-full ring-2 ring-secondary/40"
+                        className="w-7 h-7 rounded-full ring-2 ring-secondary/40"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-sm font-medium">
+                      <div className="w-7 h-7 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-xs font-medium">
                         {comment.user.name.charAt(0)}
                       </div>
                     )}
-                    <div className="flex-1">
-                      <span className="font-mono font-medium text-sm block text-foreground">{comment.user.name}</span>
-                      <span className="text-xs font-mono text-foreground/50">{formatDateTime(comment.createdAt)}</span>
+                    <div className="flex-1 flex items-baseline gap-2">
+                      <span className="font-mono font-medium text-sm text-foreground">{comment.user.name}</span>
+                      <span className="text-xs font-mono text-foreground/40">{formatDateTime(comment.createdAt)}</span>
                     </div>
                   </div>
-                  <div className="max-w-none">
+                  <div className="max-w-none overflow-x-hidden">
                     <MarkdownRenderer content={comment.body} />
                   </div>
                 </div>
