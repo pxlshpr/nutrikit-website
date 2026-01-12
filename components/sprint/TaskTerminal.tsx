@@ -204,7 +204,16 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
 
   // Connect to terminal server
   const connect = useCallback(async () => {
-    if (!terminalInstanceRef.current) return;
+    // Wait for terminal to be initialized first
+    if (!terminalInstanceRef.current) {
+      console.log('Terminal not initialized yet, waiting...');
+      await initializeTerminal();
+      // Check again after initialization
+      if (!terminalInstanceRef.current) {
+        console.error('Failed to initialize terminal');
+        return;
+      }
+    }
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
     // Reset startup sequence
@@ -323,7 +332,7 @@ export default function TaskTerminal({ taskIdentifier, taskTitle }: TaskTerminal
         ws.send(JSON.stringify({ type: 'input', data }));
       }
     });
-  }, [handleStartupSequence, getControllerToken, taskIdentifier, assignedMode]);
+  }, [handleStartupSequence, getControllerToken, taskIdentifier, assignedMode, initializeTerminal]);
 
   // Disconnect from terminal server
   const disconnect = useCallback(() => {
