@@ -136,7 +136,7 @@ function TaskDetailContent({ task, navInfo }: {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          &lt; Back to Blocks
+          Back to Blocks
         </Link>
 
         {/* Live Terminal - shows viewer for guests, full terminal for allowed users */}
@@ -491,7 +491,7 @@ function ErrorState({ error, taskId }: { error: string; taskId: string }) {
             </code>
             <Link href="/block">
               <Button variant="primary" size="lg">
-                &lt; Back to Blocks
+                Back to Blocks
               </Button>
             </Link>
           </div>
