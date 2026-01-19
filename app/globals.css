@@ -36,6 +36,33 @@
     --font-heading: var(--font-orbitron);
     --font-mono: var(--font-share-tech);
   }
+
+  /* Light mode - Softer vaporwave with pastel neon accents */
+  @media (prefers-color-scheme: light) {
+    :root {
+      /* Soft lavender background - reminiscent of sunrise skies */
+      --background: #FAF8FF;
+      --foreground: #2D1B4E; /* Deep purple for readability */
+
+      /* Glass Panels - White with purple tint */
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-bg-solid: #FFFFFF;
+
+      /* Pastel Neon Accent Colors - Softer but still vibrant */
+      --primary: #E066FF; /* Soft Hot Pink */
+      --secondary: #40C9E7; /* Soft Cyan/Turquoise */
+      --tertiary: #FFB366; /* Soft Coral/Peach */
+
+      /* Borders - Soft lavender */
+      --border-default: #C4B5FD;
+      --border-active: var(--secondary);
+
+      /* Gradient Stops - Pastel versions */
+      --sunset-from: #FFB366;
+      --sunset-via: #E066FF;
+      --sunset-to: #40C9E7;
+    }
+  }
 }
 
 /* ============================================
@@ -47,7 +74,7 @@
   }
 
   body {
-    background-color: #090014;
+    background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-mono), monospace;
     font-size: 18px;
@@ -120,14 +147,14 @@
     }
   }
 
-  /* Scrollbar Styling - Dark neon theme */
+  /* Scrollbar Styling - Adapts to theme */
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #090014;
+    background: var(--background);
     border-left: 1px solid var(--border-default);
   }
 
@@ -339,6 +366,17 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+
+  /* Light mode glass adjustments */
+  @media (prefers-color-scheme: light) {
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .glass-subtle {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
 }
 
 /* ============================================
@@ -441,7 +479,7 @@
     border-width: 2px;
     border-color: var(--secondary);
     background-color: transparent;
-    color: #00FFFF;
+    color: var(--secondary);
     transition: all 200ms linear;
     display: inline-flex;
     align-items: center;
@@ -461,8 +499,8 @@
 
   .btn-primary:hover {
     transform: skewX(0deg);
-    background-color: #00FFFF;
-    color: #000;
+    background-color: var(--secondary);
+    color: var(--background);
     box-shadow: 0 0 20px var(--secondary);
   }
 
@@ -475,7 +513,7 @@
     border-radius: 0;
     border-width: 2px;
     border-color: var(--primary);
-    background-color: #FF00FF;
+    background-color: var(--primary);
     color: #fff;
     transition: all 200ms linear;
     display: inline-flex;
@@ -508,7 +546,7 @@
     border-width: 2px;
     border-color: var(--primary);
     background-color: transparent;
-    color: #FF00FF;
+    color: var(--primary);
     transition: all 200ms linear;
     display: inline-flex;
     align-items: center;
@@ -520,7 +558,7 @@
   }
 
   .btn-outline:hover {
-    background-color: #FF00FF;
+    background-color: var(--primary);
     color: #fff;
   }
 
@@ -546,8 +584,14 @@
   }
 
   .btn-ghost:hover {
-    background-color: rgba(0, 255, 255, 0.1);
-    color: #00FFFF;
+    background-color: rgba(64, 201, 231, 0.1);
+    color: var(--secondary);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .btn-ghost:hover {
+      background-color: rgba(0, 255, 255, 0.1);
+    }
   }
 
   /* Sizes */
@@ -633,21 +677,21 @@
     height: 0.75rem;
     width: 0.75rem;
     border-radius: 9999px;
-    background-color: #FF00FF;
+    background-color: var(--primary);
   }
 
   .terminal-dot-cyan {
     height: 0.75rem;
     width: 0.75rem;
     border-radius: 9999px;
-    background-color: #00FFFF;
+    background-color: var(--secondary);
   }
 
   .terminal-dot-orange {
     height: 0.75rem;
     width: 0.75rem;
     border-radius: 9999px;
-    background-color: #FF9900;
+    background-color: var(--tertiary);
   }
 }
 
@@ -658,11 +702,18 @@
   .input-terminal {
     border-bottom: 2px solid var(--primary);
     background-color: #000;
-    color: #00FFFF;
+    color: var(--secondary);
     font-family: var(--font-mono), monospace;
     font-size: 1.125rem;
     padding: 0.5rem 0.75rem;
     transition: all 200ms linear;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .input-terminal {
+      background-color: #fff;
+      color: var(--foreground);
+    }
   }
 
   .input-terminal:focus-visible {
@@ -672,7 +723,13 @@
   }
 
   .input-terminal::placeholder {
-    color: rgba(255, 0, 255, 0.5);
+    color: rgba(224, 102, 255, 0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-terminal::placeholder {
+      color: rgba(255, 0, 255, 0.5);
+    }
   }
 }
 
@@ -701,20 +758,38 @@
 
   .badge-cyan {
     border-color: var(--secondary);
-    color: #00FFFF;
-    background-color: rgba(0, 255, 255, 0.1);
+    color: var(--secondary);
+    background-color: rgba(64, 201, 231, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-cyan {
+      background-color: rgba(0, 255, 255, 0.1);
+    }
   }
 
   .badge-magenta {
     border-color: var(--primary);
-    color: #FF00FF;
-    background-color: rgba(255, 0, 255, 0.1);
+    color: var(--primary);
+    background-color: rgba(224, 102, 255, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-magenta {
+      background-color: rgba(255, 0, 255, 0.1);
+    }
   }
 
   .badge-orange {
     border-color: var(--tertiary);
-    color: #FF9900;
-    background-color: rgba(255, 153, 0, 0.1);
+    color: var(--tertiary);
+    background-color: rgba(255, 179, 102, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-orange {
+      background-color: rgba(255, 153, 0, 0.1);
+    }
   }
 }
 
@@ -740,6 +815,17 @@
     opacity: 0.3;
   }
 
+  /* Light mode scanlines - more subtle */
+  @media (prefers-color-scheme: light) {
+    body::before {
+      background: linear-gradient(
+        rgba(250, 248, 255, 0) 50%,
+        rgba(196, 181, 253, 0.08) 50%
+      );
+      opacity: 0.15;
+    }
+  }
+
   /* RGB Chromatic Aberration - Subtle overlay */
   body::after {
     content: '';
@@ -758,6 +844,13 @@
     z-index: 9998;
     mix-blend-mode: screen;
     opacity: 0.5;
+  }
+
+  /* Light mode chromatic aberration - very subtle */
+  @media (prefers-color-scheme: light) {
+    body::after {
+      opacity: 0.15;
+    }
   }
 }
 
