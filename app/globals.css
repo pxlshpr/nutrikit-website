@@ -625,9 +625,22 @@
     transition: all 200ms linear;
   }
 
+  @media (prefers-color-scheme: light) {
+    .card {
+      border: 1px solid rgba(224, 102, 255, 0.3);
+      box-shadow: 0 2px 15px rgba(64, 201, 231, 0.1);
+    }
+  }
+
   .card:hover {
     transform: translateY(-0.5rem);
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .card:hover {
+      box-shadow: 0 4px 30px rgba(64, 201, 231, 0.25);
+    }
   }
 
   .card-title {
@@ -639,10 +652,22 @@
                  0 0 10px rgba(0, 255, 255, 0.5);
   }
 
+  @media (prefers-color-scheme: light) {
+    .card-title {
+      text-shadow: none;
+    }
+  }
+
   .card-description {
     font-family: var(--font-mono), monospace;
     color: rgba(224, 224, 224, 0.7);
     font-size: 0.875rem;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .card-description {
+      color: rgba(45, 27, 78, 0.7);
+    }
   }
 
   /* Terminal Window Style */
@@ -653,6 +678,13 @@
     overflow: hidden;
   }
 
+  @media (prefers-color-scheme: light) {
+    .terminal-window {
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 20px rgba(64, 201, 231, 0.2);
+    }
+  }
+
   .terminal-title-bar {
     background-color: rgba(0, 255, 255, 0.1);
     border-bottom: 1px solid var(--secondary);
@@ -660,6 +692,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .terminal-title-bar {
+      background-color: rgba(64, 201, 231, 0.15);
+    }
   }
 
   .terminal-dots {
