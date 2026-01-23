@@ -13,10 +13,10 @@ function IPhoneFrame({
   size?: "sm" | "md" | "lg" | "xl";
 }) {
   const sizeClasses = {
-    sm: "w-[260px]",
-    md: "w-[320px]",
-    lg: "w-[380px]",
-    xl: "w-[440px]"
+    sm: "w-[230px]",
+    md: "w-[280px]",
+    lg: "w-[330px]",
+    xl: "w-[380px]"
   };
 
   return (
@@ -418,7 +418,7 @@ export default function Home() {
             badge="Natural Input"
             title="Log Food by"
             titleHighlight="Speaking"
-            description="Forget tedious searches. Just say 'I had a chicken sandwich and a coffee' and watch as NutriKit matches your words to real foods from a verified database."
+            description="Forget tedious searches. Just say 'two eggs and a slice of toast with butter' and watch as NutriKit matches your words to real foods from a verified database."
             features={[
               "Voice or text - whatever feels natural",
               "Matches to actual foods, not AI guesses",
