@@ -1,38 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Orbitron, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/providers/SessionProvider";
-
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-  variable: "--font-orbitron",
-  display: "swap",
-});
-
-const shareTechMono = Share_Tech_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-share-tech",
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#090014" },
-    { media: "(prefers-color-scheme: light)", color: "#FAF8FF" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#F8F7F4" },
   ],
 };
 
 export const metadata: Metadata = {
-  title: "NutriKit",
-  description: "You can't control what you don't measure.",
+  title: "NutriKit - Track Nutrition Without the Friction",
+  description: "The fastest way to log what you eat. Scan labels instantly, speak your meals naturally, and let intelligent goals adapt to your body.",
   openGraph: {
-    title: "NutriKit",
-    description: "You can't control what you don't measure.",
+    title: "NutriKit - Track Nutrition Without the Friction",
+    description: "The fastest way to log what you eat. Scan labels instantly, speak your meals naturally, and let intelligent goals adapt to your body.",
     url: "https://getnutrikit.app",
     siteName: "NutriKit",
     images: [
@@ -40,7 +25,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NutriKit App Icon",
+        alt: "NutriKit App",
       },
     ],
     locale: "en_US",
@@ -48,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NutriKit",
-    description: "You can't control what you don't measure.",
+    title: "NutriKit - Track Nutrition Without the Friction",
+    description: "The fastest way to log what you eat. Scan labels instantly, speak your meals naturally, and let intelligent goals adapt to your body.",
     images: ["/og-image.png"],
   },
 };
@@ -60,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${orbitron.variable} ${shareTechMono.variable}`}>
+    <html lang="en">
       <body>
         <SessionProvider>
           {children}
