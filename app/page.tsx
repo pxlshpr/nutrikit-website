@@ -266,10 +266,30 @@ export default function Home() {
               {/* Portfolio Link */}
               <a
                 href="https://pxlshpr.vercel.app"
-                className="portfolio-link"
+                className="portfolio-link group"
                 title="pxlshpr"
               >
-                <img src="/pxlshpr-logo.png" alt="pxlshpr" className="w-8 h-8 rounded-full" />
+                <svg className="w-8 h-8" viewBox="0 0 200 200" fill="none">
+                  <circle cx="100" cy="100" r="95" className="fill-[var(--foreground)]/5 group-hover:fill-[var(--accent-primary)]/10 transition-colors duration-300"/>
+                  <rect x="45" y="50" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#c084fc] transition-all duration-300"/>
+                  <rect x="72" y="50" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#f472b6] transition-all duration-300 delay-[50ms]"/>
+                  <rect x="99" y="50" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#fb923c] transition-all duration-300 delay-100"/>
+                  <rect x="45" y="77" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#f472b6] transition-all duration-300 delay-[50ms]"/>
+                  <rect x="72" y="77" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#2dd4bf] transition-all duration-300 delay-100"/>
+                  <rect x="99" y="77" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#c084fc] transition-all duration-300 delay-150"/>
+                  <rect x="126" y="77" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#f472b6] transition-all duration-300 delay-200"/>
+                  <rect x="72" y="104" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#fb923c] transition-all duration-300 delay-150"/>
+                  <rect x="99" y="104" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#f472b6] transition-all duration-300 delay-200"/>
+                  <rect x="126" y="104" width="22" height="22" rx="4" className="fill-[var(--foreground)]/40 group-hover:fill-[#2dd4bf] transition-all duration-300 delay-[250ms]"/>
+                  <polygon points="110,115 155,140 140,145 150,165 138,168 128,150 120,158" className="fill-[var(--foreground)]/40 group-hover:fill-[url(#pxlGradNav)] transition-all duration-500"/>
+                  <defs>
+                    <linearGradient id="pxlGradNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#c084fc"/>
+                      <stop offset="50%" stopColor="#f472b6"/>
+                      <stop offset="100%" stopColor="#2dd4bf"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
               </a>
               <div className="w-px h-6 bg-[var(--border-default)]" />
               <div className="flex items-center gap-3">
