@@ -584,6 +584,34 @@
 }
 
 /* ============================================
+   9.5 OPTIMIZED VIDEO OVERLAY
+   ============================================ */
+@layer components {
+  .video-overlay {
+    @apply absolute inset-0 flex items-center justify-center;
+    @apply bg-black/30 backdrop-blur-sm cursor-pointer;
+    @apply transition-all duration-300;
+  }
+
+  .video-overlay:hover {
+    @apply bg-black/40;
+  }
+
+  .video-overlay.hiding {
+    @apply opacity-0 pointer-events-none;
+  }
+
+  .play-icon {
+    @apply w-16 h-16 rounded-full flex items-center justify-center;
+    @apply bg-[var(--accent-primary)] text-black transition-transform duration-200;
+  }
+
+  .play-icon:hover {
+    @apply scale-110;
+  }
+}
+
+/* ============================================
    10. ACCESSIBILITY
    ============================================ */
 @layer base {

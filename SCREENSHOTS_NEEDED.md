@@ -100,10 +100,33 @@ Videos provide a much better experience for demonstrating features. Use screen r
 
 | Video | Files | What to show |
 |-------|-------|--------------|
+| **Main App Overview** | `main-dark.mp4`, `main-light.mp4` | Quick montage: scan a label → voice log a meal → glance at daily summary with goals → show the seamless workflow |
+| **Chunes Overview** | `chunes-dark.mp4`, `chunes-light.mp4` | Showcase Chunes' key features (amalgamation similar to main app) |
 | Scanner Demo | `scanner-dark.mp4`, `scanner-light.mp4` | Point camera at label, watch it scan and recognize, show result |
 | Voice Demo | `voice-dark.mp4`, `voice-light.mp4` | Tap voice button, speak "two eggs and a slice of toast with butter", show parsed result |
 | Goals Demo | `goals-dark.mp4`, `goals-light.mp4` | Scroll through goals settings, show dynamic calculations |
 | Health Demo | `health-dark.mp4`, `health-light.mp4` | Show Health app integration, data syncing |
+
+### Overview Videos (Featured at top)
+
+**Main App Overview** (`main-dark.mp4`, `main-light.mp4`)
+- **Duration:** 10-15 seconds
+- **What to show:** A seamless workflow montage showcasing the app's power:
+  1. Quick scanner demo - point at label, instant recognition
+  2. Transition to voice logging - speak naturally, meal logged
+  3. Pan to daily summary - show calorie ring, macros, goals progress
+  4. Maybe quick Health integration visual
+- **Vibe:** Fast-paced, satisfying, shows WHY someone would use this
+- **Key:** Make it feel effortless and quick
+
+**Chunes Overview** (`chunes-dark.mp4`, `chunes-light.mp4`)
+- **Duration:** 10-15 seconds
+- **What to show:** Feature-rich montage of Chunes' key capabilities:
+  - [To be determined based on Chunes' main features]
+  - Similar pacing and production quality to main app video
+- **Vibe:** Professional, feature-focused, shows what makes Chunes special
+
+---
 
 ### Video Conversion Command
 
@@ -130,6 +153,11 @@ ffmpeg -i input.mov -c:v libx264 -preset slow -crf 26 -c:a aac -b:a 96k output.m
 
 ## Still Needed
 
+### Priority (Overview Videos - Featured)
+- [ ] main-dark.mp4 / main-light.mp4 (Main app overview montage)
+- [ ] chunes-dark.mp4 / chunes-light.mp4 (Chunes overview montage)
+
+### Feature Videos
 - [ ] scanner-dark.png / scanner-light.png (static fallbacks)
 - [ ] scanner-dark.mp4 (dark mode video)
 - [ ] voice-dark.png / voice-light.png

@@ -34,4 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/scripts/
+
+# Video source files (too large for git - keep only compressed versions)
+*.mov
+
+# Test files
+test-data-saver.html

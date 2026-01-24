@@ -11,7 +11,8 @@
     "sync-sprint": "npx tsx scripts/sync-sprint-with-linear.ts",
     "setup-webhook": "npx tsx scripts/setup-linear-webhook.ts",
     "setup-sync": "bash scripts/setup-linear-sync.sh",
-    "verify-sync": "npx tsx scripts/verify-linear-sync-setup.ts"
+    "verify-sync": "npx tsx scripts/verify-linear-sync-setup.ts",
+    "compress-videos": "npx tsx scripts/compress-videos.ts"
   },
   "keywords": [],
   "author": "",

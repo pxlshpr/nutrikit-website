@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { OptimizedVideo } from "@/components/OptimizedVideo";
 
 // iPhone 17 Pro Max frame component - realistic titanium design
 function IPhoneFrame({
@@ -75,13 +76,30 @@ function AppMedia({
   name,
   alt,
   type = "video",
-  className = ""
+  className = "",
+  optimized = false,
+  priority = false
 }: {
   name: string;
   alt: string;
   type?: "video" | "image";
   className?: string;
+  optimized?: boolean;
+  priority?: boolean;
 }) {
+  // Use OptimizedVideo for better performance
+  if (type === "video" && optimized) {
+    return (
+      <OptimizedVideo
+        name={name}
+        alt={alt}
+        className={`absolute inset-0 ${className}`}
+        priority={priority}
+        autoplay={true}
+      />
+    );
+  }
+
   if (type === "video") {
     return (
       <>
@@ -156,6 +174,7 @@ function FeatureSection({
   phonePosition = "left",
   mediaName,
   mediaType = "video",
+  optimizedMedia = false,
 }: {
   id: string;
   badge: string;
@@ -166,6 +185,7 @@ function FeatureSection({
   phonePosition?: "left" | "right";
   mediaName: string;
   mediaType?: "video" | "image";
+  optimizedMedia?: boolean;
 }) {
   const content = (
     <div className="flex flex-col justify-center">
@@ -192,7 +212,12 @@ function FeatureSection({
   const phone = (
     <div className="flex justify-center">
       <IPhoneFrame size="xl">
-        <AppMedia name={mediaName} alt={`NutriKit - ${badge}`} type={mediaType} />
+        <AppMedia
+          name={mediaName}
+          alt={`NutriKit - ${badge}`}
+          type={mediaType}
+          optimized={optimizedMedia}
+        />
       </IPhoneFrame>
     </div>
   );
@@ -413,6 +438,7 @@ export default function Home() {
             ]}
             phonePosition="left"
             mediaName="scanner"
+            optimizedMedia={true}
           />
 
           {/* Feature 2: Natural Language */}
