@@ -78,7 +78,8 @@ function AppMedia({
   type = "video",
   className = "",
   optimized = false,
-  priority = false
+  priority = false,
+  transparent = false
 }: {
   name: string;
   alt: string;
@@ -86,6 +87,7 @@ function AppMedia({
   className?: string;
   optimized?: boolean;
   priority?: boolean;
+  transparent?: boolean;
 }) {
   // Use OptimizedVideo for better performance
   if (type === "video" && optimized) {
@@ -96,6 +98,7 @@ function AppMedia({
         className={`absolute inset-0 ${className}`}
         priority={priority}
         autoplay={true}
+        transparent={transparent}
       />
     );
   }
@@ -175,6 +178,8 @@ function FeatureSection({
   mediaName,
   mediaType = "video",
   optimizedMedia = false,
+  noFrame = false,
+  transparent = false,
 }: {
   id: string;
   badge: string;
@@ -186,6 +191,8 @@ function FeatureSection({
   mediaName: string;
   mediaType?: "video" | "image";
   optimizedMedia?: boolean;
+  noFrame?: boolean;
+  transparent?: boolean;
 }) {
   const content = (
     <div className="flex flex-col justify-center">
@@ -209,7 +216,21 @@ function FeatureSection({
     </div>
   );
 
-  const phone = (
+  const phone = noFrame ? (
+    // Video already has bezel/frame with transparent background - render directly
+    <div className="flex justify-center">
+      <div className="relative w-[330px] aspect-[9/16]" style={{ background: 'transparent' }}>
+        <AppMedia
+          name={mediaName}
+          alt={`NutriKit - ${badge}`}
+          type={mediaType}
+          optimized={optimizedMedia}
+          transparent={transparent}
+        />
+      </div>
+    </div>
+  ) : (
+    // Wrap in iPhone frame for videos without built-in bezel
     <div className="flex justify-center">
       <IPhoneFrame size="xl">
         <AppMedia
@@ -217,6 +238,7 @@ function FeatureSection({
           alt={`NutriKit - ${badge}`}
           type={mediaType}
           optimized={optimizedMedia}
+          transparent={transparent}
         />
       </IPhoneFrame>
     </div>
@@ -284,7 +306,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-gradient-radial pointer-events-none" />
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 glass border-b border-[var(--border-default)]">
+      <nav className="sticky top-0 z-50 glass-nav border-b border-[var(--border-default)]">
         <div className="container-app">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -437,8 +459,10 @@ export default function Home() {
               "Saves scanned foods to your personal database"
             ]}
             phonePosition="left"
-            mediaName="scanner"
+            mediaName="scanner-light2"
             optimizedMedia={true}
+            noFrame={true}
+            transparent={true}
           />
 
           {/* Feature 2: Natural Language */}

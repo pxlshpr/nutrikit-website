@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 interface OptimizedVideoProps {
   name: string;
@@ -8,6 +8,7 @@ interface OptimizedVideoProps {
   className?: string;
   priority?: boolean;
   autoplay?: boolean;
+  transparent?: boolean;
 }
 
 /**
@@ -112,13 +113,15 @@ function usePrefersReducedData() {
  * - Format negotiation (WebM → MP4 fallback)
  * - Normal behavior: Auto-plays when scrolled into view
  * - Data saver behavior: Shows play button, doesn't download until clicked
+ * - Canvas rendering for videos with transparency (alpha channel support)
  */
 export function OptimizedVideo({
   name,
   alt,
   className = "",
   priority = false,
-  autoplay = false
+  autoplay = false,
+  transparent = false
 }: OptimizedVideoProps) {
   const { videoRef, isInView } = useVideoLazyLoad(priority);
   const theme = useThemeDetection();
@@ -128,6 +131,9 @@ export function OptimizedVideo({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const videoElementRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>(0);
+  const [currentTheme, setCurrentTheme] = useState(theme);
 
   // Determine if we should load the video
   // If data saver is OFF: load immediately when in view
@@ -137,6 +143,83 @@ export function OptimizedVideo({
       ? userWantsVideo  // Only load if user clicked play
       : true            // Auto-load when in view
   );
+
+  // Canvas rendering loop for transparent videos
+  const renderToCanvas = useCallback(() => {
+    const video = videoElementRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || video.paused || video.ended) return;
+
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    // Set canvas size to match video
+    if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+    }
+
+    // Clear and draw the current frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0);
+
+    // Continue the loop
+    animationFrameRef.current = requestAnimationFrame(renderToCanvas);
+  }, []);
+
+  // Start/stop canvas rendering based on video state
+  useEffect(() => {
+    if (!transparent) return;
+
+    const video = videoElementRef.current;
+    if (!video) return;
+
+    const handlePlay = () => {
+      renderToCanvas();
+    };
+
+    const handlePause = () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handlePause);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handlePause);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [transparent, renderToCanvas, shouldLoadVideo]);
+
+  // Handle theme changes - switch video source when theme changes
+  useEffect(() => {
+    if (theme !== currentTheme && videoElementRef.current && shouldLoadVideo) {
+      const video = videoElementRef.current;
+      const wasPlaying = !video.paused;
+      const currentTime = video.currentTime;
+
+      // Update theme state
+      setCurrentTheme(theme);
+
+      // Force video to reload with new sources
+      video.load();
+
+      // If video was playing, resume playback
+      if (wasPlaying) {
+        video.currentTime = currentTime;
+        video.play().catch(() => {
+          // Playback might fail, that's okay
+        });
+      }
+    }
+  }, [theme, currentTheme, shouldLoadVideo]);
 
   // Handle play button click (only shown in data saver mode)
   const handlePlayClick = () => {
@@ -153,37 +236,51 @@ export function OptimizedVideo({
   return (
     <div
       ref={videoRef}
-      className={`relative w-full h-full bg-black overflow-hidden ${className}`}
+      className={`relative w-full h-full ${className}`}
+      style={{ background: 'transparent' }}
     >
-      {/* Video element - only render if should load */}
+      {/* Canvas for transparent video rendering - kept for fallback if needed */}
+      {/* Currently disabled since we use HEVC/WebM with native alpha support */}
+
+      {/* Video element - visible for transparent videos (no canvas needed with proper alpha video) */}
       {shouldLoadVideo && (
         <video
+          key={`video-${name}-${theme}`}
           ref={videoElementRef}
-          className="absolute inset-0 w-full h-full object-cover object-top"
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ background: 'transparent' }}
           loop
           muted
           playsInline
           disablePictureInPicture
-          poster={`/screenshots/${name}-${theme}.png`}
+          poster={!transparent ? `/screenshots/${name}-${theme}.png` : undefined}
           onCanPlay={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
           autoPlay={!prefersSaveData}
         >
-          {/* WebM (VP9) - Primary format */}
-          <source src={`/videos/${name}-${theme}.webm`} type="video/webm; codecs=vp9" />
-          {/* MP4 (H.264) - Fallback for Safari < 14.1 */}
-          <source src={`/videos/${name}-${theme}.mp4`} type="video/mp4; codecs=avc1.4D401E" />
+          {/* HEVC with alpha - Safari (must be first for Safari to pick it up) */}
+          {transparent && (
+            <source src={`/videos/${name}-${theme}.mov`} type='video/mp4; codecs="hvc1"' />
+          )}
+          {/* WebM (VP9) - Chrome/Firefox */}
+          <source src={`/videos/${name}-${theme}.webm`} type="video/webm" />
+          {/* MP4 (H.264) - Fallback for older browsers */}
+          {!transparent && (
+            <source src={`/videos/${name}-${theme}.mp4`} type="video/mp4" />
+          )}
           {/* Poster image fallback */}
-          <img
-            src={`/screenshots/${name}-${theme}.png`}
-            alt={alt}
-            className="w-full h-full object-cover object-top"
-          />
+          {!transparent && (
+            <img
+              src={`/screenshots/${name}-${theme}.png`}
+              alt={alt}
+              className="w-full h-full object-contain"
+            />
+          )}
         </video>
       )}
 
       {/* Poster image (shown before video loads) */}
-      {!shouldLoadVideo && (
+      {!shouldLoadVideo && !transparent && (
         <img
           src={`/screenshots/${name}-${theme}.png`}
           alt={alt}

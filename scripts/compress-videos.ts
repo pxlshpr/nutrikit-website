@@ -69,9 +69,9 @@ function compressVideo(sourceFile: string): boolean {
   }
 
   try {
-    // WebM (VP9) - Primary format
+    // WebM (VP9) - Primary format with alpha channel support
     const webmOutput = path.join(videosDir, `${nameWithTheme}.webm`);
-    console.log(`\n🎬 Creating WebM (VP9)...`);
+    console.log(`\n🎬 Creating WebM (VP9) with transparency support...`);
 
     const webmCommand = [
       `ffmpeg -i "${sourceFile}"`,
@@ -83,7 +83,8 @@ function compressVideo(sourceFile: string): boolean {
       `-row-mt 1`,
       `-tile-columns 2`,
       `-g 240`,
-      `-pix_fmt yuv420p`,
+      `-pix_fmt yuva420p`,  // Alpha channel support for transparency
+      `-auto-alt-ref 0`,    // Disable alt-ref frames for better alpha
       `-an`,
       `-y`,
       `"${webmOutput}"`

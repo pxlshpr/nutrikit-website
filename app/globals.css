@@ -284,6 +284,32 @@
     }
   }
 
+  /* Glass effect for sticky navigation - iOS optimized */
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.95);
+    /* Force GPU acceleration for smoother scrolling */
+    transform: translateZ(0);
+    /* Use lighter blur only on devices that handle it well */
+    @supports (backdrop-filter: blur(10px)) {
+      @media (min-width: 768px) {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.85);
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glass-nav {
+      background: rgba(28, 28, 30, 0.95);
+      @supports (backdrop-filter: blur(10px)) {
+        @media (min-width: 768px) {
+          background: rgba(28, 28, 30, 0.85);
+        }
+      }
+    }
+  }
+
   /* Pill badge */
   .pill {
     display: inline-flex;
