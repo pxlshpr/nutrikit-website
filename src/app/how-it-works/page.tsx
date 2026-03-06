@@ -73,7 +73,7 @@ export default function HowItWorksHub() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl">
+            <p className="text-fg-secondary text-lg md:text-xl leading-relaxed max-w-2xl">
               NutriKit isn&apos;t a calorie counter with a food database bolted
               on. It&apos;s a nutrition engine &mdash; built on published
               research, real-time data from your body, and algorithms that adapt
@@ -100,7 +100,7 @@ export default function HowItWorksHub() {
                 >
                   {card.title}
                 </h2>
-                <p className="text-gray-400 text-[15px] mt-4 leading-relaxed">
+                <p className="text-fg-secondary text-[15px] mt-4 leading-relaxed">
                   {card.desc}
                 </p>
                 <span
@@ -116,7 +116,7 @@ export default function HowItWorksHub() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="py-16 md:py-20 px-6 bg-[linear-gradient(to_bottom,_rgba(124,58,237,0.09)_0%,_#08080F_100%)]">
+      <section className="py-16 md:py-20 px-6 bg-[linear-gradient(to_bottom,_rgba(124,58,237,0.09)_0%,_var(--color-bg-page)_100%)]">
         <div className="max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
           <FadeUp>
             <h2 className="font-[family-name:var(--font-sora)] text-3xl md:text-4xl font-bold tracking-tight">
@@ -124,7 +124,7 @@ export default function HowItWorksHub() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.05}>
-            <p className="text-gray-400 text-lg">
+            <p className="text-fg-secondary text-lg">
               Or jump straight into the app.
             </p>
           </FadeUp>
@@ -137,7 +137,7 @@ export default function HowItWorksHub() {
             </Link>
           </FadeUp>
           <FadeUp delay={0.15}>
-            <p className="text-gray-500 text-sm">
+            <p className="text-fg-muted text-sm">
               Free &middot; iOS 17+ &middot; No account required
             </p>
           </FadeUp>

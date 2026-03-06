@@ -58,7 +58,7 @@ function Hero() {
         </FadeUp>
 
         <FadeUp delay={0.2}>
-          <p className="text-lg md:text-xl text-gray-400 max-w-xl leading-relaxed">
+          <p className="text-lg md:text-xl text-fg-secondary max-w-xl leading-relaxed">
             A nutrition system that adapts to your body, your goals, and your
             life.
           </p>
@@ -74,7 +74,7 @@ function Hero() {
             </a>
             <a
               href="#features"
-              className="border border-border-dark text-gray-400 hover:text-white font-medium px-8 py-3.5 rounded-xl transition-colors hover:border-gray-600"
+              className="border border-edge text-fg-secondary hover:text-fg font-medium px-8 py-3.5 rounded-xl transition-colors hover:border-fg-muted"
             >
               See Features
             </a>
@@ -101,7 +101,7 @@ function SmartTargets() {
   return (
     <section
       id="features"
-      className="relative py-24 md:py-32 bg-bg-dark-alt"
+      className="relative py-24 md:py-32 bg-bg-alt"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
@@ -114,7 +114,7 @@ function SmartTargets() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               Every nutrient gets a recommended range &mdash; calculated from
               your age, sex, weight, body composition, and pregnancy status. Not
               generic RDAs. Real targets from 14+ scientific sources,
@@ -159,7 +159,7 @@ function SmartTargets() {
 
 function DynamicTargets() {
   return (
-    <section className="py-24 md:py-32 bg-bg-dark">
+    <section className="py-24 md:py-32 bg-bg-page">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -171,7 +171,7 @@ function DynamicTargets() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               Tapering down carbs over 6 weeks? Your targets adjust daily
               &mdash; linear, stepped, or curved. Workout day? Protein and carb
               targets scale up automatically based on calories burned.
@@ -187,7 +187,7 @@ function DynamicTargets() {
                 <h3 className="font-[family-name:var(--font-sora)] text-2xl font-bold text-gold mt-3">
                   Tapered Targets
                 </h3>
-                <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                <p className="text-fg-secondary text-sm mt-2 leading-relaxed">
                   Set a start and end target, pick a duration and curve shape
                   &mdash; linear, stepped, ease-in, or ease-out. Your daily
                   target interpolates smoothly. Pause, adjust, or override any
@@ -219,7 +219,7 @@ function DynamicTargets() {
                 <h3 className="font-[family-name:var(--font-sora)] text-2xl font-bold text-green mt-3">
                   Workout Bonuses
                 </h3>
-                <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                <p className="text-fg-secondary text-sm mt-2 leading-relaxed">
                   Burned 400 kcal? Your protein and carb targets scale up
                   automatically. Choose adaptive (per 100 kcal burned) or fixed
                   bonuses, with optional eating windows around your workout.
@@ -245,7 +245,7 @@ function DynamicTargets() {
 
 function CalorieIntelligence() {
   return (
-    <section className="py-24 md:py-32 bg-bg-dark-alt">
+    <section className="py-24 md:py-32 bg-bg-alt">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -257,7 +257,7 @@ function CalorieIntelligence() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               NutriKit picks the smartest method available: energy balance from
               your weight and intake data, Apple Health active and resting
               energy, or the best BMR formula for your profile. Lose, maintain,
@@ -303,7 +303,7 @@ function CalorieIntelligence() {
 
 function FoodLogging() {
   return (
-    <section id="logging" className="py-24 md:py-32 bg-bg-dark">
+    <section id="logging" className="py-24 md:py-32 bg-bg-page">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -317,7 +317,7 @@ function FoodLogging() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               NutriKit prioritizes accuracy &mdash; with USDA-verified foods and
               a state-of-the-art nutrition label scanner that lets you review
               every value before adding. When you need to log fast, AI does the
@@ -353,7 +353,7 @@ function FoodLogging() {
                       <h3 className="font-[family-name:var(--font-sora)] text-lg font-bold">
                         {f.title}
                       </h3>
-                      <p className="text-gray-400 text-sm mt-1 leading-relaxed">
+                      <p className="text-fg-secondary text-sm mt-1 leading-relaxed">
                         {f.desc}
                       </p>
                     </div>
@@ -381,7 +381,7 @@ function FoodLogging() {
 
 function AtAGlance() {
   return (
-    <section className="py-24 md:py-32 bg-bg-dark-alt">
+    <section className="py-24 md:py-32 bg-bg-alt">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -393,7 +393,7 @@ function AtAGlance() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               A clean dashboard that shows exactly where you stand on every
               nutrient &mdash; no clutter. See your progress, which meals
               contributed most, and which foods drove your numbers.
@@ -428,7 +428,7 @@ function AtAGlance() {
 
 function ShareMeals() {
   return (
-    <section className="py-24 md:py-32 bg-bg-dark">
+    <section className="py-24 md:py-32 bg-bg-page">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -440,7 +440,7 @@ function ShareMeals() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               Generate stunning liquid glass stickers showing your meal or daily
               breakdown &mdash; calories, macros, and foods with emoji. Place
               them on photos or videos and share to Instagram, stories, or
@@ -517,7 +517,7 @@ const howItWorksCards = [
 
 function HowItWorks() {
   return (
-    <section className="py-24 md:py-32 bg-bg-dark-alt">
+    <section className="py-24 md:py-32 bg-bg-alt">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <FadeUp>
@@ -531,7 +531,7 @@ function HowItWorks() {
             </h2>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+            <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
               NutriKit isn&apos;t a calorie counter with a food database bolted
               on. It&apos;s a nutrition engine &mdash; built on published
               research, real-time data from your body, and algorithms that adapt
@@ -555,7 +555,7 @@ function HowItWorks() {
                 >
                   {card.title}
                 </h3>
-                <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+                <p className="text-fg-secondary text-sm mt-3 leading-relaxed">
                   {card.desc}
                 </p>
                 <span
@@ -589,7 +589,7 @@ function FinalCTA() {
           </h2>
         </FadeUp>
         <FadeUp delay={0.1}>
-          <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+          <p className="text-fg-secondary text-lg mt-6 leading-relaxed">
             Join the beta and help shape the future of nutrition tracking.
           </p>
         </FadeUp>
@@ -602,7 +602,7 @@ function FinalCTA() {
           </a>
         </FadeUp>
         <FadeUp delay={0.3}>
-          <p className="text-gray-500 text-sm mt-4">
+          <p className="text-fg-muted text-sm mt-4">
             Free &middot; iOS 17+ &middot; No account required
           </p>
         </FadeUp>

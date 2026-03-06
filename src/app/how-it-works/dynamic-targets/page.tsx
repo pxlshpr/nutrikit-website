@@ -100,24 +100,24 @@ export default function DynamicTargetsPage() {
           </p>
           <ul className="list-disc list-inside space-y-3 ml-1">
             <li>
-              <strong className="text-white">Linear</strong> — a straight line
+              <strong className="text-fg">Linear</strong> — a straight line
               from start to end. Equal change every day. Simple and predictable.
               Best for moderate tapers where you don&apos;t need front-loading or
               back-loading.
             </li>
             <li>
-              <strong className="text-white">Stepped</strong> — the taper
+              <strong className="text-fg">Stepped</strong> — the taper
               divides into equal-length steps (e.g., weekly blocks). Your target
               drops at the start of each step and stays flat within it. This
               mimics how many coaches program nutrition phases.
             </li>
             <li>
-              <strong className="text-white">Ease-in</strong> — changes slowly
+              <strong className="text-fg">Ease-in</strong> — changes slowly
               at first, then accelerates toward the end. Useful when you want to
               ease into a taper gently.
             </li>
             <li>
-              <strong className="text-white">Ease-out</strong> — changes quickly
+              <strong className="text-fg">Ease-out</strong> — changes quickly
               at first, then decelerates. Useful when you want to make the big
               move early and fine-tune toward the end.
             </li>
@@ -137,24 +137,24 @@ export default function DynamicTargetsPage() {
           </p>
           <ul className="list-disc list-inside space-y-1.5 ml-1">
             <li>
-              <strong className="text-white">Pause the taper</strong> — freezes
+              <strong className="text-fg">Pause the taper</strong> — freezes
               your current interpolated value. The taper resumes from where it
               left off when you unpause.
             </li>
             <li>
-              <strong className="text-white">
+              <strong className="text-fg">
                 Adjust the end value or duration mid-taper
               </strong>{" "}
               — the remaining days recalculate smoothly from today&apos;s value
               to the new end.
             </li>
             <li>
-              <strong className="text-white">Override a single day</strong> — if
+              <strong className="text-fg">Override a single day</strong> — if
               you need a different target for just today, you can set a manual
               override without disrupting the taper.
             </li>
             <li>
-              <strong className="text-white">Cancel the taper</strong> — your
+              <strong className="text-fg">Cancel the taper</strong> — your
               target reverts to whatever it would be without the taper.
             </li>
           </ul>
@@ -189,14 +189,14 @@ export default function DynamicTargetsPage() {
         <Prose>
           <p>NutriKit offers two bonus modes:</p>
           <p>
-            <strong className="text-white">Adaptive bonuses</strong> scale with
+            <strong className="text-fg">Adaptive bonuses</strong> scale with
             how much you burned. You configure a bonus per 100 kcal of active
             energy. For example, +5g protein per 100 kcal burned means a 400
             kcal workout adds 20g to your protein target. A 200 kcal workout
             adds 10g. The bonus is proportional to the effort.
           </p>
           <p>
-            <strong className="text-white">Fixed bonuses</strong> add a flat
+            <strong className="text-fg">Fixed bonuses</strong> add a flat
             amount regardless of workout intensity. If you set +30g carbs as a
             fixed bonus, any workout day gets +30g — whether you did a 20-minute
             walk or a 90-minute lifting session.

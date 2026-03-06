@@ -64,12 +64,12 @@ export default function ShareMealsPage() {
         <Prose>
           <p>NutriKit offers two sticker modes:</p>
           <p>
-            <strong className="text-white">Meal stickers</strong> show data for
+            <strong className="text-fg">Meal stickers</strong> show data for
             a single meal — what you ate at lunch, for example. These are perfect
             for Instagram stories or messages to friends showing what you had.
           </p>
           <p>
-            <strong className="text-white">Daily stickers</strong> show your
+            <strong className="text-fg">Daily stickers</strong> show your
             full-day nutrition summary — all meals combined, total macros, and a
             complete food list. These work well for end-of-day recaps and
             accountability posts.
@@ -88,24 +88,24 @@ export default function ShareMealsPage() {
           <p>Once generated, stickers can be:</p>
           <ul className="list-disc list-inside space-y-1.5 ml-1">
             <li>
-              <strong className="text-white">
+              <strong className="text-fg">
                 Placed on a photo from your camera roll
               </strong>{" "}
               — drag and resize the sticker over your food photo, then export the
               combined image
             </li>
             <li>
-              <strong className="text-white">
+              <strong className="text-fg">
                 Shared directly to Instagram Stories
               </strong>
               , where the sticker appears as a draggable overlay
             </li>
             <li>
-              <strong className="text-white">Copied to clipboard</strong> and
+              <strong className="text-fg">Copied to clipboard</strong> and
               pasted into any app — iMessage, WhatsApp, social media
             </li>
             <li>
-              <strong className="text-white">
+              <strong className="text-fg">
                 Saved as a standalone transparent PNG
               </strong>{" "}
               for use anywhere

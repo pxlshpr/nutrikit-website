@@ -49,8 +49,8 @@ export default function CalorieIntelligencePage() {
             1
           </span>
           <div>
-            <p className="font-semibold text-white">Energy Balance</p>
-            <p className="text-gray-400 text-sm">
+            <p className="font-semibold text-fg">Energy Balance</p>
+            <p className="text-fg-secondary text-sm">
               Weight trends + food intake = real TDEE
             </p>
           </div>
@@ -60,8 +60,8 @@ export default function CalorieIntelligencePage() {
             2
           </span>
           <div>
-            <p className="font-semibold text-white">Apple Health Energy</p>
-            <p className="text-gray-400 text-sm">
+            <p className="font-semibold text-fg">Apple Health Energy</p>
+            <p className="text-fg-secondary text-sm">
               Resting + active energy from your device
             </p>
           </div>
@@ -71,8 +71,8 @@ export default function CalorieIntelligencePage() {
             3
           </span>
           <div>
-            <p className="font-semibold text-white">BMR Formulas</p>
-            <p className="text-gray-400 text-sm">
+            <p className="font-semibold text-fg">BMR Formulas</p>
+            <p className="text-fg-secondary text-sm">
               Katch-McArdle, Mifflin-St Jeor, or Schofield
             </p>
           </div>
@@ -179,19 +179,19 @@ export default function CalorieIntelligencePage() {
           </p>
           <ul className="list-disc list-inside space-y-3 ml-1">
             <li>
-              <strong className="text-white">Katch-McArdle</strong> — used when
+              <strong className="text-fg">Katch-McArdle</strong> — used when
               lean body mass is available. This is the most accurate formula for
               people who know their body composition, because it bases the
               calculation on metabolically active tissue rather than total weight.
             </li>
             <li>
-              <strong className="text-white">Mifflin-St Jeor</strong> — used
+              <strong className="text-fg">Mifflin-St Jeor</strong> — used
               when only height, weight, age, and sex are available. Widely
               validated and considered the most accurate general-purpose BMR
               equation in the research literature.
             </li>
             <li>
-              <strong className="text-white">Schofield</strong> — used as a
+              <strong className="text-fg">Schofield</strong> — used as a
               fallback for populations where Mifflin-St Jeor may be less
               validated (e.g., certain age ranges or when height is unavailable).
             </li>
@@ -214,15 +214,15 @@ export default function CalorieIntelligencePage() {
           </p>
           <ul className="list-disc list-inside space-y-1.5 ml-1">
             <li>
-              <strong className="text-white">Lose weight</strong> — a caloric
+              <strong className="text-fg">Lose weight</strong> — a caloric
               deficit is subtracted from your TDEE
             </li>
             <li>
-              <strong className="text-white">Maintain</strong> — your target
+              <strong className="text-fg">Maintain</strong> — your target
               equals your TDEE
             </li>
             <li>
-              <strong className="text-white">Gain weight</strong> — a caloric
+              <strong className="text-fg">Gain weight</strong> — a caloric
               surplus is added to your TDEE
             </li>
           </ul>

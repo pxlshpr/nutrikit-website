@@ -156,18 +156,18 @@ export default function FoodLoggingPage() {
           <p>You can input your meal three ways:</p>
           <ul className="list-disc list-inside space-y-1.5 ml-1">
             <li>
-              <strong className="text-white">Photo</strong> — take a picture of
+              <strong className="text-fg">Photo</strong> — take a picture of
               your plate and AI identifies the foods, estimates portions, and
               calculates macros
             </li>
             <li>
-              <strong className="text-white">Voice</strong> — say &ldquo;I had a
+              <strong className="text-fg">Voice</strong> — say &ldquo;I had a
               grilled chicken salad with ranch dressing and a bread roll&rdquo;
               and AI parses it into individual food items with estimated
               quantities
             </li>
             <li>
-              <strong className="text-white">Text</strong> — type a quick
+              <strong className="text-fg">Text</strong> — type a quick
               description and get the same AI parsing
             </li>
           </ul>
@@ -220,18 +220,18 @@ export default function FoodLoggingPage() {
           </p>
           <ol className="list-decimal list-inside space-y-3 ml-1">
             <li>
-              <strong className="text-white">Label scanner</strong> — highest
+              <strong className="text-fg">Label scanner</strong> — highest
               accuracy. You&apos;re reading the manufacturer&apos;s own declared
               values. Short of sending food to a lab, this is as precise as
               consumer nutrition data gets.
             </li>
             <li>
-              <strong className="text-white">USDA database</strong> — high
+              <strong className="text-fg">USDA database</strong> — high
               accuracy. Lab-tested values for generic food items. Excellent for
               whole foods, produce, meats, and staples.
             </li>
             <li>
-              <strong className="text-white">AI Quick Log</strong> — moderate
+              <strong className="text-fg">AI Quick Log</strong> — moderate
               accuracy. Good for quick estimates and hard-to-measure meals, but
               inherently imprecise for portion sizes.
             </li>

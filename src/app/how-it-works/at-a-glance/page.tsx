@@ -85,19 +85,19 @@ export default function AtAGlancePage() {
           </p>
           <ul className="list-disc list-inside space-y-3 ml-1">
             <li>
-              <strong className="text-white">Meal breakdown</strong> — how much
+              <strong className="text-fg">Meal breakdown</strong> — how much
               each meal (breakfast, lunch, dinner, snacks) contributed to the
               total. This answers &ldquo;why is my sodium so high today?&rdquo;
               instantly — oh, it was lunch.
             </li>
             <li>
-              <strong className="text-white">Food breakdown</strong> — within
+              <strong className="text-fg">Food breakdown</strong> — within
               each meal, which individual foods drove the numbers. If your
               protein is high, you can see it was the chicken at lunch and the
               Greek yogurt at breakfast — not an even spread.
             </li>
             <li>
-              <strong className="text-white">Percentage contribution</strong> —
+              <strong className="text-fg">Percentage contribution</strong> —
               each food shows what percentage of the day&apos;s total it
               represents, so you can identify your biggest dietary drivers at a
               glance.

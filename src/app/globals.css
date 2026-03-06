@@ -1,18 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-dark: #08080F;
-  --color-bg-dark-alt: #111118;
+  /* Semantic backgrounds */
+  --color-bg-page: #08080F;
+  --color-bg-alt: #111118;
   --color-bg-card: #1A1A24;
-  --color-border-dark: #2A2A36;
+
+  /* Border */
+  --color-edge: #2A2A36;
+
+  /* Foreground / text */
+  --color-fg: #FFFFFF;
+  --color-fg-secondary: #9CA3AF;
+  --color-fg-muted: #6B7280;
+  --color-fg-faint: #4B5563;
+
+  /* Accent colors (same in both themes) */
   --color-purple: #7C3AED;
   --color-purple-soft: #7C3AED20;
   --color-green: #4ADE80;
   --color-gold: #D4A853;
   --color-pink: #D946EF;
   --color-blue: #60A5FA;
+
   --font-sora: "Sora", sans-serif;
   --font-inter: "Inter", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg-page: #FFFFFF;
+    --color-bg-alt: #F5F3FF;
+    --color-bg-card: #FFFFFF;
+    --color-edge: #E5E7EB;
+    --color-fg: #111118;
+    --color-fg-secondary: #6B7280;
+    --color-fg-muted: #9CA3AF;
+    --color-fg-faint: #D1D5DB;
+    --color-purple-soft: #7C3AED15;
+  }
 }
 
 html {
@@ -21,31 +47,9 @@ html {
 
 body {
   font-family: var(--font-inter);
-  background: var(--color-bg-dark);
-  color: #fff;
+  background: var(--color-bg-page);
+  color: var(--color-fg);
   overflow-x: hidden;
-}
-
-/* Phone mockup with scrolling screenshot */
-.phone-scroll-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 2rem;
-}
-
-.phone-scroll-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  transition: top 0s;
-  animation: scrollPhone 8s ease-in-out infinite alternate;
-  animation-play-state: paused;
-}
-
-.phone-scroll-container:hover .phone-scroll-img,
-.phone-scroll-container.is-visible .phone-scroll-img {
-  animation-play-state: running;
 }
 
 @keyframes scrollPhone {

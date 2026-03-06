@@ -49,11 +49,11 @@ export default function ArticleLayout({
         <div className="flex items-center gap-2 text-[13px]">
           <Link
             href="/how-it-works"
-            className="text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-fg-muted hover:text-fg transition-colors"
           >
             How It Works
           </Link>
-          <span className="text-gray-500">/</span>
+          <span className="text-fg-muted">/</span>
           <span className="font-semibold" style={{ color: breadcrumbColor }}>
             {breadcrumbLabel}
           </span>
@@ -82,7 +82,7 @@ export default function ArticleLayout({
             </h1>
           </FadeUp>
           <FadeUp delay={0.2}>
-            <p className="text-gray-400 text-lg leading-relaxed max-w-2xl">
+            <p className="text-fg-secondary text-lg leading-relaxed max-w-2xl">
               {subtitle}
             </p>
           </FadeUp>
@@ -103,7 +103,7 @@ export default function ArticleLayout({
                 className="bg-bg-card rounded-2xl p-6 border transition-colors hover:border-opacity-40"
                 style={{ borderColor: `${prev.color}20` }}
               >
-                <span className="text-[11px] font-bold tracking-[2px] text-gray-500 uppercase">
+                <span className="text-[11px] font-bold tracking-[2px] text-fg-muted uppercase">
                   Previous
                 </span>
                 <p
@@ -123,7 +123,7 @@ export default function ArticleLayout({
                 className="bg-bg-card rounded-2xl p-6 border transition-colors hover:border-opacity-40"
                 style={{ borderColor: `${next.color}20` }}
               >
-                <span className="text-[11px] font-bold tracking-[2px] text-gray-500 uppercase">
+                <span className="text-[11px] font-bold tracking-[2px] text-fg-muted uppercase">
                   Next
                 </span>
                 <p
@@ -133,7 +133,7 @@ export default function ArticleLayout({
                   {next.label} &rarr;
                 </p>
                 {next.subtitle && (
-                  <p className="text-gray-400 text-sm mt-1">{next.subtitle}</p>
+                  <p className="text-fg-secondary text-sm mt-1">{next.subtitle}</p>
                 )}
               </div>
             </Link>
@@ -147,7 +147,7 @@ export default function ArticleLayout({
       <section
         className="py-16 md:py-20 px-6"
         style={{
-          background: `linear-gradient(to bottom, ${ctaGradientColor} 0%, #08080F 100%)`,
+          background: `linear-gradient(to bottom, ${ctaGradientColor} 0%, var(--color-bg-page) 100%)`,
         }}
       >
         <div className="max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
@@ -209,7 +209,7 @@ export function ArticleH3({
 
 export function Prose({ children }: { children: ReactNode }) {
   return (
-    <div className="text-gray-400 text-base leading-[1.7] space-y-4">
+    <div className="text-fg-secondary text-base leading-[1.7] space-y-4">
       {children}
     </div>
   );

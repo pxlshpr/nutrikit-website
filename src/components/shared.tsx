@@ -123,7 +123,7 @@ export function PhoneMockup({
 }) {
   return (
     <div
-      className={`relative rounded-[2.5rem] border-2 border-border-dark bg-bg-card overflow-hidden ${glow} ${className}`}
+      className={`relative rounded-[2.5rem] border-2 border-edge bg-bg-card overflow-hidden ${glow} ${className}`}
     >
       <Image
         src={src}
@@ -182,7 +182,7 @@ export function ScrollingPhoneMockup({
   return (
     <div
       ref={containerRef}
-      className={`relative rounded-[2.5rem] border-2 border-border-dark bg-bg-card overflow-hidden ${glow} ${className}`}
+      className={`relative rounded-[2.5rem] border-2 border-edge bg-bg-card overflow-hidden ${glow} ${className}`}
       style={{ aspectRatio: "9/19.5" }}
     >
       <img
@@ -237,7 +237,7 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-bg-dark/80 backdrop-blur-xl border-b border-border-dark"
+          ? "bg-bg-page/80 backdrop-blur-xl border-b border-edge"
           : "bg-transparent"
       }`}
     >
@@ -251,7 +251,7 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
         <nav className="hidden md:flex items-center gap-8">
           <Link
             href={featuresHref}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-fg-secondary hover:text-fg transition-colors"
           >
             Features
           </Link>
@@ -260,7 +260,7 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
             className={`text-sm transition-colors ${
               variant === "article"
                 ? "text-purple font-semibold"
-                : "text-gray-400 hover:text-white"
+                : "text-fg-secondary hover:text-fg"
             }`}
           >
             How It Works
@@ -287,35 +287,35 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border-dark py-10 px-6 md:px-12">
+    <footer className="border-t border-edge py-10 px-6 md:px-12">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <Link
           href="/"
-          className="font-[family-name:var(--font-sora)] text-sm font-bold text-gray-500"
+          className="font-[family-name:var(--font-sora)] text-sm font-bold text-fg-muted"
         >
           NutriKit
         </Link>
         <div className="flex gap-6">
           <a
             href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-sm text-fg-muted hover:text-fg transition-colors"
           >
             Privacy
           </a>
           <a
             href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-sm text-fg-muted hover:text-fg transition-colors"
           >
             Terms
           </a>
           <a
             href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            className="text-sm text-fg-muted hover:text-fg transition-colors"
           >
             Contact
           </a>
         </div>
-        <span className="text-xs text-gray-600">
+        <span className="text-xs text-fg-faint">
           &copy; 2026 pxlshpr. All rights reserved.
         </span>
       </div>
