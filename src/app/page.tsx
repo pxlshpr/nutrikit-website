@@ -1,223 +1,16 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import Image from "next/image";
-import { useRef, useEffect, useState, type ReactNode } from "react";
-
-/* ───────────────────────── Animation helpers ───────────────────────── */
-
-function FadeUp({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 48 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function FadeIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : {}}
-      transition={{ duration: 0.8, delay, ease: "easeOut" }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ScaleIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function SlideIn({
-  children,
-  from = "left",
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  from?: "left" | "right";
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const x = from === "left" ? -60 : 60;
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ─────────────────── Phone mockup components ─────────────────── */
-
-function PhoneMockup({
-  src,
-  alt,
-  glow = "",
-  className = "",
-  priority = false,
-}: {
-  src: string;
-  alt: string;
-  glow?: string;
-  className?: string;
-  priority?: boolean;
-}) {
-  return (
-    <div
-      className={`relative rounded-[2.5rem] border-2 border-border-dark bg-bg-card overflow-hidden ${glow} ${className}`}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        width={300}
-        height={650}
-        className="w-full h-full object-cover object-top"
-        priority={priority}
-      />
-    </div>
-  );
-}
-
-/** For tall stitched screenshots — auto-scrolls inside the phone frame */
-function ScrollingPhoneMockup({
-  src,
-  alt,
-  glow = "",
-  className = "",
-  scrollDuration = 10,
-}: {
-  src: string;
-  alt: string;
-  glow?: string;
-  className?: string;
-  scrollDuration?: number;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [scrollEnd, setScrollEnd] = useState(0);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.3 }
-    );
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const img = imgRef.current;
-    const container = containerRef.current;
-    if (!img || !container) return;
-    const handleLoad = () => {
-      const diff = img.offsetHeight - container.offsetHeight;
-      if (diff > 0) setScrollEnd(-diff);
-    };
-    img.addEventListener("load", handleLoad);
-    if (img.complete) handleLoad();
-    return () => img.removeEventListener("load", handleLoad);
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className={`relative rounded-[2.5rem] border-2 border-border-dark bg-bg-card overflow-hidden ${glow} ${className}`}
-      style={{ aspectRatio: "9/19.5" }}
-    >
-      <img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        className="absolute top-0 left-0 w-full"
-        style={{
-          animation: `scrollPhone ${scrollDuration}s ease-in-out infinite alternate`,
-          animationPlayState: visible ? "running" : "paused",
-          ["--scroll-end" as string]: `${scrollEnd}px`,
-        }}
-      />
-    </div>
-  );
-}
-
-/* ───────────────────────── Section label ───────────────────────── */
-
-function SectionLabel({
-  children,
-  color,
-}: {
-  children: ReactNode;
-  color: string;
-}) {
-  return (
-    <span
-      className="text-[11px] font-bold tracking-[3px] uppercase"
-      style={{ color }}
-    >
-      {children}
-    </span>
-  );
-}
+import Link from "next/link";
+import {
+  FadeUp,
+  ScaleIn,
+  SlideIn,
+  SectionLabel,
+  PhoneMockup,
+  ScrollingPhoneMockup,
+  SiteHeader,
+  SiteFooter,
+} from "@/components/shared";
 
 /* ═══════════════════════════════════════════════════════════════════ */
 /*                           PAGE                                     */
@@ -226,7 +19,7 @@ function SectionLabel({
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Header />
+      <SiteHeader />
       <Hero />
       <SmartTargets />
       <DynamicTargets />
@@ -234,62 +27,10 @@ export default function Home() {
       <FoodLogging />
       <AtAGlance />
       <ShareMeals />
+      <HowItWorks />
       <FinalCTA />
-      <Footer />
+      <SiteFooter />
     </main>
-  );
-}
-
-/* ───────────────────────── Header ───────────────────────── */
-
-function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-bg-dark/80 backdrop-blur-xl border-b border-border-dark"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
-        <span className="font-[family-name:var(--font-sora)] text-xl font-bold tracking-tight">
-          NutriKit
-        </span>
-        <nav className="hidden md:flex items-center gap-8">
-          <a
-            href="#features"
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Features
-          </a>
-          <a
-            href="#logging"
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            How It Works
-          </a>
-          <a
-            href="#download"
-            className="text-sm font-semibold bg-purple text-white px-5 py-2 rounded-lg hover:bg-purple/90 transition-colors"
-          >
-            Get the Beta
-          </a>
-        </nav>
-        <a
-          href="#download"
-          className="md:hidden text-sm font-semibold bg-purple text-white px-4 py-2 rounded-lg"
-        >
-          Get Beta
-        </a>
-      </div>
-    </header>
   );
 }
 
@@ -298,7 +39,6 @@ function Header() {
 function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
-      {/* Radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(124,58,237,0.12)_0%,_transparent_70%)]" />
 
       <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto gap-8">
@@ -343,8 +83,8 @@ function Hero() {
 
         <ScaleIn delay={0.5} className="mt-4">
           <PhoneMockup
-            src="/screenshots/calorie-reco.png"
-            alt="NutriKit calorie recommendation"
+            src="/screenshots/home-screen.png"
+            alt="NutriKit home screen"
             glow="glow-purple"
             className="w-64 md:w-72"
             priority
@@ -440,7 +180,6 @@ function DynamicTargets() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Taper card */}
           <SlideIn from="left">
             <div className="bg-bg-card rounded-2xl border border-gold/15 p-6 md:p-8 flex flex-col gap-6">
               <div>
@@ -473,7 +212,6 @@ function DynamicTargets() {
             </div>
           </SlideIn>
 
-          {/* Workout bonus card */}
           <SlideIn from="right" delay={0.15}>
             <div className="bg-bg-card rounded-2xl border border-green/15 p-6 md:p-8 flex flex-col gap-6">
               <div>
@@ -589,7 +327,6 @@ function FoodLogging() {
         </div>
 
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 max-w-5xl mx-auto">
-          {/* Feature list */}
           <SlideIn from="left" className="flex-1">
             <div className="space-y-8">
               {[
@@ -626,7 +363,6 @@ function FoodLogging() {
             </div>
           </SlideIn>
 
-          {/* Screenshots */}
           <SlideIn from="right" delay={0.2} className="flex gap-5">
             <PhoneMockup
               src="/screenshots/label-scanner.png"
@@ -726,6 +462,117 @@ function ShareMeals() {
   );
 }
 
+/* ───────────────────────── How It Works ───────────────────────── */
+
+const howItWorksCards = [
+  {
+    emoji: "🎯",
+    title: "Smart Targets",
+    color: "#7C3AED",
+    borderColor: "#7C3AED20",
+    desc: "Every nutrient gets a recommended range — calculated from your age, sex, weight, body composition, and pregnancy status. Built from peer-reviewed papers, institutional guidelines, and verified sources.",
+    href: "/how-it-works/smart-targets",
+  },
+  {
+    emoji: "📈",
+    title: "Dynamic Targets",
+    color: "#D4A853",
+    borderColor: "#D4A85320",
+    desc: "Tapered targets that interpolate daily across any curve shape. Workout bonuses that scale protein and carbs based on calories burned. Your targets are never static.",
+    href: "/how-it-works/dynamic-targets",
+  },
+  {
+    emoji: "⚡",
+    title: "Calorie Intelligence",
+    color: "#D946EF",
+    borderColor: "#D946EF20",
+    desc: "NutriKit picks the smartest method available — energy balance from weight trends, Apple Health active energy, or the best BMR formula for your profile.",
+    href: "/how-it-works/calorie-intelligence",
+  },
+  {
+    emoji: "🔬",
+    title: "Food Logging",
+    color: "#60A5FA",
+    borderColor: "#60A5FA20",
+    desc: "A nutrition label scanner that extracts every value. A USDA-verified food database with lab-tested data. And an AI that can log meals from a photo, voice, or text.",
+    href: "/how-it-works/food-logging",
+  },
+  {
+    emoji: "📊",
+    title: "At a Glance",
+    color: "#4ADE80",
+    borderColor: "#4ADE8020",
+    desc: "A dashboard that shows exactly where you stand on every nutrient — which meals contributed most, which foods drove your numbers, and your complete diary timeline.",
+    href: "/how-it-works/at-a-glance",
+  },
+  {
+    emoji: "✨",
+    title: "Share Your Meals",
+    color: "#D946EF",
+    borderColor: "#D946EF20",
+    desc: "Generate liquid glass stickers showing your meal or daily breakdown — calories, macros, and foods with emoji. Place them on photos or videos and share anywhere.",
+    href: "/how-it-works/share-meals",
+  },
+];
+
+function HowItWorks() {
+  return (
+    <section className="py-24 md:py-32 bg-bg-dark-alt">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+          <FadeUp>
+            <SectionLabel color="#7C3AED">How It Works</SectionLabel>
+          </FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className="font-[family-name:var(--font-sora)] text-4xl md:text-5xl font-bold tracking-tight mt-4">
+              The science behind
+              <br />
+              every recommendation
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.2}>
+            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
+              NutriKit isn&apos;t a calorie counter with a food database bolted
+              on. It&apos;s a nutrition engine &mdash; built on published
+              research, real-time data from your body, and algorithms that adapt
+              as you do.
+            </p>
+          </FadeUp>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {howItWorksCards.map((card, i) => (
+            <FadeUp key={card.title} delay={i * 0.08}>
+              <Link
+                href={card.href}
+                className="group block bg-bg-card rounded-2xl p-8 border transition-all hover:border-opacity-40 hover:translate-y-[-2px] h-full"
+                style={{ borderColor: card.borderColor }}
+              >
+                <span className="text-4xl">{card.emoji}</span>
+                <h3
+                  className="font-[family-name:var(--font-sora)] text-xl font-bold mt-4"
+                  style={{ color: card.color }}
+                >
+                  {card.title}
+                </h3>
+                <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+                  {card.desc}
+                </p>
+                <span
+                  className="inline-block text-sm font-semibold mt-4 group-hover:translate-x-1 transition-transform"
+                  style={{ color: card.color }}
+                >
+                  Read the deep dive &rarr;
+                </span>
+              </Link>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ───────────────────────── Final CTA ───────────────────────── */
 
 function FinalCTA() {
@@ -761,42 +608,5 @@ function FinalCTA() {
         </FadeUp>
       </div>
     </section>
-  );
-}
-
-/* ───────────────────────── Footer ───────────────────────── */
-
-function Footer() {
-  return (
-    <footer className="border-t border-border-dark py-10 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <span className="font-[family-name:var(--font-sora)] text-sm font-bold text-gray-500">
-          NutriKit
-        </span>
-        <div className="flex gap-6">
-          <a
-            href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            Privacy
-          </a>
-          <a
-            href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            Terms
-          </a>
-          <a
-            href="#"
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            Contact
-          </a>
-        </div>
-        <span className="text-xs text-gray-600">
-          &copy; 2026 pxlshpr. All rights reserved.
-        </span>
-      </div>
-    </footer>
   );
 }
