@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-dark: #08080F;
+  --color-bg-dark-alt: #111118;
+  --color-bg-card: #1A1A24;
+  --color-border-dark: #2A2A36;
+  --color-purple: #7C3AED;
+  --color-purple-soft: #7C3AED20;
+  --color-green: #4ADE80;
+  --color-gold: #D4A853;
+  --color-pink: #D946EF;
+  --color-blue: #60A5FA;
+  --font-sora: "Sora", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter);
+  background: var(--color-bg-dark);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Phone mockup with scrolling screenshot */
+.phone-scroll-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+}
+
+.phone-scroll-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: top 0s;
+  animation: scrollPhone 8s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.phone-scroll-container:hover .phone-scroll-img,
+.phone-scroll-container.is-visible .phone-scroll-img {
+  animation-play-state: running;
+}
+
+@keyframes scrollPhone {
+  0% { top: 0; }
+  15% { top: 0; }
+  85% { top: var(--scroll-end); }
+  100% { top: var(--scroll-end); }
+}
+
+/* Subtle glow effects */
+.glow-purple {
+  box-shadow: 0 0 80px rgba(124, 58, 237, 0.15), 0 0 160px rgba(124, 58, 237, 0.05);
+}
+
+.glow-green {
+  box-shadow: 0 0 60px rgba(74, 222, 128, 0.1), 0 0 120px rgba(74, 222, 128, 0.04);
+}
+
+.glow-gold {
+  box-shadow: 0 0 60px rgba(212, 168, 83, 0.1), 0 0 120px rgba(212, 168, 83, 0.04);
+}
+
+.glow-pink {
+  box-shadow: 0 0 60px rgba(217, 70, 239, 0.1), 0 0 120px rgba(217, 70, 239, 0.04);
+}
+
+.glow-blue {
+  box-shadow: 0 0 60px rgba(96, 165, 250, 0.1), 0 0 120px rgba(96, 165, 250, 0.04);
+}
