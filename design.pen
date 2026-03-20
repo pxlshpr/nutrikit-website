@@ -189,7 +189,8 @@
               "lineHeight": 1.5,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 22
+              "fontSize": 22,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -334,7 +335,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -486,7 +488,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -539,7 +542,8 @@
                       "content": "Set a start and end target, pick a duration and curve shape — linear, stepped, ease-in, or ease-out. Your daily target interpolates smoothly. Pause, adjust, or override any day.",
                       "lineHeight": 1.6,
                       "fontFamily": "Inter",
-                      "fontSize": 15
+                      "fontSize": 15,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "frame",
@@ -612,7 +616,8 @@
                       "content": "Burned 400 kcal? Your protein and carb targets scale up automatically. Choose adaptive (per 100 kcal burned) or fixed bonuses, with optional eating windows around your workout.",
                       "lineHeight": 1.6,
                       "fontFamily": "Inter",
-                      "fontSize": 15
+                      "fontSize": 15,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "frame",
@@ -696,7 +701,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -848,7 +854,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -908,7 +915,8 @@
                               "content": "Point at any label and instantly extract every nutrient. Review values before adding. Scan front labels too for typing-less food creation.",
                               "lineHeight": 1.5,
                               "fontFamily": "Inter",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -956,7 +964,8 @@
                               "content": "Search thousands of verified foods with precise, lab-tested nutritional data you can trust.",
                               "lineHeight": 1.5,
                               "fontFamily": "Inter",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1004,7 +1013,8 @@
                               "content": "Snap a photo, speak, or type what you ate. AI detects every item with macros. Edit, replace, or re-match anything before logging.",
                               "lineHeight": 1.5,
                               "fontFamily": "Inter",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1135,7 +1145,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -1258,7 +1269,8 @@
               "lineHeight": 1.6,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 18
+              "fontSize": 18,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -1343,7 +1355,8 @@
               "lineHeight": 1.5,
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 20
+              "fontSize": 20,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -1378,7 +1391,8 @@
               "content": "Free · iOS 17+ · No account required",
               "textAlign": "center",
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -1433,7 +1447,8 @@
                       "fill": "$text-muted",
                       "content": "Privacy",
                       "fontFamily": "Inter",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -1442,7 +1457,8 @@
                       "fill": "$text-muted",
                       "content": "Terms",
                       "fontFamily": "Inter",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -1451,7 +1467,8 @@
                       "fill": "$text-muted",
                       "content": "Contact",
                       "fontFamily": "Inter",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -1464,7 +1481,8 @@
               "fill": "#4B5563",
               "content": "© 2026 pxlshpr. All rights reserved.",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         }
