@@ -4,14 +4,18 @@ import { useState, useEffect } from "react";
 
 export function FloatingCTA() {
   const [visible, setVisible] = useState(false);
-  const [extraBottom, setExtraBottom] = useState(false);
+  const [bottomClass, setBottomClass] = useState("bottom-2");
 
   useEffect(() => {
     const ua = navigator.userAgent;
     const isIOS =
       /iPad|iPhone|iPod/.test(ua) ||
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    setExtraBottom(isIOS && /CriOS|OPiOS/.test(ua));
+    if (isIOS && /OPiOS/.test(ua)) {
+      setBottomClass("bottom-1");
+    } else if (isIOS && /CriOS|Instagram|FBAN/.test(ua)) {
+      setBottomClass("bottom-4");
+    }
 
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -30,7 +34,7 @@ export function FloatingCTA() {
   return (
     <a
       href="#download"
-      className={`fixed ${extraBottom ? "bottom-5" : "bottom-2"} left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-white transition-all duration-500 whitespace-nowrap ${
+      className={`fixed ${bottomClass} left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-white transition-all duration-500 whitespace-nowrap ${
         visible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"

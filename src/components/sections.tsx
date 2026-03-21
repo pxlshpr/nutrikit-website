@@ -784,7 +784,7 @@ function FinalCTA() {
           <p className="text-fg-secondary text-lg mt-6 leading-relaxed">Join the beta and help shape the future of nutrition tracking.</p>
         </FadeUp>
         <FadeUp delay={0.2}>
-          <a href="https://testflight.apple.com/join/placeholder" className="inline-block mt-8 text-white font-semibold text-lg px-10 py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}>Get the Beta on TestFlight</a>
+          <a href="https://testflight.apple.com/join/tWZZUg57" className="inline-block mt-8 text-white font-semibold text-lg px-10 py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}>Get the Beta on TestFlight</a>
         </FadeUp>
         <FadeUp delay={0.3}>
           <p className="text-fg-muted text-sm mt-4">Free beta via TestFlight &middot; iOS 26+ &middot; No account required</p>
