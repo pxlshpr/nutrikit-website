@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function FloatingCTA() {
   const [visible, setVisible] = useState(false);
+  const [bottomOffset, setBottomOffset] = useState(8);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,14 +21,41 @@ export function FloatingCTA() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Use visualViewport to position at the true visible bottom
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      // visualViewport gives the actual visible area
+      // The gap between layoutViewport bottom and visualViewport bottom
+      // is the browser chrome (toolbar, address bar)
+      const layoutH = window.innerHeight;
+      const visualH = vv.height;
+      const visualTop = vv.offsetTop;
+      // Position from CSS bottom: how far up from layout viewport bottom
+      // we need to go to reach the visual viewport bottom
+      const gap = layoutH - (visualTop + visualH);
+      setBottomOffset(Math.max(gap + 8, 8));
+    };
+
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+
   return (
     <div
-      className={`fixed bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
+      className={`fixed left-1/2 -translate-x-1/2 z-50 pb-4 transition-opacity duration-500 ${
         visible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-4 pointer-events-none"
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
       }`}
-      style={{ willChange: "transform", filter: "drop-shadow(0 0 16px rgba(124,58,237,0.5))" }}
+      style={{ willChange: "transform", bottom: `${bottomOffset}px` }}
     >
       <a
         href="#download"
@@ -36,7 +65,7 @@ export function FloatingCTA() {
           backdropFilter: "blur(20px) saturate(180%)",
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
           border: "1px solid rgba(255,255,255,0.18)",
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.1)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.1), 0 0 16px rgba(124,58,237,0.5)",
         }}
       >
         <span className="text-sm tracking-wide">Download the Beta</span>
