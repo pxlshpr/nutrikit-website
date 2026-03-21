@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     title: "NutriKit · Track what actually matters",
     description:
       "You can't control what you don't measure. Track calories, macros, and 20+ micronutrients with science-backed targets built for your body.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    url: "https://getnutrikit.app",
+    siteName: "NutriKit",
+    images: [{ url: "https://getnutrikit.app/og-image.png?v=2", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
     title: "NutriKit · Track what actually matters",
     description:
       "You can't control what you don't measure. Track calories, macros, and 20+ micronutrients with science-backed targets built for your body.",
-    images: ["/og-image.png"],
+    images: ["https://getnutrikit.app/og-image.png?v=2"],
   },
 };
 
