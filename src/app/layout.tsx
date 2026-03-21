@@ -2,9 +2,23 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NutriKit - Not another calorie counter",
+  title: "NutriKit — Track what actually matters",
   description:
-    "A nutrition system that adapts to your body, your goals, and your life. Smart goals from 14+ scientific sources, gradual goals, workout bonuses, and AI-powered logging.",
+    "You can't control what you don't measure. Track calories, macros, and 20+ micronutrients with science-backed targets built for your body.",
+  openGraph: {
+    title: "NutriKit — Track what actually matters",
+    description:
+      "You can't control what you don't measure. Track calories, macros, and 20+ micronutrients with science-backed targets built for your body.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NutriKit — Track what actually matters",
+    description:
+      "You can't control what you don't measure. Track calories, macros, and 20+ micronutrients with science-backed targets built for your body.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
