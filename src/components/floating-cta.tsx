@@ -4,8 +4,15 @@ import { useState, useEffect } from "react";
 
 export function FloatingCTA() {
   const [visible, setVisible] = useState(false);
+  const [extraBottom, setExtraBottom] = useState(false);
 
   useEffect(() => {
+    const ua = navigator.userAgent;
+    const isIOS =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    setExtraBottom(isIOS && /CriOS|OPiOS/.test(ua));
+
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight;
@@ -16,23 +23,26 @@ export function FloatingCTA() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <a
       href="#download"
-      className={`fixed bottom-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-white transition-all duration-500 whitespace-nowrap ${
+      className={`fixed ${extraBottom ? "bottom-5" : "bottom-2"} left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-white transition-all duration-500 whitespace-nowrap ${
         visible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"
       }`}
       style={{
-        background: "linear-gradient(135deg, rgba(124,58,237,0.8), rgba(217,70,239,0.6))",
+        background:
+          "linear-gradient(135deg, rgba(124,58,237,0.8), rgba(217,70,239,0.6))",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.1), 0 0 16px rgba(124,58,237,0.5)",
+        boxShadow:
+          "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.1), 0 2px 6px rgba(124,58,237,0.25)",
       }}
     >
       <span className="text-sm tracking-wide">Download the Beta</span>

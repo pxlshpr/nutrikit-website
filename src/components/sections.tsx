@@ -587,9 +587,17 @@ function ShareMeals() {
             <SlideIn from="right" delay={0.2}>
               <div className="bg-bg-card rounded-2xl border border-edge p-5 flex flex-col gap-3">
                 <span className="text-sm font-semibold text-fg">📤 &nbsp;Share anywhere</span>
-                <div className="bg-bg-alt rounded-xl px-4 py-3 flex flex-wrap gap-2">
-                  {["Instagram", "Stories", "Messages", "Clipboard"].map((s) => (
-                    <span key={s} className="text-[11px] text-fg-secondary px-3 py-1.5 rounded-full border border-edge">{s}</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { name: "Instagram", icon: <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="5" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg> },
+                    { name: "Stories", icon: <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5" /><path d="M21.5 12a9.5 9.5 0 0 1-9.5 9.5" /><path d="M12 21.5A9.5 9.5 0 0 1 2.5 12" /><path d="M2.5 12A9.5 9.5 0 0 1 12 2.5" /><line x1="12" y1="9" x2="12" y2="15" /><line x1="9" y1="12" x2="15" y2="12" /></svg> },
+                    { name: "Messages", icon: <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><path d="M21 14a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9z" /></svg> },
+                    { name: "Clipboard", icon: <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg> },
+                  ].map((s) => (
+                    <div key={s.name} className="bg-bg-alt rounded-xl px-3 py-3 flex flex-col items-center gap-2 border border-edge/50">
+                      <span className="text-fg-muted">{s.icon}</span>
+                      <span className="text-[11px] text-fg-secondary font-medium">{s.name}</span>
+                    </div>
                   ))}
                 </div>
               </div>
