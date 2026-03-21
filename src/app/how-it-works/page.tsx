@@ -6,7 +6,7 @@ import { FadeUp, SectionLabel, SiteHeader, SiteFooter } from "@/components/share
 const features = [
   {
     emoji: "🎯",
-    title: "Smart Targets",
+    title: "Smart Goals",
     color: "#7C3AED",
     borderColor: "#7C3AED20",
     desc: "Every nutrient gets a recommended range — calculated from your age, sex, weight, body composition, and pregnancy status. Built from peer-reviewed papers, institutional guidelines, and verified sources — all cited so you can check them yourself.",
@@ -14,10 +14,10 @@ const features = [
   },
   {
     emoji: "📈",
-    title: "Dynamic Targets",
+    title: "Dynamic Goals",
     color: "#D4A853",
     borderColor: "#D4A85320",
-    desc: "Tapered targets that interpolate daily across any curve shape. Workout bonuses that scale protein and carbs based on calories burned. Your targets are never static.",
+    desc: "Gradual goals that adjust daily across any curve shape. Workout bonuses that scale protein and carbs based on calories burned. Your goals are never static.",
     href: "/how-it-works/dynamic-targets",
   },
   {

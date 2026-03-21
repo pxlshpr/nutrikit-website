@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "NutriKit - Not another calorie counter",
   description:
-    "A nutrition system that adapts to your body, your goals, and your life. Smart targets from 14+ scientific sources, tapered goals, workout bonuses, and AI-powered logging.",
+    "A nutrition system that adapts to your body, your goals, and your life. Smart goals from 14+ scientific sources, gradual goals, workout bonuses, and AI-powered logging.",
 };
 
 export default function RootLayout({

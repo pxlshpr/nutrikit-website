@@ -211,7 +211,7 @@ export function SectionLabel({
 }) {
   return (
     <span
-      className="text-[11px] font-bold tracking-[3px] uppercase"
+      className="text-sm md:text-base font-bold tracking-[4px] uppercase"
       style={{ color }}
     >
       {children}
@@ -250,31 +250,17 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
         </Link>
         <nav className="hidden md:flex items-center gap-8">
           <Link
-            href={featuresHref}
-            className="text-sm text-fg-secondary hover:text-fg transition-colors"
-          >
-            Features
-          </Link>
-          <Link
-            href={howItWorksHref}
-            className={`text-sm transition-colors ${
-              variant === "article"
-                ? "text-purple font-semibold"
-                : "text-fg-secondary hover:text-fg"
-            }`}
-          >
-            How It Works
-          </Link>
-          <Link
             href={ctaHref}
-            className="text-sm font-semibold bg-purple text-white px-5 py-2 rounded-lg hover:bg-purple/90 transition-colors"
+            className="text-sm font-semibold text-white px-5 py-2 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.97]"
+            style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}
           >
             Get the Beta
           </Link>
         </nav>
         <Link
           href={ctaHref}
-          className="md:hidden text-sm font-semibold bg-purple text-white px-4 py-2 rounded-lg"
+          className="md:hidden text-sm font-semibold text-white px-4 py-2 rounded-lg"
+          style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}
         >
           Get Beta
         </Link>
@@ -296,24 +282,6 @@ export function SiteFooter() {
           NutriKit
         </Link>
         <div className="flex gap-6">
-          <a
-            href="#"
-            className="text-sm text-fg-muted hover:text-fg transition-colors"
-          >
-            Privacy
-          </a>
-          <a
-            href="#"
-            className="text-sm text-fg-muted hover:text-fg transition-colors"
-          >
-            Terms
-          </a>
-          <a
-            href="#"
-            className="text-sm text-fg-muted hover:text-fg transition-colors"
-          >
-            Contact
-          </a>
         </div>
         <span className="text-xs text-fg-faint">
           &copy; 2026 pxlshpr. All rights reserved.
