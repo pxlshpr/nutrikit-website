@@ -28,9 +28,83 @@ function Code({ children }: { children: ReactNode }) {
 function CodeBlock({ children }: { children: string }) {
   return (
     <div className="bg-bg-page border border-edge rounded-xl p-4 my-3 overflow-x-auto text-[13px] leading-relaxed">
-      <pre className="whitespace-pre font-mono text-fg-secondary">{children}</pre>
+      <pre className="whitespace-pre font-mono">
+        {highlightSwift(children)}
+      </pre>
     </div>
   );
+}
+
+/** Lightweight Swift syntax highlighter — no dependencies */
+function highlightSwift(code: string): ReactNode[] {
+  const keywords = new Set([
+    "let", "var", "func", "return", "if", "else", "guard", "for", "in",
+    "import", "struct", "class", "enum", "case", "switch", "default",
+    "true", "false", "nil", "self", "try", "await", "async", "do",
+    "catch", "throw", "throws", "static", "private", "public",
+  ]);
+
+  const typeWords = new Set([
+    "CGRect", "CGFloat", "CGSize", "CGPoint", "CGImage", "CIImage",
+    "UIImage", "UIWindow", "UIImageView", "UIHostingController",
+    "AVAssetReader", "AVAssetWriter", "AVAssetExportSession",
+    "AVMutableComposition", "AVVideoCodecType", "CVPixelBuffer",
+    "CIContext", "String", "Any", "Int", "Double", "Bool",
+    "UIGraphicsImageRenderer", "UIViewController",
+  ]);
+
+  // Token regex: comments, strings, numbers, dotAccess, words, other
+  const tokenRx = /(\/\/[^\n]*)|("(?:[^"\\]|\\.)*")|(\b\d+(?:\.\d+)?\b)|(\.[a-zA-Z_]\w*)|([a-zA-Z_]\w*)|(\\\.[a-zA-Z_]\w*)|([^\s])/g;
+
+  const result: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tokenRx.exec(code)) !== null) {
+    // Whitespace gap before this token
+    if (match.index > lastIndex) {
+      result.push(code.slice(lastIndex, match.index));
+    }
+    lastIndex = match.index + match[0].length;
+
+    const token = match[0];
+    const key = result.length;
+
+    if (match[1]) {
+      // Comment
+      result.push(<span key={key} className="text-fg-faint italic">{token}</span>);
+    } else if (match[2]) {
+      // String
+      result.push(<span key={key} className="text-green">{token}</span>);
+    } else if (match[3]) {
+      // Number
+      result.push(<span key={key} className="text-gold">{token}</span>);
+    } else if (match[6]) {
+      // Keypath like \.stickerUseGlassEffect
+      result.push(<span key={key} className="text-purple">{token}</span>);
+    } else if (match[4]) {
+      // Dot access like .zero, .hevc
+      result.push(<span key={key} className="text-purple">{token}</span>);
+    } else if (match[5]) {
+      // Word
+      if (keywords.has(token)) {
+        result.push(<span key={key} className="text-pink">{token}</span>);
+      } else if (typeWords.has(token)) {
+        result.push(<span key={key} className="text-blue">{token}</span>);
+      } else {
+        result.push(<span key={key} className="text-fg-secondary">{token}</span>);
+      }
+    } else {
+      result.push(<span key={key} className="text-fg-secondary">{token}</span>);
+    }
+  }
+
+  // Trailing whitespace
+  if (lastIndex < code.length) {
+    result.push(code.slice(lastIndex));
+  }
+
+  return result;
 }
 
 function Callout({ title, children }: { title: string; children: ReactNode }) {
