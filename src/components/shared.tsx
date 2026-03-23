@@ -250,6 +250,12 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
         </Link>
         <nav className="hidden md:flex items-center gap-8">
           <Link
+            href="/deep-dives"
+            className="text-sm font-medium text-fg-secondary hover:text-fg transition-colors"
+          >
+            Deep Dives
+          </Link>
+          <Link
             href={ctaHref}
             className="text-sm font-semibold text-white px-5 py-2 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.97]"
             style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}
@@ -257,13 +263,21 @@ export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "art
             Get the Beta
           </Link>
         </nav>
-        <Link
-          href={ctaHref}
-          className="md:hidden text-sm font-semibold text-white px-4 py-2 rounded-lg"
-          style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}
-        >
-          Get Beta
-        </Link>
+        <div className="md:hidden flex items-center gap-4">
+          <Link
+            href="/deep-dives"
+            className="text-sm font-medium text-fg-secondary hover:text-fg transition-colors"
+          >
+            Deep Dives
+          </Link>
+          <Link
+            href={ctaHref}
+            className="text-sm font-semibold text-white px-4 py-2 rounded-lg"
+            style={{ background: "linear-gradient(135deg, #7C3AED, #D946EF)" }}
+          >
+            Get Beta
+          </Link>
+        </div>
       </div>
     </header>
   );
