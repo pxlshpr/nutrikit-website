@@ -85,3 +85,38 @@ body {
 .glow-blue {
   box-shadow: 0 0 60px rgba(96, 165, 250, 0.1), 0 0 120px rgba(96, 165, 250, 0.04);
 }
+
+/* Deep Dive: Glass Stickers hero animations */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes floatA {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(12px, -8px); }
+  50% { transform: translate(-8px, 12px); }
+  75% { transform: translate(8px, 8px); }
+}
+
+@keyframes floatB {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-10px, 6px); }
+  66% { transform: translate(8px, -10px); }
+}
+
+@keyframes floatC {
+  0%, 100% { transform: translate(0, 0); }
+  40% { transform: translate(10px, -6px); }
+  70% { transform: translate(-6px, 10px); }
+}
+
+@keyframes highlightSlide {
+  0%, 100% { transform: rotate(-15deg) translate(0, 0); opacity: 0.8; }
+  50% { transform: rotate(-15deg) translate(15px, 8px); opacity: 0.3; }
+}
