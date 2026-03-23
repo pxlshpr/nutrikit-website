@@ -239,18 +239,22 @@ export default function GlassStickersPage() {
 
         {/* Glass sticker mockup */}
         <div className="relative w-[260px] h-[180px] mt-11 z-10">
-          <div className="absolute inset-0 rounded-[18px] overflow-hidden bg-gradient-to-br from-[#1a1a2e] to-[#16213e] dark:from-[#1a1a2e] dark:to-[#16213e]">
-            <div className="absolute w-[90px] h-[90px] rounded-full bg-[radial-gradient(circle,_rgba(96,165,250,0.4),_transparent)] top-[10%] left-[10%] animate-[floatA_8s_ease-in-out_infinite]" />
-            <div className="absolute w-[70px] h-[70px] rounded-full bg-[radial-gradient(circle,_rgba(167,139,250,0.4),_transparent)] top-[40%] right-[10%] animate-[floatB_8s_ease-in-out_infinite]" />
-            <div className="absolute w-[50px] h-[50px] rounded-full bg-[radial-gradient(circle,_rgba(52,211,153,0.3),_transparent)] bottom-[10%] left-[30%] animate-[floatC_8s_ease-in-out_infinite]" />
+          {/* Background card — dark/light variants */}
+          <div className="absolute inset-0 rounded-[18px] overflow-hidden bg-gradient-to-br from-[#dbeafe] to-[#e0e7ff] dark:from-[#1a1a2e] dark:to-[#16213e]">
+            <div className="absolute w-[90px] h-[90px] rounded-full bg-[radial-gradient(circle,_rgba(96,165,250,0.4),_transparent)] dark:bg-[radial-gradient(circle,_rgba(96,165,250,0.4),_transparent)] top-[10%] left-[10%] animate-[floatA_8s_ease-in-out_infinite]" />
+            <div className="absolute w-[70px] h-[70px] rounded-full bg-[radial-gradient(circle,_rgba(167,139,250,0.4),_transparent)] dark:bg-[radial-gradient(circle,_rgba(167,139,250,0.4),_transparent)] top-[40%] right-[10%] animate-[floatB_8s_ease-in-out_infinite]" />
+            <div className="absolute w-[50px] h-[50px] rounded-full bg-[radial-gradient(circle,_rgba(52,211,153,0.3),_transparent)] dark:bg-[radial-gradient(circle,_rgba(52,211,153,0.3),_transparent)] bottom-[10%] left-[30%] animate-[floatC_8s_ease-in-out_infinite]" />
           </div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[90px] rounded-[18px] bg-white/[0.07] backdrop-blur-xl border border-white/[0.12] shadow-[0_8px_28px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden">
+          {/* Glass panel — light: white frosted / dark: dark frosted */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[90px] rounded-[18px] backdrop-blur-xl overflow-hidden
+            bg-white/50 border border-white/60 shadow-[0_8px_28px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]
+            dark:bg-white/[0.07] dark:border-white/[0.12] dark:shadow-[0_8px_28px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.1)]">
             <div className="p-3.5 flex flex-col gap-2.5">
               <div className="flex items-center gap-2.5">
                 <div className="w-6 h-6 rounded-[6px] bg-gradient-to-br from-blue to-purple opacity-70" />
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold text-white/85">642</span>
-                  <span className="text-[10px] font-medium text-fg-muted">kcal</span>
+                  <span className="text-xl font-bold text-[#1a1a2e] dark:text-white/85">642</span>
+                  <span className="text-[10px] font-medium text-[#6B7280] dark:text-fg-muted">kcal</span>
                 </div>
               </div>
               <div className="flex h-1.5 rounded-full overflow-hidden gap-px">
@@ -259,7 +263,7 @@ export default function GlassStickersPage() {
                 <div className="flex-[3] bg-[#ff6b6b] rounded-r-full" />
               </div>
             </div>
-            <div className="absolute top-[-30%] left-[-20%] w-[80%] h-[60%] bg-[radial-gradient(ellipse,_rgba(255,255,255,0.12),_transparent)] -rotate-[15deg] animate-[highlightSlide_6s_ease-in-out_infinite]" />
+            <div className="absolute top-[-30%] left-[-20%] w-[80%] h-[60%] bg-[radial-gradient(ellipse,_rgba(255,255,255,0.12),_transparent)] dark:bg-[radial-gradient(ellipse,_rgba(255,255,255,0.12),_transparent)] -rotate-[15deg] animate-[highlightSlide_6s_ease-in-out_infinite]" />
           </div>
         </div>
       </section>
