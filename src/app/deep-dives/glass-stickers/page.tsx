@@ -398,7 +398,7 @@ export default function GlassStickersPage() {
           <FadeUp>
             <span className="text-xs font-bold tracking-[3px] uppercase text-blue">Glass System</span>
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight mt-2">The GlassBackground modifier</h2>
-            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Every sticker wraps its content in a <Code>.glassBackground()</Code> modifier that adapts based on three environment flags.</p>
+            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Every sticker variant wraps its content in a <Code>.glassBackground()</Code> modifier that adapts based on three environment flags — choosing between native liquid glass, semi-transparent fallbacks, or transparent mode for video compositing.</p>
           </FadeUp>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
@@ -428,7 +428,7 @@ export default function GlassStickersPage() {
               <span className="text-xs font-bold tracking-[3px] uppercase text-blue">Image Pipeline</span>
             </div>
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight">Photo export — one-shot capture</h2>
-            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Capture the glass compositor from the actual screen, then blend it onto the high-res background.</p>
+            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">When the user shares a sticker on a photo, we need to composite the glass effect at full resolution. The trick: capture the glass compositor from the actual screen, then blend it onto the high-res background.</p>
           </FadeUp>
           <div>
             <PipelineStage num={1} color={BLUE} title="Crop the background" tags={[{ label: "CGImage", color: GREEN }]}>
@@ -491,7 +491,7 @@ let fullScreenImage = renderer.image { _ in
               <span className="text-xs font-bold tracking-[3px] uppercase text-purple">Video Pipeline</span>
             </div>
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight">Video export — frame by frame</h2>
-            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">We decode each frame, render it in an offscreen window with the glass sticker, capture the compositor, and encode it to a new video.</p>
+            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Video is where things get wild. We can&apos;t just overlay a static sticker — the glass effect must update every frame because the background changes. So we decode each frame, render it into an offscreen window with the glass sticker, capture the compositor output, and encode it to a new video.</p>
           </FadeUp>
           <div>
             <PipelineStage num={1} color={PURPLE} title="Build the offscreen render window" tags={[{ label: "UIWindow", color: GREEN }, { label: "UIHostingController", color: PURPLE }]}>
@@ -670,7 +670,7 @@ let captured = renderer.image { _ in
           <FadeUp>
             <span className="text-xs font-bold tracking-[3px] uppercase text-blue">Key Insight</span>
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight mt-2">Why drawHierarchy is everything</h2>
-            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">The entire export system is built around one limitation: <strong>glass effects can&apos;t be captured through SwiftUI&apos;s ImageRenderer</strong>.</p>
+            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">The entire sticker export system is built around one limitation: <strong>glass effects can&apos;t be captured through SwiftUI&apos;s ImageRenderer</strong>. They only exist in the compositor.</p>
           </FadeUp>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
@@ -695,7 +695,7 @@ let captured = renderer.image { _ in
           <FadeUp>
             <span className="text-xs font-bold tracking-[3px] uppercase text-fg-muted">Variants</span>
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight mt-2">5 sticker designs</h2>
-            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Each variant uses the same glass system but shows different levels of detail. Swipe to browse, tap to cycle.</p>
+            <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Each variant uses the same glass system but shows different levels of detail. The user swipes through them in a carousel (no background) or taps to cycle (with background).</p>
           </FadeUp>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Minimal */}
