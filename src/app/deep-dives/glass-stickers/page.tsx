@@ -401,7 +401,7 @@ let fullScreenImage = renderer.image { _ in
                 { v: "9:16", l: "Story aspect ratio", c: BLUE },
               ].map((s) => (
                 <div key={s.l} className="bg-bg-card border border-edge rounded-2xl py-5 px-3 text-center">
-                  <div className="text-xl md:text-2xl font-bold mb-1 truncate" style={{ color: s.c }}>{s.v}</div>
+                  <div className="text-lg md:text-xl font-bold mb-1" style={{ color: s.c }}>{s.v}</div>
                   <div className="text-[11px] text-fg-muted leading-tight">{s.l}</div>
                 </div>
               ))}
@@ -479,10 +479,10 @@ let captured = renderer.image { _ in
               {[
                 { v: "2×", l: "drawHierarchy per frame", c: PURPLE },
                 { v: "HEVC", l: "Video codec", c: PURPLE },
-                { v: "Pass-\u200Bthrough", l: "Audio mux", c: PURPLE },
+                { v: "No re-encode", l: "Audio mux", c: PURPLE },
               ].map((s) => (
                 <div key={s.l} className="bg-bg-card border border-edge rounded-2xl py-5 px-3 text-center">
-                  <div className="text-xl md:text-2xl font-bold mb-1 truncate" style={{ color: s.c }}>{s.v}</div>
+                  <div className="text-lg md:text-xl font-bold mb-1" style={{ color: s.c }}>{s.v}</div>
                   <div className="text-[11px] text-fg-muted leading-tight">{s.l}</div>
                 </div>
               ))}
@@ -497,44 +497,69 @@ let captured = renderer.image { _ in
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight mt-2">Full pipeline diagrams</h2>
           </FadeUp>
 
-          {/* IMAGE diagram — fully vertical */}
+          {/* IMAGE diagram — centered vertical */}
           <FadeUp>
-            <div className="bg-bg-card border border-edge rounded-2xl p-5 md:p-6 space-y-1">
-              <h3 className="text-base font-bold text-blue mb-4">Image Export</h3>
+            <div className="bg-bg-card border border-edge rounded-2xl p-5 md:p-6">
+              <h3 className="text-base font-bold text-blue mb-5">Image Export</h3>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="User's Photo" sub="UIImage" />
+                  <DiagramArrow />
+                  <DiagramStep label="Crop to 9:16" sub="CGImage.cropping()" />
+                </div>
+                <DiagramArrow dir="down" />
+                <DiagramStep label="Full-Res Background" variant="highlight" />
 
-              <div className="flex items-center gap-2"><DiagramStep label="User's Photo" sub="UIImage" /><DiagramArrow /><DiagramStep label="Crop to 9:16" sub="CGImage.cropping()" /></div>
-              <DiagramArrow dir="down" />
-              <DiagramStep label="Full-Res Background" variant="highlight" />
+                <div className="text-fg-muted text-lg py-1">+</div>
 
-              <div className="text-center text-fg-muted text-lg py-1">+</div>
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="Live Screen" sub="Key Window" />
+                  <DiagramArrow />
+                  <DiagramStep label="drawHierarchy" />
+                </div>
+                <DiagramArrow dir="down" />
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="Crop 9:16" sub="previewGlobalFrame" />
+                  <DiagramArrow />
+                  <DiagramStep label="Glass Overlay" variant="highlight" />
+                </div>
 
-              <div className="flex items-center gap-2"><DiagramStep label="Live Screen" sub="Key Window" /><DiagramArrow /><DiagramStep label="drawHierarchy" sub="afterScreenUpdates: true" /></div>
-              <DiagramArrow dir="down" />
-              <div className="flex items-center gap-2"><DiagramStep label="Crop 9:16 region" sub="previewGlobalFrame" /><DiagramArrow /><DiagramStep label="Glass Overlay" variant="highlight" /></div>
-
-              <DiagramArrow dir="down" />
-              <div className="flex justify-center"><DiagramStep label="Composite → JPEG 95%" variant="output" /></div>
+                <DiagramArrow dir="down" />
+                <DiagramStep label="Composite → JPEG 95%" variant="output" />
+              </div>
             </div>
           </FadeUp>
 
-          {/* VIDEO diagram — fully vertical */}
+          {/* VIDEO diagram — centered vertical */}
           <FadeUp>
-            <div className="bg-bg-card border border-edge rounded-2xl p-5 md:p-6 space-y-1">
-              <h3 className="text-base font-bold text-purple mb-4">Video Export</h3>
-
-              <div className="flex items-center gap-2 flex-wrap"><DiagramStep label="Source Video" sub="AVAssetReader" /><DiagramArrow /><DiagramStep label="Decode Frame" sub="CVPixelBuffer → CIImage" /></div>
-              <DiagramArrow dir="down" />
-              <DiagramStep label="Orient + Crop" sub=".oriented() · .cropped()" />
-              <DiagramArrow dir="down" />
-              <DiagramStep label="UIImageView" sub="in offscreen UIWindow" />
-              <DiagramArrow dir="down" />
-              <DiagramStep label="drawHierarchy × 2" sub="Glass compositor capture" variant="key" />
-              <DiagramArrow dir="down" />
-              <div className="flex items-center gap-2"><DiagramStep label="CIContext.render" sub="→ CVPixelBuffer" /><DiagramArrow /><DiagramStep label="AVAssetWriter" sub="HEVC encode" /></div>
-              <DiagramArrow dir="down" />
-              <div className="flex items-center gap-2"><DiagramStep label="AVMutableComposition" sub="Mux original audio" /><DiagramArrow /><DiagramStep label="Final .mp4" variant="output" /></div>
-
-              <p className="text-center text-xs font-medium text-purple mt-3 tracking-wider">← repeat for every frame →</p>
+            <div className="bg-bg-card border border-edge rounded-2xl p-5 md:p-6">
+              <h3 className="text-base font-bold text-purple mb-5">Video Export</h3>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="Source Video" sub="AVAssetReader" />
+                  <DiagramArrow />
+                  <DiagramStep label="Decode Frame" sub="CVPixelBuffer → CIImage" />
+                </div>
+                <DiagramArrow dir="down" />
+                <DiagramStep label="Orient + Crop" sub=".oriented() · .cropped()" />
+                <DiagramArrow dir="down" />
+                <DiagramStep label="UIImageView" sub="in offscreen UIWindow" />
+                <DiagramArrow dir="down" />
+                <DiagramStep label="drawHierarchy × 2" sub="Glass compositor capture" variant="key" />
+                <DiagramArrow dir="down" />
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="CIContext.render" sub="→ CVPixelBuffer" />
+                  <DiagramArrow />
+                  <DiagramStep label="AVAssetWriter" sub="HEVC encode" />
+                </div>
+                <DiagramArrow dir="down" />
+                <div className="flex items-center gap-2">
+                  <DiagramStep label="Mux Audio" sub="AVMutableComposition" />
+                  <DiagramArrow />
+                  <DiagramStep label="Final .mp4" variant="output" />
+                </div>
+                <p className="text-xs font-medium text-purple mt-3 tracking-wider">← repeat for every frame →</p>
+              </div>
             </div>
           </FadeUp>
         </section>
@@ -598,21 +623,165 @@ let captured = renderer.image { _ in
             <h2 className="font-[family-name:var(--font-sora)] text-2xl md:text-3xl font-bold tracking-tight mt-2">5 sticker designs</h2>
             <p className="text-fg-secondary mt-3 leading-relaxed max-w-[620px]">Each variant uses the same glass system but shows different levels of detail. Swipe to browse, tap to cycle.</p>
           </FadeUp>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {[
-              { n: "Minimal", d: "App icon + calories + macro dots + bar." },
-              { n: "Standard", d: "Meal name/time, calorie badge, macro columns." },
-              { n: "Detailed", d: "Full layout with per-item macro bars." },
-              { n: "Detailed + Emoji", d: "Same as detailed with food emoji." },
-              { n: "Full Detail", d: "Everything — emoji, detail text, brands." },
-            ].map((v) => (
-              <FadeUp key={v.n}>
-                <div className="bg-bg-card border border-edge rounded-xl p-4">
-                  <div className="text-sm font-semibold mb-1">{v.n}</div>
-                  <div className="text-xs text-fg-secondary leading-relaxed">{v.d}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Minimal */}
+            <FadeUp>
+              <div className="bg-bg-card border border-edge rounded-2xl p-5 h-full">
+                <div className="text-sm font-semibold mb-3">Minimal</div>
+                {/* Mini preview */}
+                <div className="bg-bg-page/60 border border-edge rounded-xl p-3 mb-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-[5px] bg-gradient-to-br from-blue to-purple opacity-60" />
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm font-bold">642</span>
+                        <span className="text-[9px] text-fg-muted">kcal</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ff6b6b]" /><span className="text-[9px] font-medium">42g</span></div>
+                      <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#5ac8fa]" /><span className="text-[9px] font-medium">68g</span></div>
+                      <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ff9f43]" /><span className="text-[9px] font-medium">28g</span></div>
+                    </div>
+                  </div>
+                  <div className="flex h-1 rounded-full overflow-hidden mt-2 gap-px">
+                    <div className="flex-[4] bg-[#5ac8fa] rounded-l-full" />
+                    <div className="flex-[3] bg-[#ff9f43]" />
+                    <div className="flex-[3] bg-[#ff6b6b] rounded-r-full" />
+                  </div>
                 </div>
-              </FadeUp>
-            ))}
+                <div className="text-xs text-fg-secondary leading-relaxed">App icon + calories + macro dots + distribution bar. Compact single row.</div>
+              </div>
+            </FadeUp>
+
+            {/* Standard */}
+            <FadeUp delay={0.06}>
+              <div className="bg-bg-card border border-edge rounded-2xl p-5 h-full">
+                <div className="text-sm font-semibold mb-3">Standard</div>
+                <div className="bg-bg-page/60 border border-edge rounded-xl p-3 mb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-[5px] bg-gradient-to-br from-blue to-purple opacity-60" />
+                      <div>
+                        <div className="text-[10px] font-bold leading-none">Lunch</div>
+                        <div className="text-[8px] text-fg-muted">12:30 PM</div>
+                      </div>
+                    </div>
+                    <div className="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded-full">642 kcal</div>
+                  </div>
+                  <div className="h-px bg-edge mb-2" />
+                  <div className="grid grid-cols-3 gap-1 text-center mb-2">
+                    <div><span className="text-[10px] font-bold">42g</span><div className="text-[7px] text-fg-muted">Protein</div></div>
+                    <div><span className="text-[10px] font-bold">68g</span><div className="text-[7px] text-fg-muted">Carbs</div></div>
+                    <div><span className="text-[10px] font-bold">28g</span><div className="text-[7px] text-fg-muted">Fat</div></div>
+                  </div>
+                  <div className="flex h-1 rounded-full overflow-hidden gap-px">
+                    <div className="flex-[4] bg-[#5ac8fa] rounded-l-full" />
+                    <div className="flex-[3] bg-[#ff9f43]" />
+                    <div className="flex-[3] bg-[#ff6b6b] rounded-r-full" />
+                  </div>
+                </div>
+                <div className="text-xs text-fg-secondary leading-relaxed">Header with meal name/time, calorie badge, macro columns with indicators.</div>
+              </div>
+            </FadeUp>
+
+            {/* Detailed */}
+            <FadeUp delay={0.12}>
+              <div className="bg-bg-card border border-edge rounded-2xl p-5 h-full">
+                <div className="text-sm font-semibold mb-3">Detailed</div>
+                <div className="bg-bg-page/60 border border-edge rounded-xl p-3 mb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-[5px] bg-gradient-to-br from-blue to-purple opacity-60" />
+                      <div className="text-[10px] font-bold">Lunch</div>
+                    </div>
+                    <div className="text-[10px] font-semibold bg-white/5 px-2 py-0.5 rounded-full">642</div>
+                  </div>
+                  <div className="h-px bg-edge mb-2" />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] text-fg-secondary">Grilled Chicken</span>
+                      <div className="flex h-1 w-10 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[2] bg-[#ff6b6b]" /><div className="flex-[1] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] text-fg-secondary">Brown Rice</span>
+                      <div className="flex h-1 w-8 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[1] bg-[#ff6b6b]" /><div className="flex-[5] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] text-fg-secondary">Avocado</span>
+                      <div className="flex h-1 w-6 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[1] bg-[#ff6b6b]" /><div className="flex-[1] bg-[#5ac8fa]" /><div className="flex-[4] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-fg-secondary leading-relaxed">Full layout with food item list. Each item gets its own per-item macro bar.</div>
+              </div>
+            </FadeUp>
+
+            {/* Detailed + Emoji */}
+            <FadeUp delay={0.18}>
+              <div className="bg-bg-card border border-edge rounded-2xl p-5 h-full">
+                <div className="text-sm font-semibold mb-3">Detailed + Emoji</div>
+                <div className="bg-bg-page/60 border border-edge rounded-xl p-3 mb-3">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5"><span className="text-xs">🍗</span><span className="text-[9px] text-fg-secondary">Grilled Chicken</span></div>
+                      <div className="flex h-1 w-10 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[2] bg-[#ff6b6b]" /><div className="flex-[1] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5"><span className="text-xs">🍚</span><span className="text-[9px] text-fg-secondary">Brown Rice</span></div>
+                      <div className="flex h-1 w-8 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[1] bg-[#ff6b6b]" /><div className="flex-[5] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5"><span className="text-xs">🥑</span><span className="text-[9px] text-fg-secondary">Avocado</span></div>
+                      <div className="flex h-1 w-6 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[1] bg-[#ff6b6b]" /><div className="flex-[1] bg-[#5ac8fa]" /><div className="flex-[4] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-fg-secondary leading-relaxed">Same as detailed but with food emoji icons next to each item.</div>
+              </div>
+            </FadeUp>
+
+            {/* Full Detail */}
+            <FadeUp delay={0.24}>
+              <div className="bg-bg-card border border-edge rounded-2xl p-5 h-full">
+                <div className="text-sm font-semibold mb-3">Full Detail</div>
+                <div className="bg-bg-page/60 border border-edge rounded-xl p-3 mb-3">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs">🍗</span>
+                        <div><span className="text-[9px]">Grilled Chicken</span><span className="text-[8px] text-fg-muted">, breast</span></div>
+                      </div>
+                      <div className="flex h-1 w-8 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[2] bg-[#ff6b6b]" /><div className="flex-[1] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs">🍚</span>
+                        <div><span className="text-[9px]">Brown Rice</span><span className="text-[8px] text-fg-muted">, long grain</span></div>
+                      </div>
+                      <div className="flex h-1 w-6 rounded-full overflow-hidden gap-px">
+                        <div className="flex-[1] bg-[#ff6b6b]" /><div className="flex-[5] bg-[#5ac8fa]" /><div className="flex-[1] bg-[#ff9f43]" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-fg-secondary leading-relaxed">Everything — emoji, food detail text, brand names. The maximalist option.</div>
+              </div>
+            </FadeUp>
           </div>
         </section>
 
